@@ -1,18 +1,45 @@
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
 stages:
-    - build
     - test
-
-build:
-    stage: build
-    script:
-        - "dotnet build src"
-    artifacts:
-      paths:
-        - src/bin/
+    - build
+    - deploy
 
 test:
     stage: test
     script: 
-        - "dotnet test src"
+        - echo "-- Starting tests --"
+        - "dotnet test '%solution%'"
+        - echo "-- Finished tests --"
+
+build:
+    stage: build
+    script:
+        - echo "-- Starting build --"
+        - "dotnet build '%solution%'"
+        - echo "-- Finished build --"
+    artifacts:
+        paths:
+            - src/bin/
+
+deploy_test:
+    stage: deploy
+    script:
+        - echo "-- Starting deploy to test --"
+        - dotnet publish -p:PublishProfileFullPath=~/src/WebUI/exptestWebDeploy.pubxml
+    environment:
+        name: test
+        url: https://exptest.chakian.com
+    only:
+        - develop
+
+deploy_prod:
+    stage: deploy
+    script:
+        - echo "deploy to production"
+    environment:
+        name: prod
+        url: https://harcama.chakian.com
+    when: manual
+    only:
+        - master
