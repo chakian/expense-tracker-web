@@ -29,7 +29,7 @@ deploy_test:
     stage: deploy
     script:
         - echo "-- Starting deploy to test --"
-        - dotnet publish -p:PublishProfileFullPath=~/src/WebUI/exptestWebDeploy.pubxml
+        - dotnet publish src/WebUI/WebUI.csproj -p:PublishProfileFullPath=~/src/WebUI/exptestWebDeploy.pubxml
     environment:
         name: test
         url: https://exptest.chakian.com
