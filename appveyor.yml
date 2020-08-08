@@ -22,7 +22,7 @@ after_build:
 - ps: >-
     dotnet publish --self-contained -r win-x86 -o publish/WebUI -c Release src/WebUI/WebUI.csproj
 
-    .\replace_appsettings.ps1 -config "src\WebUI\appsettings.json"
+    .\replace_appsettings.ps1 -config "C:\projects\expense-tracker-web\src\WebUI\appsettings.json"
 
     7z a WebUI.zip .\publish\WebUI\*
 
