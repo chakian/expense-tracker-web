@@ -22,7 +22,7 @@ after_build:
 - cmd: >-
     dotnet publish --self-contained -r win-x86 -o publish/WebUI -c Release src/WebUI/WebUI.csproj
 
-    deploy.ps1
+    .\deploy.ps1
 
     7z a WebUI.zip .\publish\WebUI\*
 
