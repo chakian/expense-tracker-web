@@ -1,0 +1,1 @@
+.\replace_appsettings.ps1 -config "appsettings.json"
