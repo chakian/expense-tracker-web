@@ -12,14 +12,14 @@ test:
     stage: test
     script: 
         - echo "-- Starting tests --"
-        - "dotnet test '%solution%'"
+        - dotnet test %solution%
         - echo "-- Finished tests --"
 
 build:
     stage: build
     script:
         - echo "-- Starting build --"
-        - "dotnet build '%solution%'"
+        - dotnet build %solution%
         - echo "-- Finished build --"
     artifacts:
         paths:
