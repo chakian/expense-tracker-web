@@ -22,34 +22,7 @@ after_build:
 - cmd: >-
     dotnet publish --self-contained -r win-x86 -o publish/WebUI -c Release src/WebUI/WebUI.csproj
 
-    Write-Output "Starting config manipulation"
-
-    Write-Output "Loading config file from $env:APPLICATION_PATH\src\WebUI\appsettings.json"
-
-    $xml = [xml](Get-Content $env:APPLICATION_PATH\src\WebUI\appsettings.json)
-        
-    ForEach($add in $xml.configuration.appSettings.add)
-
-    {
-
-        Write-Output "Processing AppSetting key $($add.key)"
-            	
-        $matchingEnvVar = [Environment]::GetEnvironmentVariable($add.key)
-            
-        if($matchingEnvVar)
-
-        {
-
-            Write-Output "Found matching environment variable for key: $($add.key)"
-
-            Write-Output "Replacing value $($add.value)  with $matchingEnvVar"
-            
-            $add.value = $matchingEnvVar
-        }
-
-    }
-        
-    $xml.Save($env:APPLICATION_PATH\src\WebUI\appsettings.json)
+    .\replace_appsettings.ps1 -config "src\WebUI\appsettings.json"
 
     7z a WebUI.zip .\publish\WebUI\*
 
