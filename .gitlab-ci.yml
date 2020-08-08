@@ -1,5 +1,8 @@
 image: mcr.microsoft.com/dotnet/core/sdk:3.1
 
+variables:
+    solution: src\ExpenseTrackerWeb.sln
+
 stages:
     - test
     - build
