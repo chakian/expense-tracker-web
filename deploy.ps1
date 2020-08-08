@@ -1,11 +1,6 @@
 Write-Output "Starting config manipulation"
 
-.\replace_appsettings.ps1 -config "appsettings.json"
-.\replace_appsettings.ps1 -config "C:\projects\expense-tracker-web\src\WebUI\appsettings.json"
-.\replace_appsettings.ps1 -config "\projects\expense-tracker-web\src\WebUI\appsettings.json"
-.\replace_appsettings.ps1 -config "~\projects\expense-tracker-web\src\WebUI\appsettings.json"
+.\replace_appsettings.ps1 -config 'C:\projects\expense-tracker-web\src\WebUI\appsettings.json'
+.\replace_appsettings.ps1 -config "projects\expense-tracker-web\src\WebUI\appsettings.json"
 .\replace_appsettings.ps1 -config "C:/projects/expense-tracker-web/src/WebUI/appsettings.json"
 .\replace_appsettings.ps1 -config "./projects/expense-tracker-web/src/WebUI/appsettings.json"
-.\replace_appsettings.ps1 -config "./src/WebUI/appsettings.json"
-.\replace_appsettings.ps1 -config "/src/WebUI/appsettings.json"
-.\replace_appsettings.ps1 -config "src/WebUI/appsettings.json"
