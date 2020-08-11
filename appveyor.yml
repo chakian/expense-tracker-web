@@ -25,13 +25,13 @@ after_build:
     7z a WebUI.zip .\publish\WebUI\*
 
     appveyor PushArtifact WebUI.zip
-#deploy:
-# - provider: Environment
-#   name: Expense Tracker - Test
-#   on:
-#     branch: develop
-#
-# - provider: Environment
-#   name: Expense Tracker - LIVE
-#   on:
-#     branch: master
+deploy:
+ - provider: Environment
+   name: Expense Tracker - Test
+   on:
+     branch: develop
+
+ - provider: Environment
+   name: Expense Tracker - LIVE
+   on:
+     branch: master
