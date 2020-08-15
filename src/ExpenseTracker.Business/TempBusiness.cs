@@ -6,26 +6,18 @@ namespace ExpenseTracker.Business
 {
     public class TempBusiness
     {
-        public void getUsers()
+        public void GetUsers()
         {
             ExpenseTrackerContext context = new ExpenseTrackerContext();
-            using (var tx = context.Database.BeginTransaction())
-            {
-                var users = context.Users.ToList();
-                Console.WriteLine(users.ToString());
-                tx.Commit();
-            }
+            var users = context.Users.ToList();
+            Console.WriteLine(users.ToString());
         }
 
-        public void getCurrencies()
+        public void GetCurrencies()
         {
             ExpenseTrackerContext context = new ExpenseTrackerContext();
-            using (var tx = context.Database.BeginTransaction())
-            {
-                var currencies = context.Currencies.ToList();
-                Console.WriteLine(currencies.ToString());
-                tx.Commit();
-            }
+            var currencies = context.Currencies.ToList();
+            Console.WriteLine(currencies.ToString());
         }
     }
 }

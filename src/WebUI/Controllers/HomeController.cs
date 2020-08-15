@@ -18,8 +18,9 @@ namespace WebUI.Controllers
         public IActionResult Index()
         {
             TempBusiness business = new TempBusiness();
-            business.getUsers();
-            business.getCurrencies();
+            business.GetUsers();
+            business.GetCurrencies();
+            _logger.LogInformation("Index done");
             return View();
         }
 

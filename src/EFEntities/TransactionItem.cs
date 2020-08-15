@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EFEntities
+﻿namespace EFEntities
 {
     public partial class TransactionItem
     {
