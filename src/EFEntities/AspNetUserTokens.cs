@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace EFEntities
 {
-    public partial class AspNetUserTokens
+    public partial class AspNetUserTokens : IdentityUserToken<string>
     {
-        public string UserId { get; set; }
-        public string LoginProvider { get; set; }
-        public string Name { get; set; }
-        public string Value { get; set; }
-
         public virtual Users User { get; set; }
     }
 }

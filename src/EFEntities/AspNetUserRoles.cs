@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace EFEntities
 {
-    public partial class AspNetUserRoles
+    public partial class AspNetUserRoles : IdentityUserRole<string>
     {
-        public string UserId { get; set; }
-        public string RoleId { get; set; }
-
         public virtual AspNetRoles Role { get; set; }
         public virtual Users User { get; set; }
     }
