@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ExpenseTracker.Business;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebUI.Models;
@@ -16,6 +17,9 @@ namespace WebUI.Controllers
 
         public IActionResult Index()
         {
+            TempBusiness business = new TempBusiness();
+            business.getUsers();
+            business.getCurrencies();
             return View();
         }
 
