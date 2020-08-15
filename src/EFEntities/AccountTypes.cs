@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using EFEntities.Base;
+using System.Collections.Generic;
 
 namespace EFEntities
 {
-    public partial class AccountTypes
+    public partial class AccountTypes : BaseEntity
     {
         public AccountTypes()
         {
@@ -10,7 +11,6 @@ namespace EFEntities
         }
 
         public int AccountTypeId { get; set; }
-        public bool IsActive { get; set; }
         public string Name { get; set; }
 
         public virtual ICollection<Accounts> Accounts { get; set; }

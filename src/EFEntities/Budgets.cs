@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EFEntities.Base;
 using System.Collections.Generic;
 
 namespace EFEntities
 {
-    public partial class Budgets
+    public partial class Budgets : AuditableEntity
     {
         public Budgets()
         {
@@ -15,17 +15,10 @@ namespace EFEntities
         }
 
         public int BudgetId { get; set; }
-        public bool IsActive { get; set; }
-        public string InsertUserId { get; set; }
-        public DateTime InsertTime { get; set; }
-        public string UpdateUserId { get; set; }
-        public DateTime? UpdateTime { get; set; }
         public string Name { get; set; }
         public int CurrencyId { get; set; }
 
         public virtual Currencies Currency { get; set; }
-        public virtual Users InsertUser { get; set; }
-        public virtual Users UpdateUser { get; set; }
         public virtual ICollection<Accounts> Accounts { get; set; }
         public virtual ICollection<BudgetPlans> BudgetPlans { get; set; }
         public virtual ICollection<BudgetUsers> BudgetUsers { get; set; }

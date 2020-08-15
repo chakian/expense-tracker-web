@@ -1,9 +1,10 @@
-﻿using System;
+﻿using EFEntities.Base;
+using System;
 using System.Collections.Generic;
 
 namespace EFEntities
 {
-    public partial class Transactions
+    public partial class Transactions : AuditableEntity
     {
         public Transactions()
         {
@@ -11,11 +12,7 @@ namespace EFEntities
         }
 
         public int TransactionId { get; set; }
-        public bool IsActive { get; set; }
-        public string InsertUserId { get; set; }
-        public DateTime InsertTime { get; set; }
-        public string UpdateUserId { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Description { get; set; }
@@ -24,10 +21,8 @@ namespace EFEntities
         public int? TargetAccountId { get; set; }
 
         public virtual Categories Category { get; set; }
-        public virtual Users InsertUser { get; set; }
         public virtual Accounts SourceAccount { get; set; }
         public virtual Accounts TargetAccount { get; set; }
-        public virtual Users UpdateUser { get; set; }
         public virtual ICollection<TransactionItem> TransactionItem { get; set; }
     }
 }

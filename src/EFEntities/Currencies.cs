@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using EFEntities.Base;
+using System.Collections.Generic;
 
 namespace EFEntities
 {
-    public partial class Currencies
+    public partial class Currencies : BaseEntity
     {
         public Currencies()
         {
@@ -10,7 +11,6 @@ namespace EFEntities
         }
 
         public int CurrencyId { get; set; }
-        public bool IsActive { get; set; }
         public string CurrencyCode { get; set; }
         public string LongName { get; set; }
         public string DisplayName { get; set; }

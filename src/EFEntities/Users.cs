@@ -1,19 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using EFEntities.Base;
 using System.Collections.Generic;
 
 namespace EFEntities
 {
-    public partial class Users : IdentityUser
+    public partial class Users : AuditableUserEntity
     {
         public Users()
         {
-            AccountsInsertUser = new HashSet<Accounts>();
-            AccountsUpdateUser = new HashSet<Accounts>();
             AspNetUserClaims = new HashSet<AspNetUserClaims>();
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
             AspNetUserTokens = new HashSet<AspNetUserTokens>();
+
+            AccountsInsertUser = new HashSet<Accounts>();
+            AccountsUpdateUser = new HashSet<Accounts>();
             BudgetPlanCategoriesInsertUser = new HashSet<BudgetPlanCategories>();
             BudgetPlanCategoriesUpdateUser = new HashSet<BudgetPlanCategories>();
             BudgetPlansInsertUser = new HashSet<BudgetPlans>();
@@ -25,8 +25,6 @@ namespace EFEntities
             BudgetsUpdateUser = new HashSet<Budgets>();
             CategoriesInsertUser = new HashSet<Categories>();
             CategoriesUpdateUser = new HashSet<Categories>();
-            InverseInsertUser = new HashSet<Users>();
-            InverseUpdateUser = new HashSet<Users>();
             TransactionTemplatesInsertUser = new HashSet<TransactionTemplates>();
             TransactionTemplatesUpdateUser = new HashSet<TransactionTemplates>();
             TransactionTemplatesUser = new HashSet<TransactionTemplates>();
@@ -34,15 +32,11 @@ namespace EFEntities
             TransactionsUpdateUser = new HashSet<Transactions>();
         }
 
-        public bool IsActive { get; set; }
-        public string InsertUserId { get; set; }
-        public DateTime InsertTime { get; set; }
-        public string UpdateUserId { get; set; }
-        public DateTime? UpdateTime { get; set; }
+        #region Custom columns
         public int? ActiveBudgetId { get; set; }
+        #endregion
 
-        public virtual Users InsertUser { get; set; }
-        public virtual Users UpdateUser { get; set; }
+        #region Foreign Keys
         public virtual ICollection<Accounts> AccountsInsertUser { get; set; }
         public virtual ICollection<Accounts> AccountsUpdateUser { get; set; }
         public virtual ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
@@ -60,12 +54,11 @@ namespace EFEntities
         public virtual ICollection<Budgets> BudgetsUpdateUser { get; set; }
         public virtual ICollection<Categories> CategoriesInsertUser { get; set; }
         public virtual ICollection<Categories> CategoriesUpdateUser { get; set; }
-        public virtual ICollection<Users> InverseInsertUser { get; set; }
-        public virtual ICollection<Users> InverseUpdateUser { get; set; }
         public virtual ICollection<TransactionTemplates> TransactionTemplatesInsertUser { get; set; }
         public virtual ICollection<TransactionTemplates> TransactionTemplatesUpdateUser { get; set; }
         public virtual ICollection<TransactionTemplates> TransactionTemplatesUser { get; set; }
         public virtual ICollection<Transactions> TransactionsInsertUser { get; set; }
         public virtual ICollection<Transactions> TransactionsUpdateUser { get; set; }
+        #endregion
     }
 }
