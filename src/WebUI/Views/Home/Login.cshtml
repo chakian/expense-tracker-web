@@ -1,0 +1,12 @@
+﻿@model LoginModel
+@{
+    ViewData["Title"] = "Giriş";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    @Html.TextBoxFor(m => m.Email)
+    @Html.PasswordFor(m => m.Password)
+
+    <button type="submit">Giriş</button>
+</form>
