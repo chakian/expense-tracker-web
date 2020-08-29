@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFEntities", "EFEntities\EF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker.WebUI", "ExpenseTracker.WebUI\ExpenseTracker.WebUI.csproj", "{1F7CA587-0CF4-422C-BBC7-C2C31E6BD385}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTracker.Persistence", "ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj", "{E6FB755A-BDC5-497D-86A4-148940F5898A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{1F7CA587-0CF4-422C-BBC7-C2C31E6BD385}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F7CA587-0CF4-422C-BBC7-C2C31E6BD385}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F7CA587-0CF4-422C-BBC7-C2C31E6BD385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6FB755A-BDC5-497D-86A4-148940F5898A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6FB755A-BDC5-497D-86A4-148940F5898A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6FB755A-BDC5-497D-86A4-148940F5898A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6FB755A-BDC5-497D-86A4-148940F5898A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{785F970B-3C40-4440-91FC-4D6BC00EE65B} = {D3557F23-02BF-4EAF-BB3D-9D038D917DD6}
 		{84228B09-8100-4FA9-AD9E-AD6C35CA20BE} = {6AE077EC-6F56-4799-9D3E-7071A08D1521}
 		{1F7CA587-0CF4-422C-BBC7-C2C31E6BD385} = {A7135F72-F97B-4B70-A07A-37D003322079}
+		{E6FB755A-BDC5-497D-86A4-148940F5898A} = {6AE077EC-6F56-4799-9D3E-7071A08D1521}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D0D695B2-C348-4EC1-83E7-7376062464C0}
