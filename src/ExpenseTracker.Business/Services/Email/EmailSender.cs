@@ -25,7 +25,7 @@ namespace ExpenseTracker.Business.Services.Email
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("Joe@contoso.com", Options.SendGridUser),
+                From = new EmailAddress("cagdaskorkut@gmail.com", Options.SendGridUser),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
