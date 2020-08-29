@@ -1,10 +1,13 @@
-﻿using System.Diagnostics;
-using ExpenseTracker.Business;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebUI.Models;
+using ExpenseTracker.WebUI.Models;
 
-namespace WebUI.Controllers
+namespace ExpenseTracker.WebUI.Controllers
 {
     public class HomeController : Controller
     {
@@ -17,22 +20,7 @@ namespace WebUI.Controllers
 
         public IActionResult Index()
         {
-            TempBusiness business = new TempBusiness();
-            business.GetUsers();
-            business.GetCurrencies();
-            _logger.LogInformation("Index done");
             return View();
-        }
-
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Login(LoginModel loginModel)
-        {
-            return View(loginModel);
         }
 
         public IActionResult Privacy()

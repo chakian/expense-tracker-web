@@ -1,6 +1,6 @@
 using System;
 
-namespace WebUI.Models
+namespace ExpenseTracker.WebUI.Models
 {
     public class ErrorViewModel
     {
