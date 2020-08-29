@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ExpenseTracker.Persistence;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using ExpenseTracker.Business.Services.Email;
 
 namespace ExpenseTracker.WebUI
 {
@@ -36,6 +38,11 @@ namespace ExpenseTracker.WebUI
                 options.Password.RequireNonAlphanumeric = false;
             })
                 .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
+
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("AuthMessageSender"));
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddControllersWithViews();
             services.AddRazorPages();
