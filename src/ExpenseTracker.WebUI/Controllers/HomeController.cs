@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ExpenseTracker.WebUI.Models;
@@ -20,18 +16,20 @@ namespace ExpenseTracker.WebUI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            if (User?.Identity.IsAuthenticated == true)
+            {
+                _logger.LogInformation("User is already logged in; redirecting to Dashboard");
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                return View();
+            }
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
