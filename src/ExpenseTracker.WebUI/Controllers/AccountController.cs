@@ -57,16 +57,18 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Create
         public ActionResult Create()
         {
-            return View();
+            CreateModel createModel = new CreateModel();
+            return View(createModel);
         }
 
         // POST: AccountController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(CreateModel createModel)
         {
             try
             {
+                // TODO: Do the saving here
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -78,13 +80,19 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            //TODO: Fetch data for the given id
+            UpdateModel updateModel = new UpdateModel();
+            updateModel.Id = id;
+            updateModel.Name = "x";
+            updateModel.Type = "Y";
+            updateModel.Balance = 55.98M;
+            return View(updateModel);
         }
 
         // POST: AccountController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UpdateModel updateModel)
         {
             try
             {
@@ -99,7 +107,12 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            DeleteModel deleteModel = new DeleteModel();
+            deleteModel.Id = id;
+            deleteModel.Name = "x";
+            deleteModel.Type = "Y";
+            deleteModel.Balance = 55.98M;
+            return View(deleteModel);
         }
 
         // POST: AccountController/Delete/5
