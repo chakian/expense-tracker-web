@@ -1,67 +1,61 @@
-﻿using ExpenseTracker.WebUI.Models.Account;
+﻿using ExpenseTracker.WebUI.Models.Budget;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    public class AccountController : BaseAuthenticatedController
+    public class BudgetController : BaseAuthenticatedController
     {
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<BudgetController> _logger;
 
-        public AccountController(ILogger<AccountController> logger)
+        public BudgetController(ILogger<BudgetController> logger)
         {
             _logger = logger;
         }
 
-        // GET: AccountController
+        // GET: BudgetController
         public ActionResult Index()
         {
-            _logger.LogInformation("Started controller action: Account/Index");
+            _logger.LogInformation("Started controller action: Budget/Index");
 
             ListModel listModel = new ListModel();
-            listModel.AccountList = new System.Collections.Generic.List<ListModel.Account>();
-            listModel.AccountList.Add(new ListModel.Account()
+            listModel.BudgetList = new System.Collections.Generic.List<ListModel.Budget>();
+            listModel.BudgetList.Add(new ListModel.Budget()
             {
                 Id = 1,
-                Name = "Test hesap",
-                Type = "a",
-                Balance = 502
+                Name = "Test bütçe"
             });
-            listModel.AccountList.Add(new ListModel.Account()
+            listModel.BudgetList.Add(new ListModel.Budget()
             {
-                Id = 2,
-                Name = "Test hesap 2",
-                Type = "b",
-                Balance = 11
+                Id = 3,
+                Name = "Test bütçe 2"
             });
 
-            _logger.LogInformation("Finished controller action: Account/Index");
+            _logger.LogInformation("Finished controller action: Budget/Index");
 
             return View(listModel);
         }
 
-        // GET: AccountController/Details/5
+        // GET: BudgetController/Details/5
         public ActionResult Details(int id)
         {
             DetailModel detailModel = new DetailModel()
             {
-                Id = 1,
-                Name = "Test hesap",
-                Type = "a",
-                Balance = 502
+                Id = id,
+                Name = "Test bütçe"
             };
             return View(detailModel);
         }
 
-        // GET: AccountController/Create
+        // GET: BudgetController/Create
         public ActionResult Create()
         {
             CreateModel createModel = new CreateModel();
             return View(createModel);
         }
 
-        // POST: AccountController/Create
+        // POST: BudgetController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateModel createModel)
@@ -77,19 +71,17 @@ namespace ExpenseTracker.WebUI.Controllers
             }
         }
 
-        // GET: AccountController/Edit/5
+        // GET: BudgetController/Edit/5
         public ActionResult Edit(int id)
         {
             //TODO: Fetch data for the given id
             UpdateModel updateModel = new UpdateModel();
             updateModel.Id = id;
             updateModel.Name = "x";
-            updateModel.Type = "Y";
-            updateModel.Balance = 55.98M;
             return View(updateModel);
         }
 
-        // POST: AccountController/Edit/5
+        // POST: BudgetController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UpdateModel updateModel)
@@ -104,18 +96,16 @@ namespace ExpenseTracker.WebUI.Controllers
             }
         }
 
-        // GET: AccountController/Delete/5
+        // GET: BudgetController/Delete/5
         public ActionResult Delete(int id)
         {
             DeleteModel deleteModel = new DeleteModel();
             deleteModel.Id = id;
             deleteModel.Name = "x";
-            deleteModel.Type = "Y";
-            deleteModel.Balance = 55.98M;
             return View(deleteModel);
         }
 
-        // POST: AccountController/Delete/5
+        // POST: BudgetController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
