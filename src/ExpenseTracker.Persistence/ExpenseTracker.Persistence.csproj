@@ -35,6 +35,8 @@
     <Compile Remove="Migrations\20201001104540_BabySteps.Designer.cs" />
     <Compile Remove="Migrations\20201001105923_BabySteps.cs" />
     <Compile Remove="Migrations\20201001105923_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001111720_BudgetUser.cs" />
+    <Compile Remove="Migrations\20201001111720_BudgetUser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

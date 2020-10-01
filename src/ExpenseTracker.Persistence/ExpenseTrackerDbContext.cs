@@ -13,6 +13,7 @@ namespace ExpenseTracker.Persistence
         }
 
         public virtual DbSet<Budget> Budgets { get; set; }
+        public virtual DbSet<UserSetting> UserSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
