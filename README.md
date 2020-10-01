@@ -1,7 +1,19 @@
+## Build Status
+
+Appveyor:
+
+### master
+
+### develop
+
+## Test Status
+
+In progress...
+
 ## Introduction
 
 AaA
 
 # Reference links
 
-- [Travis](https://travis-ci.org)
+- [Appveyor](https://ci.appveyor.com/project/chakian/expense-tracker-web)
