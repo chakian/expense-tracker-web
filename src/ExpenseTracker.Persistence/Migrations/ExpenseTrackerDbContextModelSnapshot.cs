@@ -54,6 +54,50 @@ namespace ExpenseTracker.Persistence.Migrations
                     b.ToTable("Budgets");
                 });
 
+            modelBuilder.Entity("ExpenseTracker.Persistence.DbModels.BudgetUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InsertTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InsertUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdateUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BudgetId");
+
+                    b.HasIndex("InsertUserId");
+
+                    b.HasIndex("UpdateUserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BudgetUsers");
+                });
+
             modelBuilder.Entity("ExpenseTracker.Persistence.DbModels.UserSetting", b =>
                 {
                     b.Property<int>("Id")
@@ -306,6 +350,29 @@ namespace ExpenseTracker.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("UpdateUserId")
                         .OnDelete(DeleteBehavior.NoAction);
+                });
+
+            modelBuilder.Entity("ExpenseTracker.Persistence.DbModels.BudgetUser", b =>
+                {
+                    b.HasOne("ExpenseTracker.Persistence.DbModels.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "InsertUser")
+                        .WithMany()
+                        .HasForeignKey("InsertUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "UpdateUser")
+                        .WithMany()
+                        .HasForeignKey("UpdateUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ExpenseTracker.Persistence.DbModels.UserSetting", b =>

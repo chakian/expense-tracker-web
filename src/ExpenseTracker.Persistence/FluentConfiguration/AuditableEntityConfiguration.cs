@@ -10,7 +10,7 @@ namespace ExpenseTracker.Persistence.FluentConfiguration
             //Configure<Account>(modelBuilder);
             Configure<Budget>(modelBuilder);
             Configure<UserSetting>(modelBuilder);
-            //Configure<BudgetPlanCategory>(modelBuilder);
+            Configure<BudgetUser>(modelBuilder);
             //Configure<BudgetUser>(modelBuilder);
             //Configure<Category>(modelBuilder);
             //Configure<Transaction>(modelBuilder);
