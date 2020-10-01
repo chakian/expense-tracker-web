@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Persistence.DbModels
 {
@@ -8,10 +9,14 @@ namespace ExpenseTracker.Persistence.DbModels
         public int AccountId { get; set; }
         public virtual Account Account { get; set; }
 
-        public int TargetAccountId { get; set; }
+        public int? TargetAccountId { get; set; }
         public Account TargetAccount { get; set; }
 
-        public int CategoryId { get; set; }
+        [Required]
+        [DefaultValue(false)]
+        public bool IsSplitTransaction { get; set; }
+
+        public int? CategoryId { get; set; }
         public Category Category { get; set; }
     }
 }
