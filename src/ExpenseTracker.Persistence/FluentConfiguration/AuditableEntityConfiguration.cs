@@ -7,7 +7,7 @@ namespace ExpenseTracker.Persistence.FluentConfiguration
     {
         public static void Configure(ModelBuilder modelBuilder)
         {
-            //Configure<Account>(modelBuilder);
+            Configure<Account>(modelBuilder);
             Configure<Budget>(modelBuilder);
             Configure<UserSetting>(modelBuilder);
             Configure<BudgetUser>(modelBuilder);
