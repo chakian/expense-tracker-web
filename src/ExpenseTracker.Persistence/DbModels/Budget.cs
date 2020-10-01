@@ -7,8 +7,5 @@ namespace ExpenseTracker.Persistence.DbModels
     {
         [Required]
         public string Name { get; set; }
-
-        public string OwnerUserId { get; set; }
-        public virtual IdentityUser OwnerUser { get; set; }
     }
 }

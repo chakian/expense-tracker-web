@@ -19,12 +19,6 @@ namespace ExpenseTracker.Persistence
             base.OnModelCreating(builder);
 
             AuditableEntityConfiguration.Configure(builder);
-
-            builder.Entity<Budget>()
-                .HasOne(e => e.OwnerUser)
-                .WithMany()
-                .HasForeignKey(e => e.OwnerUserId)
-                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

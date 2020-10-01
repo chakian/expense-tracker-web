@@ -24,13 +24,13 @@ namespace ExpenseTracker.Persistence.FluentConfiguration
                 .HasOne(s => s.InsertUser)
                 .WithMany()
                 .HasForeignKey(e => e.InsertUserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<T>()
                 .HasOne(s => s.UpdateUser)
                 .WithMany()
                 .HasForeignKey(e => e.UpdateUserId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

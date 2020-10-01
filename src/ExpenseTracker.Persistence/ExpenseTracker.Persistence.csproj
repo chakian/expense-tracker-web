@@ -33,15 +33,13 @@
     <Compile Remove="Migrations\20201001104348_BabySteps.Designer.cs" />
     <Compile Remove="Migrations\20201001104540_BabySteps.cs" />
     <Compile Remove="Migrations\20201001104540_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001105923_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001105923_BabySteps.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>
