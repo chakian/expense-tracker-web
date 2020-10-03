@@ -1,14 +1,18 @@
-﻿using ExpenseTracker.WebUI.Models.Budget;
+﻿using ExpenseTracker.Business;
+using ExpenseTracker.Persistence;
+using ExpenseTracker.WebUI.Models.Budget;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
     public class BudgetController : BaseAuthenticatedController<BudgetController>
     {
-        public BudgetController(ILogger<BudgetController> logger)
-            : base(logger)
+        public BudgetController(ILogger<BudgetController> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
+            : base(logger, options, userManager)
         {
         }
 
@@ -17,17 +21,18 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Budget/Index");
 
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            var list = budgetBusiness.GetBudgetsOfUser(_userManager.GetUserId(User));
+
             ListModel listModel = new ListModel();
             listModel.BudgetList = new System.Collections.Generic.List<ListModel.Budget>();
-            listModel.BudgetList.Add(new ListModel.Budget()
+            list.ForEach(l =>
             {
-                Id = 1,
-                Name = "Test bütçe"
-            });
-            listModel.BudgetList.Add(new ListModel.Budget()
-            {
-                Id = 3,
-                Name = "Test bütçe 2"
+                listModel.BudgetList.Add(new ListModel.Budget()
+                {
+                    Id = l.Id,
+                    Name = l.Name
+                });
             });
 
             _logger.LogInformation("Finished controller action: Budget/Index");
@@ -38,11 +43,19 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: BudgetController/Details/5
         public ActionResult Details(int id)
         {
+            _logger.LogInformation("Started controller action: Budget/Details");
+
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            var budget = budgetBusiness.GetBudgetDetails(id);
+
             DetailModel detailModel = new DetailModel()
             {
-                Id = id,
-                Name = "Test bütçe"
+                Id = budget.Id,
+                Name = budget.Name
             };
+
+            _logger.LogInformation("Finished controller action: Budget/Details");
+
             return View(detailModel);
         }
 
@@ -58,9 +71,16 @@ namespace ExpenseTracker.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateModel createModel)
         {
+            _logger.LogInformation("Started controller action: Budget/Create POST");
+
             try
             {
-                // TODO: Do the saving here
+                // TODO: Validation
+                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+                budgetBusiness.CreateNewBudget(createModel.Name, _userManager.GetUserId(User));
+
+                _logger.LogInformation("Finished controller action: Budget/Create POST");
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -72,10 +92,21 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: BudgetController/Edit/5
         public ActionResult Edit(int id)
         {
-            //TODO: Fetch data for the given id
-            UpdateModel updateModel = new UpdateModel();
-            updateModel.Id = id;
-            updateModel.Name = "x";
+            _logger.LogInformation("Started controller action: Budget/Edit");
+
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+
+            var budget = budgetBusiness.GetBudgetDetails(id);
+
+            UpdateModel updateModel = new UpdateModel()
+            {
+
+                Id = budget.Id,
+                Name = budget.Name
+            };
+
+            _logger.LogInformation("Finished controller action: Budget/Edit");
+
             return View(updateModel);
         }
 
@@ -84,8 +115,14 @@ namespace ExpenseTracker.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, UpdateModel updateModel)
         {
+            _logger.LogInformation("Started controller action: Budget/Edit POST");
             try
             {
+                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+                budgetBusiness.UpdateBudget(id, updateModel.Name, _userManager.GetUserId(User));
+
+                _logger.LogInformation("Finished controller action: Budget/Edit POST");
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -97,9 +134,21 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: BudgetController/Delete/5
         public ActionResult Delete(int id)
         {
-            DeleteModel deleteModel = new DeleteModel();
-            deleteModel.Id = id;
-            deleteModel.Name = "x";
+            _logger.LogInformation("Started controller action: Budget/Delete");
+
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+
+            var budget = budgetBusiness.GetBudgetDetails(id);
+
+            DeleteModel deleteModel = new DeleteModel()
+            {
+
+                Id = budget.Id,
+                Name = budget.Name
+            };
+
+            _logger.LogInformation("Finished controller action: Budget/Delete");
+
             return View(deleteModel);
         }
 
@@ -108,8 +157,14 @@ namespace ExpenseTracker.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
+            _logger.LogInformation("Started controller action: Budget/Delete POST");
             try
             {
+                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+                budgetBusiness.UpdateBudgetAsInactive(id, _userManager.GetUserId(User));
+
+                _logger.LogInformation("Finished controller action: Budget/Delete POST");
+
                 return RedirectToAction(nameof(Index));
             }
             catch
