@@ -193,8 +193,20 @@ namespace ExpenseTracker.Persistence.Migrations
                     b.Property<int>("AccountId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("money");
+
+                    b.Property<int>("BudgetId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("InsertTime")
                         .HasColumnType("datetime2");
@@ -220,6 +232,8 @@ namespace ExpenseTracker.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("CategoryId");
 
@@ -557,6 +571,12 @@ namespace ExpenseTracker.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExpenseTracker.Persistence.DbModels.Budget", "Budget")
+                        .WithMany("Transactions")
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ExpenseTracker.Persistence.DbModels.Category", "Category")

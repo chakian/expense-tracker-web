@@ -24,6 +24,15 @@ namespace ExpenseTracker.Persistence
             base.OnModelCreating(builder);
 
             AuditableEntityConfiguration.Configure(builder);
+
+            builder.Entity<Transaction>()
+                .Property(b => b.Amount)
+                .HasColumnType("money");
+
+            builder.Entity<Transaction>()
+                .HasOne(t => t.Budget)
+                .WithMany(b => b.Transactions)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
