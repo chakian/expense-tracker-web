@@ -2,16 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ExpenseTracker.WebUI.Models;
+using ExpenseTracker.WebUI.Controllers.Base;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController<HomeController>
     {
-        private readonly ILogger<HomeController> _logger;
-
         public HomeController(ILogger<HomeController> logger)
+            : base(logger)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()

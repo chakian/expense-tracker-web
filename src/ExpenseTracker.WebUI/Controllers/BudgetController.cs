@@ -5,13 +5,11 @@ using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    public class BudgetController : BaseAuthenticatedController
+    public class BudgetController : BaseAuthenticatedController<BudgetController>
     {
-        private readonly ILogger<BudgetController> _logger;
-
         public BudgetController(ILogger<BudgetController> logger)
+            : base(logger)
         {
-            _logger = logger;
         }
 
         // GET: BudgetController

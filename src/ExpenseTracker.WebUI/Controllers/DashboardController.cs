@@ -1,5 +1,4 @@
 ﻿using ExpenseTracker.WebUI.Models.Dashboard;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,14 +6,11 @@ using System.Collections.Generic;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    [Authorize]
-    public class DashboardController : Controller
+    public class DashboardController : BaseAuthenticatedController<DashboardController>
     {
-        private readonly ILogger<DashboardController> _logger;
-
         public DashboardController(ILogger<DashboardController> logger)
+            : base(logger)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
