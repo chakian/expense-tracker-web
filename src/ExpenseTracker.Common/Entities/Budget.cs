@@ -1,6 +1,6 @@
-﻿namespace ExpenseTracker.WebUI.Models.Category
+﻿namespace ExpenseTracker.Common.Entities
 {
-    public class DetailModel
+    public class Budget
     {
         public int Id { get; set; }
         public string Name { get; set; }

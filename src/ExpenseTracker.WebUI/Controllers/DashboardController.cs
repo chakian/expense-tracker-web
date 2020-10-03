@@ -1,20 +1,19 @@
-﻿using ExpenseTracker.WebUI.Models.Dashboard;
-using Microsoft.AspNetCore.Authorization;
+﻿using ExpenseTracker.Persistence;
+using ExpenseTracker.WebUI.Models.Dashboard;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    [Authorize]
-    public class DashboardController : Controller
+    public class DashboardController : BaseAuthenticatedController<DashboardController>
     {
-        private readonly ILogger<DashboardController> _logger;
-
-        public DashboardController(ILogger<DashboardController> logger)
+        public DashboardController(ILogger<DashboardController> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
+            : base(logger, options, userManager)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()

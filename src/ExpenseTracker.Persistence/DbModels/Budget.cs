@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Persistence.DbModels
@@ -7,5 +7,7 @@ namespace ExpenseTracker.Persistence.DbModels
     {
         [Required]
         public string Name { get; set; }
+
+        public virtual List<Transaction> Transactions { get; set; }
     }
 }

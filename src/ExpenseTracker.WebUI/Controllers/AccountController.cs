@@ -1,17 +1,19 @@
-﻿using ExpenseTracker.WebUI.Models.Account;
+﻿using ExpenseTracker.Business;
+using ExpenseTracker.Persistence;
+using ExpenseTracker.WebUI.Models.Account;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
-    public class AccountController : BaseAuthenticatedController
+    public class AccountController : BaseAuthenticatedController<AccountController>
     {
-        private readonly ILogger<AccountController> _logger;
-
-        public AccountController(ILogger<AccountController> logger)
+        public AccountController(ILogger<AccountController> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
+            : base(logger, options, userManager)
         {
-            _logger = logger;
         }
 
         // GET: AccountController
@@ -19,21 +21,20 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Account/Index");
 
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            var list = accountBusiness.GetAccountsOfBudget(BudgetId);
+
             ListModel listModel = new ListModel();
             listModel.AccountList = new System.Collections.Generic.List<ListModel.Account>();
-            listModel.AccountList.Add(new ListModel.Account()
+            list.ForEach(l =>
             {
-                Id = 1,
-                Name = "Test hesap",
-                Type = "a",
-                Balance = 502
-            });
-            listModel.AccountList.Add(new ListModel.Account()
-            {
-                Id = 2,
-                Name = "Test hesap 2",
-                Type = "b",
-                Balance = 11
+                listModel.AccountList.Add(new ListModel.Account()
+                {
+                    Id = l.Id,
+                    //Balance = 0,
+                    //Type = 0,
+                    Name = l.Name
+                });
             });
 
             _logger.LogInformation("Finished controller action: Account/Index");
@@ -44,12 +45,14 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Details/5
         public ActionResult Details(int id)
         {
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            var acc = accountBusiness.GetAccountDetails(id);
             DetailModel detailModel = new DetailModel()
             {
-                Id = 1,
-                Name = "Test hesap",
-                Type = "a",
-                Balance = 502
+                Id = acc.Id,
+                Name = acc.Name
+                //Type = "a",
+                //Balance = 502
             };
             return View(detailModel);
         }
@@ -68,7 +71,9 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
-                // TODO: Do the saving here
+                // TODO: Validations
+                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -80,12 +85,15 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Edit/5
         public ActionResult Edit(int id)
         {
-            //TODO: Fetch data for the given id
-            UpdateModel updateModel = new UpdateModel();
-            updateModel.Id = id;
-            updateModel.Name = "x";
-            updateModel.Type = "Y";
-            updateModel.Balance = 55.98M;
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            var acc = accountBusiness.GetAccountDetails(id);
+            UpdateModel updateModel = new UpdateModel()
+            {
+                Id = acc.Id,
+                Name = acc.Name
+                //Type = "a",
+                //Balance = 502
+            };
             return View(updateModel);
         }
 
@@ -96,6 +104,8 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
+                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+                accountBusiness.UpdateAccount(id, updateModel.Name, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -107,11 +117,15 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Delete/5
         public ActionResult Delete(int id)
         {
-            DeleteModel deleteModel = new DeleteModel();
-            deleteModel.Id = id;
-            deleteModel.Name = "x";
-            deleteModel.Type = "Y";
-            deleteModel.Balance = 55.98M;
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            var acc = accountBusiness.GetAccountDetails(id);
+            DeleteModel deleteModel = new DeleteModel()
+            {
+                Id = acc.Id,
+                Name = acc.Name
+                //Type = "a",
+                //Balance = 502
+            };
             return View(deleteModel);
         }
 
@@ -122,6 +136,8 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
+                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+                accountBusiness.UpdateAccountAsInactive(id, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

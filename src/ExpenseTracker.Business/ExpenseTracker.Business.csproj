@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EFEntities\EFEntities.csproj" />
+    <ProjectReference Include="..\ExpenseTracker.Common\ExpenseTracker.Common.csproj" />
+    <ProjectReference Include="..\ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
