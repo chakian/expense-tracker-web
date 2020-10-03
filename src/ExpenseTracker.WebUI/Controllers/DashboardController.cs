@@ -1,5 +1,8 @@
-﻿using ExpenseTracker.WebUI.Models.Dashboard;
+﻿using ExpenseTracker.Persistence;
+using ExpenseTracker.WebUI.Models.Dashboard;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,8 +11,8 @@ namespace ExpenseTracker.WebUI.Controllers
 {
     public class DashboardController : BaseAuthenticatedController<DashboardController>
     {
-        public DashboardController(ILogger<DashboardController> logger)
-            : base(logger)
+        public DashboardController(ILogger<DashboardController> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
+            : base(logger, options, userManager)
         {
         }
 
