@@ -22,9 +22,7 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Account/Index");
 
             AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            //TODO: GetActiveBudgetId
-            int activeBudgetId = 1;
-            var list = accountBusiness.GetAccountsOfBudget(activeBudgetId);
+            var list = accountBusiness.GetAccountsOfBudget(BudgetId);
 
             ListModel listModel = new ListModel();
             listModel.AccountList = new System.Collections.Generic.List<ListModel.Account>();
@@ -75,9 +73,7 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 // TODO: Validations
                 AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                //TODO: GetActiveBudgetId
-                int activeBudgetId = 1;
-                accountBusiness.CreateNewAccount(activeBudgetId, createModel.Name, UserId);
+                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

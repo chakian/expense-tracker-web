@@ -22,38 +22,57 @@ namespace ExpenseTracker.WebUI.Controllers
             _userManager = userManager;
         }
 
+        #region Initiate UserSettings
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);
 
             //TODO: This should be done on register action. Find a way to do it there, later.
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
-            var userSettings = userSettingBusiness.GetUserSettings(UserId);
-            bool hasDefaultBudget = userSettings.DefaultBudgetId > 0;
-            if (hasDefaultBudget == false)
+            // Get User Settings
+            var userSettings = GetUserSetting();
+            // If User Settings doesn't exist create it
+            if (userSettings == null)
             {
-                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                var firstBudget = budgetBusiness.GetBudgetsOfUser(UserId).FirstOrDefault();
-                if (firstBudget != null)
-                {
-                    //SetDefaultBudgetForUser
-                    userSettingBusiness.UpdateUserSettings(UserId, firstBudget.Id);
-                    BudgetId = firstBudget.Id;
-                }
-                else
-                {
-                    budgetBusiness.CreateNewBudget("Default Budget", UserId);
-                    var budget = budgetBusiness.GetBudgetsOfUser(UserId).FirstOrDefault();
-                    //SetDefaultBudgetForUser
-                    userSettingBusiness.UpdateUserSettings(UserId, budget.Id);
-                    BudgetId = budget.Id;
-                }
+                CreateUserSetting();
+                userSettings = GetUserSetting();
+                BudgetId = userSettings.DefaultBudgetId;
             }
             else
             {
                 BudgetId = userSettings.DefaultBudgetId;
             }
         }
+        private UserSetting GetUserSetting()
+        {
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
+            return userSettingBusiness.GetUserSettings(UserId);
+        }
+        private void CreateUserSetting()
+        {
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
+            int budgetId = FindFirstBudgetId();
+            userSettingBusiness.CreateUserSettings(UserId, budgetId);
+        }
+        private int FindFirstBudgetId()
+        {
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            var firstBudget = budgetBusiness.GetBudgetsOfUser(UserId).FirstOrDefault();
+            if (firstBudget != null)
+            {
+                return firstBudget.Id;
+            }
+            else
+            {
+                return CreateBudgetForUser();
+            }
+        }
+        private int CreateBudgetForUser()
+        {
+            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            budgetBusiness.CreateNewBudget("Default Budget", UserId);
+            return budgetBusiness.GetBudgetsOfUser(UserId).First().Id;
+        }
+        #endregion Initiate UserSettings
 
         protected string UserId
         {
@@ -63,14 +82,6 @@ namespace ExpenseTracker.WebUI.Controllers
             }
         }
 
-        private int defaultBudgetId;
-        protected int BudgetId
-        {
-            get { return defaultBudgetId; }
-            private set
-            {
-                defaultBudgetId = value;
-            }
-        }
+        protected int BudgetId { get; private set; }
     }
 }

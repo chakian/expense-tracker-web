@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Persistence;
+using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -11,6 +12,22 @@ namespace ExpenseTracker.Business
         public UserSettingBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
         {
             _context = new ExpenseTrackerDbContext(options);
+        }
+
+        public void CreateUserSettings(string userId, int budgetId)
+        {
+            UserSetting userSetting = new UserSetting()
+            {
+                UserId = userId,
+                DefaultBudgetId = budgetId
+            };
+
+            userSetting.IsActive = true;
+            userSetting.InsertUserId = userId;
+            userSetting.InsertTime = DateTime.UtcNow;
+
+            _context.UserSettings.Add(userSetting);
+            _context.SaveChanges();
         }
 
         public void UpdateUserSettings(string userId, int budgetId)
@@ -29,15 +46,16 @@ namespace ExpenseTracker.Business
         {
             var settingsDbo = _context.UserSettings.SingleOrDefault(us => us.UserId == userId);
 
-            if(settingsDbo == null)
-            {
+            Common.Entities.UserSetting userSetting = null;
 
-            }
-            Common.Entities.UserSetting userSetting = new Common.Entities.UserSetting()
+            if (settingsDbo != null)
             {
-                UserId = settingsDbo.UserId,
-                DefaultBudgetId = settingsDbo.DefaultBudgetId
-            };
+                userSetting = new Common.Entities.UserSetting()
+                {
+                    UserId = settingsDbo.UserId,
+                    DefaultBudgetId = settingsDbo.DefaultBudgetId
+                };
+            }
 
             return userSetting;
         }
