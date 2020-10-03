@@ -26,5 +26,13 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _userManager = userManager;
         }
+
+        protected string UserId
+        {
+            get
+            {
+                return _userManager.GetUserId(User);
+            }
+        }
     }
 }

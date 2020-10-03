@@ -22,7 +22,7 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Budget/Index");
 
             BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-            var list = budgetBusiness.GetBudgetsOfUser(_userManager.GetUserId(User));
+            var list = budgetBusiness.GetBudgetsOfUser(UserId);
 
             ListModel listModel = new ListModel();
             listModel.BudgetList = new System.Collections.Generic.List<ListModel.Budget>();
@@ -77,7 +77,7 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 // TODO: Validation
                 BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.CreateNewBudget(createModel.Name, _userManager.GetUserId(User));
+                budgetBusiness.CreateNewBudget(createModel.Name, UserId);
 
                 _logger.LogInformation("Finished controller action: Budget/Create POST");
 
@@ -100,7 +100,6 @@ namespace ExpenseTracker.WebUI.Controllers
 
             UpdateModel updateModel = new UpdateModel()
             {
-
                 Id = budget.Id,
                 Name = budget.Name
             };
@@ -119,7 +118,7 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.UpdateBudget(id, updateModel.Name, _userManager.GetUserId(User));
+                budgetBusiness.UpdateBudget(id, updateModel.Name, UserId);
 
                 _logger.LogInformation("Finished controller action: Budget/Edit POST");
 
@@ -161,7 +160,7 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.UpdateBudgetAsInactive(id, _userManager.GetUserId(User));
+                budgetBusiness.UpdateBudgetAsInactive(id, UserId);
 
                 _logger.LogInformation("Finished controller action: Budget/Delete POST");
 
