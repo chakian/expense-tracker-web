@@ -1,28 +1,13 @@
 ﻿using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace ExpenseTracker.Business.Tests.Budget
+namespace ExpenseTracker.Business.Tests
 {
-    public class BudgetTests
+    public class BudgetTests : TestBase
     {
-        private static DbContextOptions<ExpenseTrackerDbContext> CreateNewContextOptions()
-        {
-            var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkInMemoryDatabase()
-                .BuildServiceProvider();
-
-            var builder = new DbContextOptionsBuilder<ExpenseTrackerDbContext>();
-            builder.UseInMemoryDatabase(Guid.NewGuid().ToString())
-                   .UseInternalServiceProvider(serviceProvider);
-
-            return builder.Options;
-        }
-
         [Fact]
         public void Create_Budget_Valid()
         {
@@ -73,6 +58,24 @@ namespace ExpenseTracker.Business.Tests.Budget
             
             //assert
             Assert.NotEmpty(actual);
+        }
+
+        [Fact]
+        public void Get_BudgetsOfUser_AllDeleted_ShouldBeEmpty()
+        {
+            //arrange
+            var contextOptions = CreateNewContextOptions();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            string name = Guid.NewGuid().ToString();
+            string userId = Guid.NewGuid().ToString();
+
+            //act
+            int budgetId = budgetBusiness.CreateNewBudget(name, userId);
+            budgetBusiness.UpdateBudgetAsInactive(budgetId, userId);
+            List<Common.Entities.Budget> actual = budgetBusiness.GetBudgetsOfUser(userId);
+
+            //assert
+            Assert.Empty(actual);
         }
 
         [Fact]
@@ -132,5 +135,8 @@ namespace ExpenseTracker.Business.Tests.Budget
             Common.Entities.Budget actual = budgetBusiness.GetBudgetDetails(budgetId);
             Assert.False(actual.IsActive);
         }
+
+        //Update_Budget_FailRoleNotAuthorized
+        //Update_BudgetAsInactive_FailRoleNotAuthorized
     }
 }

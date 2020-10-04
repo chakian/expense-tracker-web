@@ -15,7 +15,7 @@ namespace ExpenseTracker.Business
             _context = new ExpenseTrackerDbContext(options);
         }
 
-        public void CreateNewAccount(int budgetId, string name, string userId)
+        public int CreateNewAccount(int budgetId, string name, string userId)
         {
             Account account = new Account()
             {
@@ -29,6 +29,8 @@ namespace ExpenseTracker.Business
             _context.Accounts.Add(account);
 
             _context.SaveChanges();
+
+            return account.Id;
         }
 
         public List<Common.Entities.Account> GetAccountsOfBudget(int budgetId)
@@ -41,7 +43,8 @@ namespace ExpenseTracker.Business
                 {
                     Id = b.Id,
                     BudgetId = b.BudgetId,
-                    Name = b.Name
+                    Name = b.Name,
+                    IsActive = b.IsActive
                 });
             });
             return AccountList;
@@ -56,7 +59,8 @@ namespace ExpenseTracker.Business
                 {
                     Id = accountDbo.Id,
                     BudgetId = accountDbo.BudgetId,
-                    Name = accountDbo.Name
+                    Name = accountDbo.Name,
+                    IsActive = accountDbo.IsActive
                 };
             }
             else
