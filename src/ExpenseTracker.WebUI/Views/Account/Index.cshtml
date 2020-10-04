@@ -1,0 +1,45 @@
+﻿@model ExpenseTracker.WebUI.Models.Account.ListModel
+
+@{
+    ViewData["Title"] = "Hesaplar";
+}
+
+<h1>Hesaplar</h1>
+
+<p>
+    <a asp-action="Create">Yeni Hesap Oluştur</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Hesap Adı</th>
+            <th>Hesap Türü</th>
+            <th>Bakiye</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.AccountList) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Balance)
+            </td>
+            <td>
+                @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Detay", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Sil", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

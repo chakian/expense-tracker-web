@@ -1,0 +1,37 @@
+image: Visual Studio 2019
+configuration: Release
+platform: Any CPU
+
+before_build:
+- cmd: nuget restore src/ExpenseTrackerWeb.sln
+
+build:
+  project: src/ExpenseTrackerWeb.sln
+  publish_wap: true
+  verbosity: minimal
+
+#test_script:
+#- ps: >-
+#    .\ExpenseTrackerWeb\packages\OpenCover.4.7.922\tools\OpenCover.Console.exe -register:user -target:"xunit.console.x86.exe" -targetargs:".\ExpenseTrackerWeb\ExpenseTrackerWeb.Business.Tests\bin\$env:CONFIGURATION\ExpenseTrackerWeb.Business.Tests.dll -noshadow" -filter:"+[ExpenseTrackerWeb*]* -[ExpenseTrackerWeb.Business.Tests*]*" -output:"ExpenseTrackerWeb_coverage.xml"
+#after_test:
+#- ps: >-
+#    dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
+#    
+#    .\tools\csmacnz.Coveralls --opencover -i ExpenseTrackerWeb_coverage.xml --repoToken $env:COVERALLS_REPO_TOKEN --useRelativePaths --commitId $env:APPVEYOR_REPO_COMMIT --commitBranch $env:APPVEYOR_REPO_BRANCH --commitAuthor $env:APPVEYOR_REPO_COMMIT_AUTHOR --commitEmail $env:APPVEYOR_REPO_COMMIT_AUTHOR_EMAIL --commitMessage $env:APPVEYOR_REPO_COMMIT_MESSAGE --jobId $env:APPVEYOR_JOB_ID
+after_build:
+- ps: >-
+    dotnet publish --self-contained -r win-x86 -o publish/WebUI -c Release src/ExpenseTracker.WebUI/ExpenseTracker.WebUI.csproj
+
+    7z a WebUI.zip .\publish\WebUI\*
+
+    appveyor PushArtifact WebUI.zip
+deploy:
+ - provider: Environment
+   name: Expense Tracker - Test
+   on:
+     branch: develop
+
+ - provider: Environment
+   name: Expense Tracker - LIVE
+   on:
+     branch: master

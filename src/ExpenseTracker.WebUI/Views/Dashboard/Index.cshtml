@@ -1,0 +1,70 @@
+﻿@model ExpenseTracker.WebUI.Models.Dashboard.IndexModel
+
+@{
+    ViewData["Title"] = "Özet";
+}
+
+<h1>Özet</h1>
+
+<h2>@Model.StartDate.ToShortDateString() - @Model.EndDate.ToShortDateString()</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Kategori
+            </th>
+            <th>
+                Bütçe Tutarı
+            </th>
+            <th>
+                Kayıtlı Tutar
+            </th>
+            <th>
+                Kalan Tutar
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Categories?.Count > 0)
+        {
+            foreach (var mainCategory in Model.Categories)
+            {
+                <tr style="background: #0094ff">
+                    <td>
+                        @Html.DisplayFor(modelItem => mainCategory.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => mainCategory.BudgetedAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => mainCategory.RecordedAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => mainCategory.RemainingAmount)
+                    </td>
+                </tr>
+                if (mainCategory.SubCategories?.Count > 0)
+                {
+                    foreach (var subCategory in mainCategory.SubCategories)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => subCategory.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => subCategory.BudgetedAmount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => subCategory.RecordedAmount)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => subCategory.RemainingAmount)
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    </tbody>
+</table>

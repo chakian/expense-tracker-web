@@ -8,6 +8,7 @@ nupkg/
 # Visual Studio Code
 .vscode
 .vs
+src/.vs
 
 # User-specific files
 *.suo
@@ -30,3 +31,6 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+
+# Publish results
+publish/

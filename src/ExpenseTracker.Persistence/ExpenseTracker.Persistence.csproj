@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200829074033_Inital.cs" />
+    <Compile Remove="Migrations\20200829074033_Inital.Designer.cs" />
+    <Compile Remove="Migrations\20200829074133_InitialDb.cs" />
+    <Compile Remove="Migrations\20200829074133_InitialDb.Designer.cs" />
+    <Compile Remove="Migrations\20200930121237_BudgetStart.cs" />
+    <Compile Remove="Migrations\20200930121237_BudgetStart.Designer.cs" />
+    <Compile Remove="Migrations\20200930125607_BudgetStart.cs" />
+    <Compile Remove="Migrations\20200930125607_BudgetStart.Designer.cs" />
+    <Compile Remove="Migrations\20200930130533_BudgetStart.cs" />
+    <Compile Remove="Migrations\20200930130533_BudgetStart.Designer.cs" />
+    <Compile Remove="Migrations\20201001093309_AddBudgetTable.cs" />
+    <Compile Remove="Migrations\20201001093309_AddBudgetTable.Designer.cs" />
+    <Compile Remove="Migrations\20201001094820_AddBudgetTable.cs" />
+    <Compile Remove="Migrations\20201001094820_AddBudgetTable.Designer.cs" />
+    <Compile Remove="Migrations\20201001095244_AddBudgetTable.cs" />
+    <Compile Remove="Migrations\20201001095244_AddBudgetTable.Designer.cs" />
+    <Compile Remove="Migrations\20201001095356_AddBudgetTable.cs" />
+    <Compile Remove="Migrations\20201001095356_AddBudgetTable.Designer.cs" />
+    <Compile Remove="Migrations\20201001100133_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001100133_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001100706_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001100706_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001100811_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001100811_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001104348_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001104348_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001104540_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001104540_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001105923_BabySteps.cs" />
+    <Compile Remove="Migrations\20201001105923_BabySteps.Designer.cs" />
+    <Compile Remove="Migrations\20201001111720_BudgetUser.cs" />
+    <Compile Remove="Migrations\20201001111720_BudgetUser.Designer.cs" />
+    <Compile Remove="Migrations\20201003155044_TransactionUpdate.cs" />
+    <Compile Remove="Migrations\20201003155044_TransactionUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20201003155357_TransactionUpdate.cs" />
+    <Compile Remove="Migrations\20201003155357_TransactionUpdate.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+  </ItemGroup>
+
+</Project>
