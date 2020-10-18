@@ -15,7 +15,7 @@ namespace ExpenseTracker.Business
             _context = new ExpenseTrackerDbContext(options);
         }
 
-        public void CreateNewTransaction(int budgetId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        public int CreateNewTransaction(int budgetId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
         {
             Transaction transaction = new Transaction()
             {
@@ -35,6 +35,8 @@ namespace ExpenseTracker.Business
             _context.Transactions.Add(transaction);
 
             _context.SaveChanges();
+
+            return transaction.Id;
         }
 
         public List<Common.Entities.Transaction> GetTransactionsOfBudget(int budgetId)

@@ -15,7 +15,7 @@ namespace ExpenseTracker.Business
             _context = new ExpenseTrackerDbContext(options);
         }
 
-        public void CreateNewCategory(int budgetId, string name, string userId)
+        public int CreateNewCategory(int budgetId, string name, string userId)
         {
             Category category = new Category()
             {
@@ -29,9 +29,11 @@ namespace ExpenseTracker.Business
             _context.Categories.Add(category);
 
             _context.SaveChanges();
+
+            return category.Id;
         }
 
-        public List<Common.Entities.Category> GetCategorysOfBudget(int budgetId)
+        public List<Common.Entities.Category> GetCategoriesOfBudget(int budgetId)
         {
             var categoryDboList = _context.Categories.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
             List<Common.Entities.Category> CategoryList = new List<Common.Entities.Category>();
@@ -56,7 +58,8 @@ namespace ExpenseTracker.Business
                 {
                     Id = categoryDbo.Id,
                     BudgetId = categoryDbo.BudgetId,
-                    Name = categoryDbo.Name
+                    Name = categoryDbo.Name,
+                    IsActive = categoryDbo.IsActive
                 };
             }
             else
