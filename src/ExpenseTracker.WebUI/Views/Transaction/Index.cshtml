@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Yeni İşlem</a>
 </p>
 <table class="table">
     <thead>
@@ -25,13 +25,13 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Date)
+                    @item.Date.ToShortDateString()
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AccountId)
+                    @Html.DisplayFor(modelItem => item.AccountName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryId)
+                    @Html.DisplayFor(modelItem => item.CategoryName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Amount)
