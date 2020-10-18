@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace ExpenseTracker.WebUI.Models.Transaction
 {
-    public class CreateModel
+    public class UpdateModel
     {
+        public int Id { get; set; }
+
         public int BudgetId { get; set; }
         public DateTime Date { get; set; }
 
