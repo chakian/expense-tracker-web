@@ -4,8 +4,10 @@ using ExpenseTracker.WebUI.Models.Transaction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
@@ -67,6 +69,13 @@ namespace ExpenseTracker.WebUI.Controllers
         public ActionResult Create()
         {
             CreateModel createModel = new CreateModel();
+
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            createModel.AccountList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), false));
+
+            CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
+            createModel.CategoryList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false));
+
             return View(createModel);
         }
 
@@ -79,7 +88,7 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 // TODO: Validations
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.CreateNewTransaction(BudgetId, createModel.Date, createModel.AccountId, createModel.AccountId, createModel.Amount, createModel.Description, UserId);
+                TransactionBusiness.CreateNewTransaction(BudgetId, createModel.Date, createModel.AccountId, createModel.CategoryId.Value, createModel.Amount, createModel.Description, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -89,36 +98,47 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // GET: TransactionController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-        //    var acc = TransactionBusiness.GetTransactionDetails(id);
-        //    UpdateModel updateModel = new UpdateModel()
-        //    {
-        //        Id = acc.Id,
-        //        Name = acc.Name
-        //        //Type = "a",
-        //        //Balance = 502
-        //    };
-        //    return View(updateModel);
-        //}
+        public ActionResult Edit(int id)
+        {
+            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+            var trx = TransactionBusiness.GetTransactionDetails(id);
+
+            UpdateModel updateModel = new UpdateModel()
+            {
+                Id = trx.Id,
+                Description = trx.Description,
+                AccountId = trx.AccountId,
+                Amount = trx.Amount,
+                BudgetId = trx.BudgetId,
+                CategoryId = trx.CategoryId,
+                Date = trx.Date
+            };
+
+            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+            updateModel.AccountList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == trx.AccountId));
+
+            CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
+            updateModel.CategoryList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), c.Id == trx.CategoryId));
+
+            return View(updateModel);
+        }
 
         // POST: TransactionController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, UpdateModel updateModel)
-        //{
-        //    try
-        //    {
-        //        TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-        //        TransactionBusiness.UpdateTransaction(id, updateModel.Name, UserId);
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, UpdateModel updateModel)
+        {
+            try
+            {
+                TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+                TransactionBusiness.UpdateTransaction(id, updateModel.Date, updateModel.AccountId, updateModel.CategoryId.Value, updateModel.Amount, updateModel.Description, UserId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: TransactionController/Delete/5
         public ActionResult Delete(int id)

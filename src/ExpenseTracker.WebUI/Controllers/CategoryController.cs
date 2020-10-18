@@ -22,7 +22,7 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Category/Index");
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
-            var list = categoryBusiness.GetCategorysOfBudget(BudgetId);
+            var list = categoryBusiness.GetCategoriesOfBudget(BudgetId);
 
             ListModel listModel = new ListModel();
             listModel.CategoryList = new System.Collections.Generic.List<ListModel.Category>();

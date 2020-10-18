@@ -15,7 +15,7 @@ namespace ExpenseTracker.Business
             _context = new ExpenseTrackerDbContext(options);
         }
 
-        public void CreateNewTransaction(int budgetId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        public int CreateNewTransaction(int budgetId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
         {
             Transaction transaction = new Transaction()
             {
@@ -35,6 +35,8 @@ namespace ExpenseTracker.Business
             _context.Transactions.Add(transaction);
 
             _context.SaveChanges();
+
+            return transaction.Id;
         }
 
         public List<Common.Entities.Transaction> GetTransactionsOfBudget(int budgetId)
@@ -83,20 +85,24 @@ namespace ExpenseTracker.Business
             }
         }
 
-        //public void UpdateTransaction(int transactionId, string name, string userId)
-        //{
-        //    Transaction transaction = _context.Transactions.Find(transactionId);
+        public void UpdateTransaction(int transactionId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        {
+            Transaction transaction = _context.Transactions.Find(transactionId);
 
-        //    if (transaction != null)
-        //    {
-        //        //transaction.Name = name;
+            if (transaction != null)
+            {
+                transaction.Date = date;
+                transaction.AccountId = accountId;
+                transaction.CategoryId = categoryId;
+                transaction.Amount = amount;
+                transaction.Description = description;
 
-        //        transaction.UpdateUserId = userId;
-        //        transaction.UpdateTime = DateTime.UtcNow;
+                transaction.UpdateTime = DateTime.UtcNow;
+                transaction.UpdateUserId = userId;
 
-        //        _context.SaveChanges();
-        //    }
-        //}
+                _context.SaveChanges();
+            }
+        }
 
         public void DeleteTransaction(int transactionId)
         {

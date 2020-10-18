@@ -30,17 +30,17 @@ namespace ExpenseTracker.Business
             _context.SaveChanges();
         }
 
-        public void UpdateUserSettings(string userId, int budgetId)
-        {
-            var settingsDbo = _context.UserSettings.SingleOrDefault(us => us.UserId == userId);
+        //public void UpdateUserSettings(string userId, int budgetId)
+        //{
+        //    var settingsDbo = _context.UserSettings.SingleOrDefault(us => us.UserId == userId);
 
-            settingsDbo.DefaultBudgetId = budgetId;
+        //    settingsDbo.DefaultBudgetId = budgetId;
 
-            settingsDbo.UpdateUserId = userId;
-            settingsDbo.UpdateTime = DateTime.UtcNow;
+        //    settingsDbo.UpdateUserId = userId;
+        //    settingsDbo.UpdateTime = DateTime.UtcNow;
 
-            _context.SaveChanges();
-        }
+        //    _context.SaveChanges();
+        //}
 
         public Common.Entities.UserSetting GetUserSettings(string userId)
         {
