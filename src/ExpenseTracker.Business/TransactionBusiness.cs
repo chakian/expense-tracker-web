@@ -85,20 +85,24 @@ namespace ExpenseTracker.Business
             }
         }
 
-        //public void UpdateTransaction(int transactionId, string name, string userId)
-        //{
-        //    Transaction transaction = _context.Transactions.Find(transactionId);
+        public void UpdateTransaction(int transactionId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        {
+            Transaction transaction = _context.Transactions.Find(transactionId);
 
-        //    if (transaction != null)
-        //    {
-        //        //transaction.Name = name;
+            if (transaction != null)
+            {
+                transaction.Date = date;
+                transaction.AccountId = accountId;
+                transaction.CategoryId = categoryId;
+                transaction.Amount = amount;
+                transaction.Description = description;
 
-        //        transaction.UpdateUserId = userId;
-        //        transaction.UpdateTime = DateTime.UtcNow;
+                transaction.UpdateTime = DateTime.UtcNow;
+                transaction.UpdateUserId = userId;
 
-        //        _context.SaveChanges();
-        //    }
-        //}
+                _context.SaveChanges();
+            }
+        }
 
         public void DeleteTransaction(int transactionId)
         {
