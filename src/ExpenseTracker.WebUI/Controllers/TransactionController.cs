@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
@@ -26,16 +28,17 @@ namespace ExpenseTracker.WebUI.Controllers
             TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
             var list = TransactionBusiness.GetTransactionsOfBudget(BudgetId);
 
-            ListModel listModel = new ListModel();
-            listModel.TransactionList = new System.Collections.Generic.List<ListModel.Transaction>();
+            ListModel listModel = new ListModel
+            {
+                TransactionList = new List<ListModel.Transaction>()
+            };
             list.ForEach(l =>
             {
                 listModel.TransactionList.Add(new ListModel.Transaction()
                 {
                     Id = l.Id,
-                    BudgetId = l.BudgetId,
-                    AccountId = l.AccountId,
-                    CategoryId = l.CategoryId,
+                    AccountName = l.AccountName,
+                    CategoryName = l.CategoryName,
                     Date = l.Date,
                     Amount = l.Amount,
                     Description = l.Description
@@ -68,7 +71,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: TransactionController/Create
         public ActionResult Create()
         {
-            CreateModel createModel = new CreateModel();
+            CreateModel createModel = new CreateModel
+            {
+                Date = DateTime.Now
+            };
 
             AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
             createModel.AccountList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), false));

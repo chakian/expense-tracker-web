@@ -41,21 +41,35 @@ namespace ExpenseTracker.Business
 
         public List<Common.Entities.Transaction> GetTransactionsOfBudget(int budgetId)
         {
-            var transactionDboList = _context.Transactions.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
+            var transactionDboList = _context.Transactions.Where(t => t.BudgetId == budgetId && t.IsActive).OrderByDescending(t => t.Date).ToList();
             List<Common.Entities.Transaction> TransactionList = new List<Common.Entities.Transaction>();
-            transactionDboList.ForEach(b =>
+
+            //TODO: Get foreignKey values with the query above.
+            var categoryList = _context.Categories.Where(c => c.BudgetId == budgetId).ToList();
+            var accountList = _context.Accounts.Where(a => a.BudgetId == budgetId).ToList();
+
+            transactionDboList.ForEach(tx =>
             {
+                string acc = accountList.First(a => a.Id == tx.AccountId).Name;
+                string cat = categoryList.First(c => c.Id == tx.CategoryId).Name;
+
                 TransactionList.Add(new Common.Entities.Transaction()
                 {
-                    Id = b.Id,
-                    BudgetId = b.BudgetId,
-                    Date = b.Date,
-                    AccountId = b.AccountId,
-                    CategoryId = b.CategoryId,
-                    TargetAccountId = b.TargetAccountId,
-                    IsSplitTransaction = b.IsSplitTransaction,
-                    Amount = b.Amount,
-                    Description = b.Description
+                    Id = tx.Id,
+                    BudgetId = tx.BudgetId,
+                    Date = tx.Date,
+                    //AccountName = b.Account.Name,
+                    //CategoryName = b.Category.Name,
+                    AccountId = tx.AccountId,
+                    AccountName = acc,
+
+                    CategoryId = tx.CategoryId,
+                    CategoryName = cat,
+
+                    TargetAccountId = tx.TargetAccountId,
+                    IsSplitTransaction = tx.IsSplitTransaction,
+                    Amount = tx.Amount,
+                    Description = tx.Description
                 });
             });
             return TransactionList;
