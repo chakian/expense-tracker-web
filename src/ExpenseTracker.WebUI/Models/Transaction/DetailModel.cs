@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.WebUI.Models.Transaction
 {
@@ -6,12 +7,23 @@ namespace ExpenseTracker.WebUI.Models.Transaction
     {
         public int Id { get; set; }
         public int BudgetId { get; set; }
+
+        [Display(Name = "Tarih")]
         public DateTime Date { get; set; }
-        public int AccountId { get; set; }
+
+        [Display(Name = "Hesap")]
+        public string AccountName { get; set; }
+
         //public int? TargetAccountId { get; set; }
         //public bool IsSplitTransaction { get; set; }
-        public int? CategoryId { get; set; }
+
+        [Display(Name = "Kategori")]
+        public string CategoryName { get; set; }
+
+        [Display(Name = "Tutar")]
         public decimal Amount { get; set; }
+
+        [Display(Name = "Açıklama")]
         public string Description { get; set; }
     }
 }
