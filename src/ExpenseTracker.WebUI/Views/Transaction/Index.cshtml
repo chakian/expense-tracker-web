@@ -1,10 +1,8 @@
 ﻿@model ExpenseTracker.WebUI.Models.Transaction.ListModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "İşlemler";
 }
-
-<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Yeni İşlem</a>
@@ -40,9 +38,9 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detay", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Sil", "Delete", new { id = item.Id })
                 </td>
             </tr>
         }

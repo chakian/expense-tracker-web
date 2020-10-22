@@ -1,27 +1,13 @@
 ﻿@model ExpenseTracker.WebUI.Models.Transaction.DetailModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "İşlem Detayı";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>DetailModel</h4>
+    <h4>İşlem Detayı</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BudgetId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BudgetId)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
         </dt>
@@ -29,16 +15,16 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AccountId)
+            @Html.DisplayNameFor(model => model.AccountName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AccountId)
+            @Html.DisplayFor(model => model.AccountName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryId)
+            @Html.DisplayNameFor(model => model.CategoryName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryId)
+            @Html.DisplayFor(model => model.CategoryName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Amount)
@@ -55,6 +41,6 @@
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Düzenle", "Edit", new { id = Model.Id }) |
+    <a asp-action="Index">İşlem Listesine Dön</a>
 </div>
