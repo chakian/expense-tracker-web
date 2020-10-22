@@ -13,9 +13,12 @@ namespace ExpenseTracker.WebUI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment Env { get; set; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -45,7 +48,14 @@ namespace ExpenseTracker.WebUI
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddControllersWithViews();
-            services.AddRazorPages();
+
+            IMvcBuilder builder = services.AddRazorPages();
+#if DEBUG
+            if (Env.IsDevelopment())
+            {
+                builder.AddRazorRuntimeCompilation();
+            }
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

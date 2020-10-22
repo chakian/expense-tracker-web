@@ -77,7 +77,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Transaction GetTransactionDetails(int id)
         {
-            var transactionDbo = _context.Transactions.SingleOrDefault(b => b.Id == id);
+            var transactionDbo = _context.Transactions.Include(t => t.Account).Include(t => t.Category).SingleOrDefault(b => b.Id == id);
             if (transactionDbo != null)
             {
                 return new Common.Entities.Transaction()
@@ -85,8 +85,8 @@ namespace ExpenseTracker.Business
                     Id = transactionDbo.Id,
                     BudgetId = transactionDbo.BudgetId,
                     Date = transactionDbo.Date,
-                    AccountId = transactionDbo.AccountId,
-                    CategoryId = transactionDbo.CategoryId,
+                    AccountName = transactionDbo.Account.Name,
+                    CategoryName = transactionDbo.Category.Name,
                     TargetAccountId = transactionDbo.TargetAccountId,
                     IsSplitTransaction = transactionDbo.IsSplitTransaction,
                     Amount = transactionDbo.Amount,
