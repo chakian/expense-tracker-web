@@ -1,8 +1,12 @@
-﻿namespace ExpenseTracker.WebUI.Models.Category
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ExpenseTracker.WebUI.Models.Category
 {
     public class UpdateModel
     {
         public int Id { get; set; }
+
+        [Display(Name = "Ad")]
         public string Name { get; set; }
     }
 }

@@ -59,8 +59,8 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 Id = trx.Id,
                 BudgetId = trx.BudgetId,
-                AccountId = trx.AccountId,
-                CategoryId = trx.CategoryId,
+                AccountName = trx.AccountName,
+                CategoryName = trx.CategoryName,
                 Date = trx.Date,
                 Amount = trx.Amount,
                 Description = trx.Description
@@ -155,8 +155,8 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 Id = trx.Id,
                 BudgetId = trx.BudgetId,
-                AccountId = trx.AccountId,
-                CategoryId = trx.CategoryId,
+                AccountName = trx.AccountName,
+                CategoryName = trx.CategoryName,
                 Date = trx.Date,
                 Amount = trx.Amount,
                 Description = trx.Description
