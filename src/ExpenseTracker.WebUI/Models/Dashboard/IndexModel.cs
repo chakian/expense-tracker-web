@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ExpenseTracker.WebUI.Models.Dashboard
 {
     public class IndexModel
     {
-        //public DateTime StartDate { get; set; }
-        //public DateTime EndDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string CurrentMonth { get; set; }
+        public int CurrentYear { get; set; }
         public List<Category> Categories { get; set; }
     }
 
@@ -15,6 +18,6 @@ namespace ExpenseTracker.WebUI.Models.Dashboard
         //public decimal BudgetedAmount { get; set; }
         public decimal RecordedAmount { get; set; }
         //public decimal RemainingAmount { get; set; }
-        public List<Category> SubCategories { get; set; }
+        //public List<Category> SubCategories { get; set; }
     }
 }
