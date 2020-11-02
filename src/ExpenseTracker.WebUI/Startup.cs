@@ -8,6 +8,9 @@ using Microsoft.Extensions.Hosting;
 using ExpenseTracker.Persistence;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ExpenseTracker.Business.Services.Email;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Options;
 
 namespace ExpenseTracker.WebUI
 {
@@ -56,6 +59,19 @@ namespace ExpenseTracker.WebUI
                 builder.AddRazorRuntimeCompilation();
             }
 #endif
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    //new CultureInfo("tr-TR"),
+                    new CultureInfo("en-US")
+                };
+                //options.DefaultRequestCulture = new RequestCulture("tr-TR");
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +92,9 @@ namespace ExpenseTracker.WebUI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            var localizationOptions = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>().Value;
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseAuthentication();
             app.UseAuthorization();
