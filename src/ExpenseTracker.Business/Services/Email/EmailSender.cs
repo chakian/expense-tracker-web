@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+using MimeKit;
 using System.Threading.Tasks;
 
 namespace ExpenseTracker.Business.Services.Email
@@ -15,25 +16,34 @@ namespace ExpenseTracker.Business.Services.Email
 
         public AuthMessageSenderOptions Options { get; } //set only via Secret Manager
 
-        public Task SendEmailAsync(string email, string subject, string message) => Execute(Options.SendGridKey, subject, message, email);
+        public Task SendEmailAsync(string email, string subject, string message) => Execute(Options, email, subject, message);
 
-        public Task Execute(string apiKey, string subject, string message, string email)
+        public Task Execute(AuthMessageSenderOptions options, string email, string subject, string message)
         {
-            var client = new SendGridClient(apiKey);
-            var msg = new SendGridMessage()
+            var mailMessage = new MimeMessage
             {
-                From = new EmailAddress("cagdaskorkut@gmail.com", Options.SendGridUser),
-                Subject = subject,
-                PlainTextContent = message,
-                HtmlContent = message
+                Sender = MailboxAddress.Parse(options.MailAccount)
             };
-            msg.AddTo(new EmailAddress(email));
+            mailMessage.To.Add(MailboxAddress.Parse(email));
+            mailMessage.Subject = subject;
 
-            // Disable click tracking.
-            // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
-            msg.SetClickTracking(false, false);
+            var builder = new BodyBuilder
+            {
+                HtmlBody = message
+            };
 
-            return client.SendEmailAsync(msg);
+            mailMessage.Body = builder.ToMessageBody();
+
+#if DEBUG
+            string activationLink = message;
+#else
+            using var smtp = new SmtpClient();
+            smtp.Connect(options.MailServer, options.MailServerPort, SecureSocketOptions.StartTls);
+            smtp.Authenticate(options.MailAccount, options.MailPasswrd);
+            smtp.Send(mailMessage);
+            smtp.Disconnect(true);
+#endif
+            return Task.CompletedTask;
         }
     }
 }
