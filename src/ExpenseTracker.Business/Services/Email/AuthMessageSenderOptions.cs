@@ -2,7 +2,9 @@
 {
     public class AuthMessageSenderOptions
     {
-        public string SendGridUser { get; set; }
-        public string SendGridKey { get; set; }
+        public string MailServer { get; set; }
+        public int MailServerPort { get; set; }
+        public string MailAccount { get; set; }
+        public string MailPasswrd { get; set; }
     }
 }

@@ -87,11 +87,26 @@ namespace ExpenseTracker.Business.Tests
             string description = Guid.NewGuid().ToString();
 
             var dbctx = new ExpenseTrackerDbContext(contextOptions);
+
+            var acc = new Persistence.DbModels.Account()
+            {
+                Name = "test"
+            };
+            dbctx.Accounts.Add(acc);
+            var cat = new Persistence.DbModels.Category()
+            {
+                Name = "test"
+            };
+            dbctx.Categories.Add(cat);
+            dbctx.SaveChanges();
+            
             var tx = new Persistence.DbModels.Transaction()
             {
                 BudgetId = budgetId,
                 Amount = amount,
                 Description = description,
+                Account = acc,
+                Category=cat,
                 IsActive = true
             };
             dbctx.Transactions.Add(tx);
