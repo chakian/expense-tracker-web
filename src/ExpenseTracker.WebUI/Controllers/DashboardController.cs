@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -24,14 +25,22 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Dashboard/Index");
 
             IndexModel indexModel = new IndexModel();
-            //indexModel.StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            //indexModel.EndDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
+            indexModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
+            indexModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
+
+            var culture = new CultureInfo("tr-TR");
+            indexModel.CurrentMonth = culture.DateTimeFormat.GetMonthName(month);
+            indexModel.CurrentYear = year;
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
             var catList = categoryBusiness.GetCategoriesOfBudget(BudgetId);
 
             TransactionBusiness transactionBusiness = new TransactionBusiness(_dbContextOptions);
-            var txList = transactionBusiness.GetTransactionsOfBudget(BudgetId);
+            var txList = transactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, indexModel.StartDate, indexModel.EndDate);
 
             indexModel.Categories = new List<Category>();
             //indexModel.Categories.Add(new Category
@@ -51,7 +60,7 @@ namespace ExpenseTracker.WebUI.Controllers
                 };
                 indexModel.Categories.Add(cat);
             }
-            
+
             _logger.LogInformation("Finished controller action: Dashboard/Index");
 
             return View(indexModel);

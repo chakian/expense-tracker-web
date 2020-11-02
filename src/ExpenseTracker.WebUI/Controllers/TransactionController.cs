@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
@@ -25,13 +26,24 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Transaction/Index");
 
-            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-            var list = TransactionBusiness.GetTransactionsOfBudget(BudgetId);
-
             ListModel listModel = new ListModel
             {
                 TransactionList = new List<ListModel.Transaction>()
             };
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
+            listModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
+            listModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
+
+            var culture = new CultureInfo("tr-TR");
+            listModel.CurrentMonth = culture.DateTimeFormat.GetMonthName(month);
+            listModel.CurrentYear = year;
+
+            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+            var list = TransactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, listModel.StartDate, listModel.EndDate);
+
             list.ForEach(l =>
             {
                 listModel.TransactionList.Add(new ListModel.Transaction()

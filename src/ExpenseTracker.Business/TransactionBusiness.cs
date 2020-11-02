@@ -75,6 +75,42 @@ namespace ExpenseTracker.Business
             return TransactionList;
         }
 
+        public List<Common.Entities.Transaction> GetTransactionsOfBudgetForPeriod(int budgetId, DateTime beginning, DateTime end)
+        {
+            var transactionDboList = _context.Transactions.Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end)).OrderByDescending(t => t.Date).ToList();
+            List<Common.Entities.Transaction> TransactionList = new List<Common.Entities.Transaction>();
+
+            //TODO: Get foreignKey values with the query above.
+            var categoryList = _context.Categories.Where(c => c.BudgetId == budgetId).ToList();
+            var accountList = _context.Accounts.Where(a => a.BudgetId == budgetId).ToList();
+
+            transactionDboList.ForEach(tx =>
+            {
+                string acc = accountList.First(a => a.Id == tx.AccountId).Name;
+                string cat = categoryList.First(c => c.Id == tx.CategoryId).Name;
+
+                TransactionList.Add(new Common.Entities.Transaction()
+                {
+                    Id = tx.Id,
+                    BudgetId = tx.BudgetId,
+                    Date = tx.Date,
+                    //AccountName = b.Account.Name,
+                    //CategoryName = b.Category.Name,
+                    AccountId = tx.AccountId,
+                    AccountName = acc,
+
+                    CategoryId = tx.CategoryId,
+                    CategoryName = cat,
+
+                    TargetAccountId = tx.TargetAccountId,
+                    IsSplitTransaction = tx.IsSplitTransaction,
+                    Amount = tx.Amount,
+                    Description = tx.Description
+                });
+            });
+            return TransactionList;
+        }
+
         public Common.Entities.Transaction GetTransactionDetails(int id)
         {
             var transactionDbo = _context.Transactions.Include(t => t.Account).Include(t => t.Category).SingleOrDefault(b => b.Id == id);
