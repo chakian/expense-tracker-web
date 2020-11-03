@@ -62,24 +62,6 @@ namespace ExpenseTracker.WebUI.Controllers
             return View(listModel);
         }
 
-        // GET: TransactionController/Details/5
-        public ActionResult Details(int id)
-        {
-            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-            var trx = TransactionBusiness.GetTransactionDetails(id);
-            DetailModel detailModel = new DetailModel()
-            {
-                Id = trx.Id,
-                BudgetId = trx.BudgetId,
-                AccountName = trx.AccountName,
-                CategoryName = trx.CategoryName,
-                Date = trx.Date,
-                Amount = trx.Amount,
-                Description = trx.Description
-            };
-            return View(detailModel);
-        }
-
         // GET: TransactionController/Create
         public ActionResult Create()
         {
