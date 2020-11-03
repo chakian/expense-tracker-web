@@ -1,3 +1,5 @@
+Sorry everyone, who followed the link in the net core issue that I accidentally created :(
+
 ## Build Status
 
 Appveyor:
@@ -14,7 +16,7 @@ In progress...
 
 ## Introduction
 
-AaA
+//Edit readme file to send the issue ref back in history. I had to delete my other develop branch, too. :/
 
 # Reference links
 
