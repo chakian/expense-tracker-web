@@ -11,6 +11,8 @@ using ExpenseTracker.Business.Services.Email;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using System.IO;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace ExpenseTracker.WebUI
 {
@@ -29,6 +31,11 @@ namespace ExpenseTracker.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDataProtection()
+                    .SetApplicationName($"expense-tracker-{Env.EnvironmentName}")
+                    .PersistKeysToFileSystem(new DirectoryInfo($@"{Env.ContentRootPath}\keys"));
+            //.DisableAutomaticKeyGeneration(); -> https://stackoverflow.com/a/43327546/837560
+
             services.AddDbContext<ExpenseTrackerDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -42,6 +49,7 @@ namespace ExpenseTracker.WebUI
                 options.Password.RequiredLength = 6;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
 
