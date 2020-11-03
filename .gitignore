@@ -34,6 +34,7 @@ msbuild.wrn
 
 # Publish results
 publish/
+keys/
 
 # Test results
 TestResults/

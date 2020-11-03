@@ -29,7 +29,7 @@ deploy:
  - provider: Environment
    name: Expense Tracker - Test
    on:
-     branch: develop
+     branch: development
 
  - provider: Environment
    name: Expense Tracker - LIVE

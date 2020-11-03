@@ -33,7 +33,8 @@ namespace ExpenseTracker.WebUI
         {
             services.AddDataProtection()
                     .SetApplicationName($"expense-tracker-{Env.EnvironmentName}")
-                    .PersistKeysToFileSystem(new DirectoryInfo($@"{Env.ContentRootPath}\keys"));
+                    .PersistKeysToFileSystem(new DirectoryInfo($@"{Env.ContentRootPath}\keys"))
+                    .SetDefaultKeyLifetime(System.TimeSpan.FromDays(1000));
             //.DisableAutomaticKeyGeneration(); -> https://stackoverflow.com/a/43327546/837560
 
             services.AddDbContext<ExpenseTrackerDbContext>(options =>
