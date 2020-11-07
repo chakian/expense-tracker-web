@@ -18,18 +18,21 @@ namespace ExpenseTracker.Persistence.DbModels
         public virtual Account Account { get; set; }
 
         public int? TargetAccountId { get; set; }
-        public Account TargetAccount { get; set; }
+        public virtual Account TargetAccount { get; set; }
 
         [Required]
         [DefaultValue(false)]
         public bool IsSplitTransaction { get; set; }
 
         public int? CategoryId { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         [Required]
         public decimal Amount { get; set; }
 
         public string Description { get; set; }
+
+        [Required]
+        public bool IsIncome { get; set; }
     }
 }
