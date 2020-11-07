@@ -33,6 +33,10 @@ namespace ExpenseTracker.Persistence
                 .HasOne(t => t.Budget)
                 .WithMany(b => b.Transactions)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Account>()
+                .Property(b => b.Balance)
+                .HasColumnType("money");
         }
     }
 }

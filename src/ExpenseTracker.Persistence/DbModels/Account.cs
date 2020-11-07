@@ -14,5 +14,8 @@ namespace ExpenseTracker.Persistence.DbModels
 
         [Required]
         public int AccountType { get; set; }
+
+        [Required]
+        public decimal Balance { get; set; }
     }
 }
