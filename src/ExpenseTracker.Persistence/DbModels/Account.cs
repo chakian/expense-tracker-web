@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.Persistence.DbModels
 {
@@ -11,7 +12,7 @@ namespace ExpenseTracker.Persistence.DbModels
         [Required]
         public string Name { get; set; }
 
-        //TODO: Think this through, you're drunk. Just Kidding. Think about it though
-        //public int AccountTypeId { get; set; }
+        [Required]
+        public int AccountType { get; set; }
     }
 }

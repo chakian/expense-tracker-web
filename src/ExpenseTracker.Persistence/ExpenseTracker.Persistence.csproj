@@ -41,6 +41,8 @@
     <Compile Remove="Migrations\20201003155044_TransactionUpdate.Designer.cs" />
     <Compile Remove="Migrations\20201003155357_TransactionUpdate.cs" />
     <Compile Remove="Migrations\20201003155357_TransactionUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20201107100018_AccountType.cs" />
+    <Compile Remove="Migrations\20201107100018_AccountType.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
