@@ -18,7 +18,7 @@ namespace ExpenseTracker.Business.Tests
             int budgetId = CreateBudget(contextOptions, userId);
 
             //ACT
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, userId);
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
             Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
 
             //ASSERT
@@ -36,7 +36,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, userId);
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT
             Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
@@ -55,7 +55,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            accountBusiness.CreateNewAccount(budgetId, accountName, userId);
+            accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT
             List<Common.Entities.Account> actual = accountBusiness.GetAccountsOfBudget(budgetId);
@@ -74,7 +74,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, userId);
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT
             string newName = Guid.NewGuid().ToString();
@@ -97,7 +97,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, userId);
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT
             accountBusiness.UpdateAccountAsInactive(accountId, userId);
