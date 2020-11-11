@@ -10,12 +10,14 @@ namespace ExpenseTracker.Business
     public class TransactionBusiness
     {
         private readonly ExpenseTrackerDbContext _context;
+        private readonly AccountBusiness accountBusiness;
         public TransactionBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
         {
             _context = new ExpenseTrackerDbContext(options);
+            accountBusiness = new AccountBusiness(_context);
         }
 
-        public int CreateNewTransaction(int budgetId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        public int CreateNewTransaction(int budgetId, DateTime date, int accountId, int? targetAccountId, int categoryId, decimal amount, bool isIncome, string description, string userId)
         {
             Transaction transaction = new Transaction()
             {
@@ -23,7 +25,7 @@ namespace ExpenseTracker.Business
                 Date = date,
                 AccountId = accountId,
                 CategoryId = categoryId,
-                TargetAccountId = null,
+                //TargetAccountId = targetAccountId,
                 IsSplitTransaction = false,
                 Amount = amount,
                 Description = description
@@ -33,6 +35,7 @@ namespace ExpenseTracker.Business
             transaction.IsActive = true;
 
             _context.Transactions.Add(transaction);
+            accountBusiness.UpdateAccountBalanceForNewTransaction(accountId, targetAccountId, amount, isIncome, userId);
 
             _context.SaveChanges();
 
@@ -135,14 +138,20 @@ namespace ExpenseTracker.Business
             }
         }
 
-        public void UpdateTransaction(int transactionId, DateTime date, int accountId, int categoryId, decimal amount, string description, string userId)
+        public void UpdateTransaction(int transactionId, DateTime date, int accountId, int? targetAccountId, int categoryId, decimal amount, bool isIncome, string description, string userId)
         {
             Transaction transaction = _context.Transactions.Find(transactionId);
 
             if (transaction != null)
             {
+                int oldSourceAccountId = transaction.AccountId;
+                int? oldTargetAccountId = transaction.TargetAccountId;
+                decimal oldTransactionAmount = transaction.Amount;
+                bool oldIsIncome = transaction.IsIncome;
+
                 transaction.Date = date;
                 transaction.AccountId = accountId;
+                //transaction.TargetAccountId = targetAccountId;
                 transaction.CategoryId = categoryId;
                 transaction.Amount = amount;
                 transaction.Description = description;
@@ -150,16 +159,20 @@ namespace ExpenseTracker.Business
                 transaction.UpdateTime = DateTime.UtcNow;
                 transaction.UpdateUserId = userId;
 
+                accountBusiness.UpdateAccountBalanceForEditedTransaction(accountId, targetAccountId, amount, isIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
+
                 _context.SaveChanges();
             }
         }
 
-        public void DeleteTransaction(int transactionId)
+        public void DeleteTransaction(int transactionId, string userId)
         {
             Transaction Transaction = _context.Transactions.Find(transactionId);
 
             if (Transaction != null)
             {
+                accountBusiness.UpdateAccountBalanceForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
+
                 _context.Transactions.Remove(Transaction);
                 _context.SaveChanges();
             }
