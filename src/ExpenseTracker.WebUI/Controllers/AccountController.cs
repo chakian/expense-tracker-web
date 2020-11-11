@@ -31,8 +31,8 @@ namespace ExpenseTracker.WebUI.Controllers
                 listModel.AccountList.Add(new ListModel.Account()
                 {
                     Id = l.Id,
-                    //Balance = 0,
-                    //Type = 0,
+                    Balance = l.Balance,
+                    Type = l.AccountType,
                     Name = l.Name
                 });
             });
@@ -50,9 +50,9 @@ namespace ExpenseTracker.WebUI.Controllers
             DetailModel detailModel = new DetailModel()
             {
                 Id = acc.Id,
-                Name = acc.Name
-                //Type = "a",
-                //Balance = 502
+                Name = acc.Name,
+                Type = acc.AccountType,
+                Balance = acc.Balance
             };
             return View(detailModel);
         }
@@ -73,7 +73,7 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 // TODO: Validations
                 AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, UserId);
+                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, createModel.Type, createModel.Balance, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
