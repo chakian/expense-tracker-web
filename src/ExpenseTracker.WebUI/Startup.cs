@@ -59,6 +59,8 @@ namespace ExpenseTracker.WebUI
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddControllersWithViews();
 
             IMvcBuilder builder = services.AddRazorPages();
@@ -89,7 +91,7 @@ namespace ExpenseTracker.WebUI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
