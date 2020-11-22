@@ -91,7 +91,11 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 // TODO: Validations
-                if(createModel.AccountId <= 0)
+                if (createModel.AccountId <= 0)
+                {
+                    return View(createModel);
+                }
+                if (createModel.CategoryId <= 0)
                 {
                     return View(createModel);
                 }
@@ -160,7 +164,15 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 //TODO: Validations
-                if(updateModel.AccountId == updateModel.TargetAccountId)
+                if (updateModel.AccountId <= 0)
+                {
+                    return View(updateModel);
+                }
+                if (updateModel.CategoryId <= 0)
+                {
+                    return View(updateModel);
+                }
+                if (updateModel.AccountId == updateModel.TargetAccountId)
                 {
                     return RedirectToAction("Edit", new { id = id });
                 }
