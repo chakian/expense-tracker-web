@@ -14,6 +14,10 @@ namespace ExpenseTracker.Business
         {
             _context = new ExpenseTrackerDbContext(options);
         }
+        public CategoryBusiness(ExpenseTrackerDbContext context)
+        {
+            _context = context;
+        }
 
         public int CreateNewCategory(int budgetId, string name, string userId)
         {

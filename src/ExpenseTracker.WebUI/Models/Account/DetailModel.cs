@@ -8,7 +8,8 @@ namespace ExpenseTracker.WebUI.Models.Account
 
         [Display(Name = "Ad")]
         public string Name { get; set; }
-        public string Type { get; set; }
+        public int Type { get; set; }
+        public string TypeName { get; set; }
         public decimal Balance { get; set; }
     }
 }

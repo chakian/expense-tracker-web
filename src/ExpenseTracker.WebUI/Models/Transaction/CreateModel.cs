@@ -16,8 +16,10 @@ namespace ExpenseTracker.WebUI.Models.Transaction
         [Display(Name = "Hesap")]
         public int AccountId { get; set; }
 
-        //public int? TargetAccountId { get; set; }
-        //public bool IsSplitTransaction { get; set; }
+        [Display(Name = "Hedef Hesap")]
+        public int? TargetAccountId { get; set; }
+        
+        public bool IsSplitTransaction { get; set; }
 
         public IEnumerable<SelectListItem> CategoryList { get; set; }
         [Display(Name = "Kategori")]
@@ -25,6 +27,9 @@ namespace ExpenseTracker.WebUI.Models.Transaction
 
         [Display(Name = "Tutar")]
         public decimal Amount { get; set; }
+
+        [Display(Name ="Gelir Mi?")]
+        public bool IsIncome { get; set; }
 
         [Display(Name = "Açıklama")]
         public string Description { get; set; }

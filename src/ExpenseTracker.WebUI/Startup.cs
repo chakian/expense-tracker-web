@@ -59,6 +59,8 @@ namespace ExpenseTracker.WebUI
             services.AddTransient<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+
             services.AddControllersWithViews();
 
             IMvcBuilder builder = services.AddRazorPages();
@@ -84,12 +86,12 @@ namespace ExpenseTracker.WebUI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ExpenseTrackerDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -97,6 +99,9 @@ namespace ExpenseTracker.WebUI
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            dbContext.Database.Migrate();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

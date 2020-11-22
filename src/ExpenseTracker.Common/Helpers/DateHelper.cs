@@ -1,6 +1,6 @@
 ﻿namespace ExpenseTracker.Common.Helpers
 {
-    public class DateHelper
+    public static class DateHelper
     {
         public static string GetMonthNameByIndex(int monthIndex)
         {

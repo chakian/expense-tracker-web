@@ -4,14 +4,16 @@ using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ExpenseTracker.Persistence.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    partial class ExpenseTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201107101248_AccountType")]
+    partial class AccountType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -28,9 +30,6 @@ namespace ExpenseTracker.Persistence.Migrations
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("money");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("int");
@@ -221,9 +220,6 @@ namespace ExpenseTracker.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsIncome")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSplitTransaction")

@@ -21,6 +21,11 @@
                 <span asp-validation-for="AccountId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="TargetAccountId" class="control-label"></label>
+                <select asp-for="TargetAccountId" asp-items="Model.AccountList" class="form-control"></select>
+                <span asp-validation-for="TargetAccountId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
                 <select asp-for="CategoryId" asp-items="Model.CategoryList" class="form-control"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -29,6 +34,10 @@
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" type="number" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsIncome" class="control-label"></label>
+                <input asp-for="IsIncome" type="checkbox" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>

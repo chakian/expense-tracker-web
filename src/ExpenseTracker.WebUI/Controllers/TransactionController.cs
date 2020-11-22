@@ -50,9 +50,11 @@ namespace ExpenseTracker.WebUI.Controllers
                 {
                     Id = l.Id,
                     AccountName = l.AccountName,
+                    TargetAccountName = l.TargetAccountName,
                     CategoryName = l.CategoryName,
                     Date = l.Date,
                     Amount = l.Amount,
+                    IsIncome = l.IsIncome,
                     Description = l.Description
                 });
             });
@@ -60,24 +62,6 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Finished controller action: Transaction/Index");
 
             return View(listModel);
-        }
-
-        // GET: TransactionController/Details/5
-        public ActionResult Details(int id)
-        {
-            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-            var trx = TransactionBusiness.GetTransactionDetails(id);
-            DetailModel detailModel = new DetailModel()
-            {
-                Id = trx.Id,
-                BudgetId = trx.BudgetId,
-                AccountName = trx.AccountName,
-                CategoryName = trx.CategoryName,
-                Date = trx.Date,
-                Amount = trx.Amount,
-                Description = trx.Description
-            };
-            return View(detailModel);
         }
 
         // GET: TransactionController/Create
@@ -89,10 +73,14 @@ namespace ExpenseTracker.WebUI.Controllers
             };
 
             AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            createModel.AccountList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), false));
+            var accList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), false)).ToList();
+            accList.Insert(0, new SelectListItem("Seçiniz", ""));
+            createModel.AccountList = accList.AsEnumerable();
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
-            createModel.CategoryList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false));
+            var catList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false)).ToList();
+            catList.Insert(0, new SelectListItem("Seçiniz", ""));
+            createModel.CategoryList = catList.AsEnumerable();
 
             return View(createModel);
         }
@@ -105,8 +93,29 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 // TODO: Validations
+                if (createModel.AccountId <= 0)
+                {
+                    return View(createModel);
+                }
+                if (createModel.CategoryId.HasValue==false && createModel.IsSplitTransaction == false)
+                {
+                    return View(createModel);
+                }
+
+                Common.Entities.Transaction transaction = new Common.Entities.Transaction()
+                {
+                    BudgetId = BudgetId,
+                    Date = createModel.Date,
+                    AccountId = createModel.AccountId,
+                    TargetAccountId = createModel.TargetAccountId,
+                    CategoryId = createModel.CategoryId,
+                    Amount = createModel.Amount,
+                    IsIncome = createModel.IsIncome,
+                    Description = createModel.Description
+                };
+
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.CreateNewTransaction(BudgetId, createModel.Date, createModel.AccountId, createModel.CategoryId.Value, createModel.Amount, createModel.Description, UserId);
+                TransactionBusiness.CreateNewTransaction(transaction, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -126,14 +135,23 @@ namespace ExpenseTracker.WebUI.Controllers
                 Id = trx.Id,
                 Description = trx.Description,
                 AccountId = trx.AccountId,
+                TargetAccountId = trx.TargetAccountId,
                 Amount = trx.Amount,
+                IsIncome = trx.IsIncome,
                 BudgetId = trx.BudgetId,
                 CategoryId = trx.CategoryId,
                 Date = trx.Date
             };
 
             AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            updateModel.AccountList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == trx.AccountId));
+            var allAccList = accountBusiness.GetAccountsOfBudget(BudgetId);
+            var accList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == trx.AccountId)).ToList();
+            accList.Insert(0, new SelectListItem("Seçiniz", ""));
+            updateModel.AccountList = accList.AsEnumerable();
+
+            var targetAccList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == trx.TargetAccountId)).ToList();
+            targetAccList.Insert(0, new SelectListItem("Seçiniz", ""));
+            updateModel.TargetAccountList = targetAccList.AsEnumerable();
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
             updateModel.CategoryList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), c.Id == trx.CategoryId));
@@ -148,8 +166,34 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
+                //TODO: Validations
+                if (updateModel.AccountId <= 0)
+                {
+                    return View(updateModel);
+                }
+                if (updateModel.CategoryId.HasValue == false && updateModel.IsSplitTransaction == false)
+                {
+                    return View(updateModel);
+                }
+                if (updateModel.AccountId == updateModel.TargetAccountId)
+                {
+                    return RedirectToAction("Edit", new { id = id });
+                }
+
+                Common.Entities.Transaction transaction = new Common.Entities.Transaction()
+                {
+                    Id = id,
+                    Date = updateModel.Date,
+                    AccountId = updateModel.AccountId,
+                    TargetAccountId = updateModel.TargetAccountId,
+                    CategoryId = updateModel.CategoryId,
+                    Amount = updateModel.Amount,
+                    IsIncome = updateModel.IsIncome,
+                    Description = updateModel.Description
+                };
+
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.UpdateTransaction(id, updateModel.Date, updateModel.AccountId, updateModel.CategoryId.Value, updateModel.Amount, updateModel.Description, UserId);
+                TransactionBusiness.UpdateTransaction(transaction, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -184,7 +228,7 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.DeleteTransaction(id);
+                TransactionBusiness.DeleteTransaction(id, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

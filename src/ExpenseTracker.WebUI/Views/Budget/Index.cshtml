@@ -12,7 +12,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Name</th>
             <th></th>
         </tr>
@@ -20,9 +19,6 @@
     <tbody>
 @foreach (var item in Model.BudgetList) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
