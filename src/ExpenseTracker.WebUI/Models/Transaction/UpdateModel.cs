@@ -18,6 +18,7 @@ namespace ExpenseTracker.WebUI.Models.Transaction
         [Display(Name = "Hesap")]
         public int AccountId { get; set; }
 
+        public IEnumerable<SelectListItem> TargetAccountList { get; set; }
         [Display(Name = "Hedef Hesap")]
         public int? TargetAccountId { get; set; }
         //public bool IsSplitTransaction { get; set; }
