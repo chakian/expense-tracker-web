@@ -21,7 +21,6 @@
 <table class="table table-striped table-bordered" id="transaction-table">
     <thead>
         <tr>
-            <th style="display:none">#</th>
             <th>Tarih</th>
             <th>Hesap</th>
             <th>Karşı Hesap</th>
@@ -33,59 +32,58 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.TransactionList)
-        {
         <tr>
-            <th scope="row" style="display:none;">
-                @item.Id
-            </th>
-            <td class="tabledit-view-mode">
-                <span class="tabledit-span">
-                    @item.Date.ToShortDateString()
-                </span>
-                <input class="tabledit-input form-control input-group-sm" type="text" name="date" value="@item.Date" style="display:none;" disabled="" />
+            <td>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AccountName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TargetAccountName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Amount)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsIncome)
             </td>
             <td>
-                @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Sil", "Delete", new { id = item.Id })
             </td>
         </tr>
+        @foreach (var item in Model.TransactionList)
+        {
+            <tr>
+                <td>
+                    @item.Date.ToShortDateString()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TargetAccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsIncome)
+                </td>
+                <td>
+                    @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Sil", "Delete", new { id = item.Id })
+                </td>
+            </tr>
         }
     </tbody>
 </table>
 
 @section Scripts{
-    @*<script>
-        $(document).ready(function () {
-            // example.php will be used to send the data to the sever database
-            $('#transaction-table').Tabledit({
-                url: 'example.php',
-                editButton: false,
-                deleteButton: false,
-                hideIdentifier: true,
-                columns: {
-                    identifier: [0, 'id'],
-                    editable: [[2, 'date'], [3, 'account'], [3, 'category']]
-                }
-            });
-        });
-    </script>*@
+    <script>
+    </script>
 }
