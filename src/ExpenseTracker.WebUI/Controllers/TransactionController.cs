@@ -78,7 +78,9 @@ namespace ExpenseTracker.WebUI.Controllers
             createModel.AccountList = accList.AsEnumerable();
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
-            createModel.CategoryList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false));
+            var catList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false)).ToList();
+            catList.Insert(0, new SelectListItem("Seçiniz", ""));
+            createModel.CategoryList = catList.AsEnumerable();
 
             return View(createModel);
         }
@@ -95,10 +97,11 @@ namespace ExpenseTracker.WebUI.Controllers
                 {
                     return View(createModel);
                 }
-                if (createModel.CategoryId <= 0)
+                if (createModel.CategoryId.HasValue==false && createModel.IsSplitTransaction == false)
                 {
                     return View(createModel);
                 }
+
                 Common.Entities.Transaction transaction = new Common.Entities.Transaction()
                 {
                     BudgetId = BudgetId,
@@ -168,7 +171,7 @@ namespace ExpenseTracker.WebUI.Controllers
                 {
                     return View(updateModel);
                 }
-                if (updateModel.CategoryId <= 0)
+                if (updateModel.CategoryId.HasValue == false && updateModel.IsSplitTransaction == false)
                 {
                     return View(updateModel);
                 }
