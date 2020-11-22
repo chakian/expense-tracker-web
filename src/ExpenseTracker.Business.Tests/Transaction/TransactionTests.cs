@@ -21,9 +21,20 @@ namespace ExpenseTracker.Business.Tests
             int categoryId = new Random(DateTime.Now.Millisecond).Next(0, 100);
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
             string description = Guid.NewGuid().ToString();
+            var tx = new Common.Entities.Transaction()
+            {
+                BudgetId = budgetId,
+                Date = DateTime.Now,
+                AccountId = accountId,
+                TargetAccountId = null,
+                CategoryId = categoryId,
+                Amount = amount,
+                IsIncome = false,
+                Description = description
+            };
 
             //ACT
-            var txId = transactionBusiness.CreateNewTransaction(budgetId, DateTime.Now, accountId, null, categoryId, amount, false, description, userId);
+            var txId = transactionBusiness.CreateNewTransaction(tx, userId);
             var actual = new ExpenseTrackerDbContext(contextOptions).Transactions.FirstOrDefault(t => t.Id == txId);
 
             //ASSERT
@@ -39,9 +50,11 @@ namespace ExpenseTracker.Business.Tests
             TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
 
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
+            DateTime startDate = new DateTime(2020, 11, 1);
+            DateTime endDate = new DateTime(2020, 11, 30);
 
             //ACT
-            var actual = transactionBusiness.GetTransactionsOfBudget(budgetId);
+            var actual = transactionBusiness.GetTransactionsOfBudgetForPeriod(budgetId, startDate, endDate);
 
             //ASSERT
             Assert.Empty(actual);
