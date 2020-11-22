@@ -2,7 +2,10 @@
 {
     public enum AccountType
     {
-        BankAccount = 1,
-        CreditAccount = 2
+        Cash = 10,
+        BankAccount = 11,
+        CreditCard = 20,
+        CreditAccount = 30,
+        SavingAccount = 31,
     }
 }
