@@ -93,8 +93,20 @@ namespace ExpenseTracker.WebUI.Controllers
                 {
                     return View(createModel);
                 }
+                Common.Entities.Transaction transaction = new Common.Entities.Transaction()
+                {
+                    BudgetId = BudgetId,
+                    Date = createModel.Date,
+                    AccountId = createModel.AccountId,
+                    TargetAccountId = createModel.TargetAccountId,
+                    CategoryId = createModel.CategoryId,
+                    Amount = createModel.Amount,
+                    IsIncome = createModel.IsIncome,
+                    Description = createModel.Description
+                };
+
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.CreateNewTransaction(BudgetId, createModel.Date, createModel.AccountId, createModel.TargetAccountId, createModel.CategoryId.Value, createModel.Amount, createModel.IsIncome, createModel.Description, UserId);
+                TransactionBusiness.CreateNewTransaction(transaction, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

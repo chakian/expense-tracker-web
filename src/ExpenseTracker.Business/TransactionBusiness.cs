@@ -17,25 +17,27 @@ namespace ExpenseTracker.Business
             accountBusiness = new AccountBusiness(_context);
         }
 
-        public int CreateNewTransaction(int budgetId, DateTime date, int accountId, int? targetAccountId, int categoryId, decimal amount, bool isIncome, string description, string userId)
+        public int CreateNewTransaction(Common.Entities.Transaction trx, string userId)
         {
             Transaction transaction = new Transaction()
             {
-                BudgetId = budgetId,
-                Date = date,
-                AccountId = accountId,
-                CategoryId = categoryId,
-                //TargetAccountId = targetAccountId,
+                BudgetId = trx.BudgetId,
+                Date = trx.Date,
+                AccountId = trx.AccountId,
+                CategoryId = trx.CategoryId,
+                TargetAccountId = trx.TargetAccountId,
                 IsSplitTransaction = false,
-                Amount = amount,
-                Description = description
+                Amount = trx.Amount,
+                IsIncome = trx.IsIncome,
+                Description = trx.Description
             };
+
             transaction.InsertUserId = userId;
             transaction.InsertTime = DateTime.UtcNow;
             transaction.IsActive = true;
 
             _context.Transactions.Add(transaction);
-            accountBusiness.UpdateAccountBalanceForNewTransaction(accountId, targetAccountId, amount, isIncome, userId);
+            accountBusiness.UpdateAccountBalanceForNewTransaction(trx.AccountId, trx.TargetAccountId, trx.Amount, trx.IsIncome, userId);
 
             _context.SaveChanges();
 
