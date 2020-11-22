@@ -1,4 +1,4 @@
-﻿namespace ExpenseTracker.Enums
+﻿namespace ExpenseTracker.Common.Enums
 {
     public enum AccountType
     {
