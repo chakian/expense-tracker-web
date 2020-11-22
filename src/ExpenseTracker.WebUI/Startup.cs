@@ -75,7 +75,7 @@ namespace ExpenseTracker.WebUI
             {
                 var supportedCultures = new[]
                 {
-                    //new CultureInfo("tr-TR"),
+                    //new CultureInfo("tr-TR")
                     new CultureInfo("en-US")
                 };
                 //options.DefaultRequestCulture = new RequestCulture("tr-TR");
