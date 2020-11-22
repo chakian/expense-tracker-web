@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExpenseTracker.WebUI.Models.Category
 {
@@ -6,6 +8,9 @@ namespace ExpenseTracker.WebUI.Models.Category
     {
         [Display(Name = "Ad")]
         public string Name { get; set; }
-        //public int ParentCategoryId { get; set; }
+
+        [Display(Name = "Üst Kategori")]
+        public int? ParentCategoryId { get; set; }
+        public List<SelectListItem> CategoryList { get; set; }
     }
 }

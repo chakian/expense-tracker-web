@@ -19,12 +19,13 @@ namespace ExpenseTracker.Business
             _context = context;
         }
 
-        public int CreateNewCategory(int budgetId, string name, string userId)
+        public int CreateNewCategory(int budgetId, string name, int? parentCategoryId, string userId)
         {
             Category category = new Category()
             {
                 BudgetId = budgetId,
-                Name = name
+                Name = name,
+                ParentCategoryId = parentCategoryId
             };
             category.InsertUserId = userId;
             category.InsertTime = DateTime.UtcNow;

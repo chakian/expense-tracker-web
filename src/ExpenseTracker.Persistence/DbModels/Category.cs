@@ -12,6 +12,6 @@ namespace ExpenseTracker.Persistence.DbModels
         public string Name { get; set; }
 
         public int? ParentCategoryId { get; set; }
-        public Category ParentCategory { get; set; }
+        public virtual Category ParentCategory { get; set; }
     }
 }

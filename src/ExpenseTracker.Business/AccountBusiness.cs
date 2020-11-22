@@ -109,7 +109,7 @@ namespace ExpenseTracker.Business
                     }
                     else
                     {
-                        categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, userId);
+                        categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, null, userId);
                     }
 
                     decimal txAmount = account.Balance - balance;
