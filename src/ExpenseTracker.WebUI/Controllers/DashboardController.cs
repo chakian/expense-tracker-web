@@ -24,7 +24,7 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Dashboard/Index");
 
             IndexModel indexModel = new IndexModel();
-            
+
             if (year == 0)
             {
                 year = DateTime.Now.Year;
@@ -51,10 +51,13 @@ namespace ExpenseTracker.WebUI.Controllers
             indexModel.Categories = new List<Category>();
             foreach (var category in catList)
             {
+                decimal income, expense;
+                expense = txList.Where(t => t.CategoryId == category.Id && t.IsIncome == false).Sum(t => t.Amount);
+                income = txList.Where(t => t.CategoryId == category.Id && t.IsIncome).Sum(t => t.Amount);
                 Category cat = new Category
                 {
                     Name = category.Name,
-                    RecordedAmount = txList.Where(t => t.CategoryId == category.Id).Sum(t => t.Amount)
+                    RecordedAmount = expense - income
                 };
                 indexModel.Categories.Add(cat);
             }
