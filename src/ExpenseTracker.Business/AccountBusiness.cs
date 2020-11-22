@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -79,18 +80,58 @@ namespace ExpenseTracker.Business
             }
         }
 
-        public void UpdateAccount(int accountId, string name, string userId)
+        public void UpdateAccount(int accountId, string name, decimal balance, string userId)
         {
             Account account = _context.Accounts.Find(accountId);
 
             if (account != null)
             {
-                account.Name = name;
+                if (account.Name != name)
+                {
+                    account.Name = name;
 
-                account.UpdateUserId = userId;
-                account.UpdateTime = DateTime.UtcNow;
+                    account.UpdateUserId = userId;
+                    account.UpdateTime = DateTime.UtcNow;
 
-                _context.SaveChanges();
+                    _context.SaveChanges();
+                }
+
+                if (account.Balance != balance)
+                {
+                    TransactionBusiness transactionBusiness = new TransactionBusiness(_context);
+                    //TODO: User should be able to pick a default category for balance change transactions
+                    int categoryId = 0;
+                    CategoryBusiness categoryBusiness = new CategoryBusiness(_context);
+                    var cat = categoryBusiness.GetCategoriesOfBudget(account.BudgetId).FirstOrDefault(c => c.Name == AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME);
+                    if (cat != null)
+                    {
+                        categoryId = cat.Id;
+                    }
+                    else
+                    {
+                        categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, userId);
+                    }
+
+                    decimal txAmount = account.Balance - balance;
+                    bool isIncome = false;
+                    if(txAmount < 0)
+                    {
+                        isIncome = true;
+                        txAmount *= -1;
+                    }
+
+                    var transaction = new Common.Entities.Transaction()
+                    {
+                        BudgetId = account.BudgetId,
+                        AccountId = accountId,
+                        Amount = txAmount,
+                        IsIncome = isIncome,
+                        Description = AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_DESCRIPTION,
+                        Date = DateTime.UtcNow,
+                        CategoryId = categoryId
+                    };
+                    transactionBusiness.CreateNewTransaction(transaction, userId);
+                }
             }
         }
 

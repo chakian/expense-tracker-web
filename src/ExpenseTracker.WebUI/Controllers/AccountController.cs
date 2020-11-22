@@ -108,9 +108,8 @@ namespace ExpenseTracker.WebUI.Controllers
             UpdateModel updateModel = new UpdateModel()
             {
                 Id = acc.Id,
-                Name = acc.Name
-                //Type = "a",
-                //Balance = 502
+                Name = acc.Name,
+                Balance = acc.Balance
             };
             return View(updateModel);
         }
@@ -123,7 +122,7 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.UpdateAccount(id, updateModel.Name, UserId);
+                accountBusiness.UpdateAccount(id, updateModel.Name, updateModel.Balance, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

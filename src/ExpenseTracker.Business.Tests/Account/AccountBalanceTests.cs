@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpenseTracker.Common.Enums;
+using System;
 using System.Collections.Generic;
 using Xunit;
 
@@ -86,6 +87,72 @@ namespace ExpenseTracker.Business.Tests
             // ASSERT
             Assert.Equal(expectedBalances[source], actualSource.Balance);
             Assert.Equal(expectedBalances[target], actualTarget.Balance);
+        }
+
+        [Fact]
+        public void Update_Account_IncreaseBalance_Valid()
+        {
+            //ARRANGE
+            var contextOptions = CreateNewContextOptions();
+            var context = CreateContext(contextOptions);
+            AccountBusiness accountBusiness = new AccountBusiness(context);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
+
+            string userId = Guid.NewGuid().ToString();
+            string accountName = Guid.NewGuid().ToString();
+            int budgetId = CreateBudget(contextOptions, userId);
+            decimal initialBalance = 100;
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, (int)AccountType.Cash, initialBalance, userId);
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+            decimal newBalance = 200;
+            decimal expectedAmount = 100;
+
+            //ACT
+            accountBusiness.UpdateAccount(accountId, accountName, newBalance, userId);
+            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
+            var actualTransaction = transactionBusiness.GetTransactionsOfBudgetForPeriod(budgetId, new DateTime(year, month, 1, 0, 0, 0, 0), new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999))[0];
+
+            //ASSERT
+            // TODO: This sometimes may fail because . It's better to check if the new name is not equal to prev.
+            Assert.Equal(accountName, actual.Name);
+            Assert.Equal(accountId, actualTransaction.AccountId);
+            Assert.Equal(expectedAmount, actualTransaction.Amount);
+            Assert.True(actualTransaction.IsIncome);
+        }
+
+        [Fact]
+        public void Update_Account_DecreaseBalance_Valid()
+        {
+            //ARRANGE
+            var contextOptions = CreateNewContextOptions();
+            var context = CreateContext(contextOptions);
+            AccountBusiness accountBusiness = new AccountBusiness(context);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
+
+            string userId = Guid.NewGuid().ToString();
+            string accountName = Guid.NewGuid().ToString();
+            int budgetId = CreateBudget(contextOptions, userId);
+            decimal initialBalance = 200;
+            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, (int)AccountType.Cash, initialBalance, userId);
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+            decimal newBalance = 100;
+            decimal expectedAmount = 100;
+
+            //ACT
+            accountBusiness.UpdateAccount(accountId, accountName, newBalance, userId);
+            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
+            var actualTransaction = transactionBusiness.GetTransactionsOfBudgetForPeriod(budgetId, new DateTime(year, month, 1, 0, 0, 0, 0), new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999))[0];
+
+            //ASSERT
+            // TODO: This sometimes may fail because . It's better to check if the new name is not equal to prev.
+            Assert.Equal(accountName, actual.Name);
+            Assert.Equal(accountId, actualTransaction.AccountId);
+            Assert.Equal(expectedAmount, actualTransaction.Amount);
+            Assert.False(actualTransaction.IsIncome);
         }
     }
 }

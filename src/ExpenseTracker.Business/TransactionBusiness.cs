@@ -10,11 +10,14 @@ namespace ExpenseTracker.Business
     public class TransactionBusiness
     {
         private readonly ExpenseTrackerDbContext _context;
-        private readonly AccountBusiness accountBusiness;
         public TransactionBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
         {
             _context = new ExpenseTrackerDbContext(options);
-            accountBusiness = new AccountBusiness(_context);
+        }
+
+        public TransactionBusiness(ExpenseTrackerDbContext context)
+        {
+            _context = context;
         }
 
         public int CreateNewTransaction(Common.Entities.Transaction trx, string userId)
@@ -37,6 +40,8 @@ namespace ExpenseTracker.Business
             transaction.IsActive = true;
 
             _context.Transactions.Add(transaction);
+
+            var accountBusiness = new AccountBusiness(_context);
             accountBusiness.UpdateAccountBalanceForNewTransaction(trx.AccountId, trx.TargetAccountId, trx.Amount, trx.IsIncome, userId);
 
             _context.SaveChanges();
@@ -129,6 +134,7 @@ namespace ExpenseTracker.Business
                 transaction.UpdateTime = DateTime.UtcNow;
                 transaction.UpdateUserId = userId;
 
+                var accountBusiness = new AccountBusiness(_context);
                 accountBusiness.UpdateAccountBalanceForEditedTransaction(tx.AccountId, tx.TargetAccountId, tx.Amount, tx.IsIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
 
                 _context.SaveChanges();
@@ -141,6 +147,7 @@ namespace ExpenseTracker.Business
 
             if (Transaction != null)
             {
+                var accountBusiness = new AccountBusiness(_context);
                 accountBusiness.UpdateAccountBalanceForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
 
                 _context.Transactions.Remove(Transaction);
