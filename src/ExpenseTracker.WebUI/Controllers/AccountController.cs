@@ -1,11 +1,17 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Common.Enums;
+using ExpenseTracker.Common.Extensions;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
@@ -33,6 +39,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     Id = l.Id,
                     Balance = l.Balance,
                     Type = l.AccountType,
+                    TypeName = AccountTypeHelper.GetAccountTypeName(l.AccountType),
                     Name = l.Name
                 });
             });
@@ -52,6 +59,7 @@ namespace ExpenseTracker.WebUI.Controllers
                 Id = acc.Id,
                 Name = acc.Name,
                 Type = acc.AccountType,
+                TypeName = AccountTypeHelper.GetAccountTypeName(acc.AccountType),
                 Balance = acc.Balance
             };
             return View(detailModel);
@@ -61,6 +69,16 @@ namespace ExpenseTracker.WebUI.Controllers
         public ActionResult Create()
         {
             CreateModel createModel = new CreateModel();
+
+            List<SelectListItem> typeList = new List<SelectListItem>();
+            typeList.Add(new SelectListItem("Seçiniz", ""));
+            foreach (var typeItem in Enum.GetValues(typeof(AccountType)))
+            {
+                AccountType type = (AccountType)typeItem;
+                typeList.Add(new SelectListItem(AccountTypeHelper.GetAccountTypeName((int)type), ((int)type).ToString(), false));
+            }
+            createModel.TypeList = typeList.AsEnumerable();
+
             return View(createModel);
         }
 
