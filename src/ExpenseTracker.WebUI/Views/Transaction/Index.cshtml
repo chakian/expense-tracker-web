@@ -15,42 +15,50 @@
             <th style="display:none">#</th>
             <th>Tarih</th>
             <th>Hesap</th>
+            <th>Karşı Hesap</th>
             <th>Kategori</th>
             <th>Tutar</th>
             <th>Açıklama</th>
+            <th>Gelir Mi?</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.TransactionList)
         {
-            <tr>
-                <th scope="row" style="display:none;">
-                    @item.Id
-                </th>
-                <td class="tabledit-view-mode">
-                    <span class="tabledit-span">
-                        @item.Date.ToShortDateString()
-                    </span>
-                    <input class="tabledit-input form-control input-group-sm" type="text" name="date" value="@item.Date" style="display:none;" disabled="" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AccountName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Amount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Sil", "Delete", new { id = item.Id })
-                </td>
-            </tr>
+        <tr>
+            <th scope="row" style="display:none;">
+                @item.Id
+            </th>
+            <td class="tabledit-view-mode">
+                <span class="tabledit-span">
+                    @item.Date.ToShortDateString()
+                </span>
+                <input class="tabledit-input form-control input-group-sm" type="text" name="date" value="@item.Date" style="display:none;" disabled="" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TargetAccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsIncome)
+            </td>
+            <td>
+                @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Sil", "Delete", new { id = item.Id })
+            </td>
+        </tr>
         }
     </tbody>
 </table>
