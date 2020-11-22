@@ -12,7 +12,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Hesap Adı</th>
             <th>Hesap Türü</th>
             <th>Bakiye</th>
@@ -22,9 +21,6 @@
     <tbody>
 @foreach (var item in Model.AccountList) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
