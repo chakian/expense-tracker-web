@@ -4,8 +4,10 @@ using ExpenseTracker.WebUI.Models.Category;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
@@ -61,6 +63,12 @@ namespace ExpenseTracker.WebUI.Controllers
         public ActionResult Create()
         {
             CreateModel createModel = new CreateModel();
+
+            CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
+            var catList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem() { Text = c.Name, Value = c.Id.ToString(), Selected = false }).ToList();
+            catList.Insert(0, new SelectListItem() { Text = "Üst Kategorisi Yok", Value = "" });
+            createModel.CategoryList = catList;
+
             return View(createModel);
         }
 
@@ -72,8 +80,13 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 // TODO: Validations
+                if(createModel.ParentCategoryId.HasValue && createModel.ParentCategoryId <= 0)
+                {
+                    createModel.ParentCategoryId = null;
+                }
+
                 CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
-                categoryBusiness.CreateNewCategory(BudgetId, createModel.Name, UserId);
+                categoryBusiness.CreateNewCategory(BudgetId, createModel.Name, createModel.ParentCategoryId, UserId);
                 return RedirectToAction(nameof(Index));
             }
             catch

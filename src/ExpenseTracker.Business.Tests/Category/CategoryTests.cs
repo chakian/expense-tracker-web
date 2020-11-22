@@ -18,7 +18,7 @@ namespace ExpenseTracker.Business.Tests
             int budgetId = CreateBudget(contextOptions, userId);
 
             //ACT
-            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, userId);
+            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
             Common.Entities.Category actual = categoryBusiness.GetCategoryDetails(categoryId);
 
             //ASSERT
@@ -36,7 +36,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, userId);
+            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
             Common.Entities.Category actual = categoryBusiness.GetCategoryDetails(categoryId);
@@ -55,7 +55,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            categoryBusiness.CreateNewCategory(budgetId, categoryName, userId);
+            categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
             List<Common.Entities.Category> actual = categoryBusiness.GetCategoriesOfBudget(budgetId);
@@ -74,7 +74,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, userId);
+            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
             string newName = Guid.NewGuid().ToString();
@@ -97,7 +97,7 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(contextOptions, userId);
-            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, userId);
+            int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
             categoryBusiness.UpdateCategoryAsInactive(categoryId, userId);
