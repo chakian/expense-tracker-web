@@ -22,7 +22,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // GET: TransactionController
-        public ActionResult Index()
+        public ActionResult Index(int month, int year)
         {
             _logger.LogInformation("Started controller action: Transaction/Index");
 
@@ -31,14 +31,21 @@ namespace ExpenseTracker.WebUI.Controllers
                 TransactionList = new List<ListModel.Transaction>()
             };
 
-            int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
+            if (year == 0)
+            {
+                year = DateTime.Now.Year;
+            }
+            if (month == 0)
+            {
+                month = DateTime.Now.Month;
+            }
 
             listModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
             listModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
 
+            listModel.CurrentMonth = month;
             var culture = new CultureInfo("tr-TR");
-            listModel.CurrentMonth = culture.DateTimeFormat.GetMonthName(month);
+            listModel.CurrentMonthName = culture.DateTimeFormat.GetMonthName(month);
             listModel.CurrentYear = year;
 
             TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);

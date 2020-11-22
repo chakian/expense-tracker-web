@@ -7,7 +7,8 @@ namespace ExpenseTracker.WebUI.Models.Dashboard
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string CurrentMonth { get; set; }
+        public int CurrentMonth { get; set; }
+        public string CurrentMonthName { get; set; }
         public int CurrentYear { get; set; }
         public List<Category> Categories { get; set; }
     }

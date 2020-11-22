@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace ExpenseTracker.WebUI.Controllers
 {
@@ -20,20 +19,27 @@ namespace ExpenseTracker.WebUI.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int month, int year)
         {
             _logger.LogInformation("Started controller action: Dashboard/Index");
 
             IndexModel indexModel = new IndexModel();
-
-            int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
+            
+            if (year == 0)
+            {
+                year = DateTime.Now.Year;
+            }
+            if (month == 0)
+            {
+                month = DateTime.Now.Month;
+            }
 
             indexModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
             indexModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
 
+            indexModel.CurrentMonth = month;
             var culture = new CultureInfo("tr-TR");
-            indexModel.CurrentMonth = culture.DateTimeFormat.GetMonthName(month);
+            indexModel.CurrentMonthName = culture.DateTimeFormat.GetMonthName(month);
             indexModel.CurrentYear = year;
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
@@ -43,14 +49,6 @@ namespace ExpenseTracker.WebUI.Controllers
             var txList = transactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, indexModel.StartDate, indexModel.EndDate);
 
             indexModel.Categories = new List<Category>();
-            //indexModel.Categories.Add(new Category
-            //{
-            //    Name = "Main",
-            //    BudgetedAmount = 50,
-            //    RecordedAmount = 30,
-            //    RemainingAmount = 20,
-            //    SubCategories = new List<Category>()
-            //});
             foreach (var category in catList)
             {
                 Category cat = new Category

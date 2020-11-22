@@ -5,7 +5,16 @@
 }
 
 <h1 class="text-center">Özet</h1>
-<h3 class="text-center">[ @Model.CurrentMonth - @Model.CurrentYear ]</h3>
+<h3 class="text-center">[ @Model.CurrentMonthName - @Model.CurrentYear ]</h3>
+
+<div class="row">
+    <div class="col-sm-6 text-left">
+        @Html.ActionLink("Önceki Ay", "Index", "Dashboard", new { month = (Model.CurrentMonth == 1 ? 12 : Model.CurrentMonth - 1), year = (Model.CurrentMonth == 1 ? Model.CurrentYear - 1 : Model.CurrentYear) }, new { @class = "btn btn-primary" })
+    </div>
+    <div class="col-sm-6 text-right">
+        @Html.ActionLink("Sonraki Ay", "Index", "Dashboard", new { month = (Model.CurrentMonth == 12 ? 1 : Model.CurrentMonth + 1), year = (Model.CurrentMonth == 12 ? Model.CurrentYear + 1 : Model.CurrentYear) }, new { @class = "btn btn-primary" })
+    </div>
+</div>
 
 <table class="table">
     <thead>

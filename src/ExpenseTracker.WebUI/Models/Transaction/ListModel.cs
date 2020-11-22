@@ -7,7 +7,8 @@ namespace ExpenseTracker.WebUI.Models.Transaction
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string CurrentMonth { get; set; }
+        public int CurrentMonth { get; set; }
+        public string CurrentMonthName { get; set; }
         public int CurrentYear { get; set; }
 
         public List<Transaction> TransactionList { get; set; }
@@ -18,7 +19,7 @@ namespace ExpenseTracker.WebUI.Models.Transaction
             public DateTime Date { get; set; }
             public string AccountName { get; set; }
             public string TargetAccountName { get; set; }
-            //public bool IsSplitTransaction { get; set; }
+            public bool IsSplitTransaction { get; set; }
             public string CategoryName { get; set; }
             public decimal Amount { get; set; }
             public bool IsIncome { get; set; }
