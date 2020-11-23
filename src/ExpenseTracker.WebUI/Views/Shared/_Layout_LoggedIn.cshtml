@@ -26,8 +26,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Hesaplar</a>
                             <div class="dropdown-menu" style="">
-                                @*<a class="dropdown-item" asp-controller="UserSettings" asp-action="Manage">Seçenekler</a>*@
-                                <div class="dropdown-divider"></div>
+                                @await Component.InvokeAsync("AccountMenu")
                                 <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Index">Hesap Yönetimi</a>
                             </div>
                         </li>

@@ -1,0 +1,10 @@
+﻿@model List<ExpenseTracker.Common.Entities.Account>
+
+@if (Model != null && Model.Count > 0)
+{
+    @foreach (var account in Model)
+    {
+        @Html.ActionLink(account.Name + " (" + account.Balance.ToString() + " TL)", "Index", "Transaction", new { accountId = account.Id }, new { @class = "dropdown-item" })
+    }
+    <div class="dropdown-divider"></div>
+}

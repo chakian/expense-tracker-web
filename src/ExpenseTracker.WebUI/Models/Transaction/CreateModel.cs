@@ -16,6 +16,7 @@ namespace ExpenseTracker.WebUI.Models.Transaction
         [Display(Name = "Hesap")]
         public int AccountId { get; set; }
 
+        public IEnumerable<SelectListItem> TargetAccountList { get; set; }
         [Display(Name = "Hedef Hesap")]
         public int? TargetAccountId { get; set; }
         
@@ -33,5 +34,7 @@ namespace ExpenseTracker.WebUI.Models.Transaction
 
         [Display(Name = "Açıklama")]
         public string Description { get; set; }
+
+        public int ActionAccountId { get; set; }
     }
 }
