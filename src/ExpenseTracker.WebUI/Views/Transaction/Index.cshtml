@@ -28,15 +28,20 @@
             <th>Tutar</th>
             <th>Açıklama</th>
             <th>Gelir Mi?</th>
-            <th></th>
+            <th>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.TransactionList)
         {
-            <tr>
-                <td>
-                    @item.Date.ToShortDateString()
+            <tr id="tx_@item.Id">
+                <td class="tx_date">
+                    <span class="input" hidden>
+                        <input type="date" id="form_date_@item.Id" />
+                    </span>
+                    <span class="value">
+                        @item.Date.ToShortDateString()
+                    </span>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AccountName)
@@ -57,7 +62,10 @@
                     @Html.DisplayFor(modelItem => item.IsIncome)
                 </td>
                 <td>
-                    @Html.ActionLink("Düzenle", "Edit", new { id = item.Id }) |
+                    <button id="edit_@item.Id" class="edit_row">Yeni Düzen-le</button>
+                    <br />
+                    @Html.ActionLink("Düzenle", "Edit", new { id = item.Id })
+                    <br />
                     @Html.ActionLink("Sil", "Delete", new { id = item.Id })
                 </td>
             </tr>
@@ -68,6 +76,16 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
+        });
+
+        $("button.edit_row").click(function (e) {
+            var rowId = this.id.replace('edit_', '');
+            var valueField = $("tr#tx_" + rowId + " td span.value");
+            var currentValue = valueField.val();
+            var inputField = $("tr#tx_" + rowId + " td span.input");
+            inputField.val(currentValue);
+            $("tr#tx_" + rowId + " td span.input").removeAttr("hidden");
+            $("tr#tx_" + rowId + " td span.value").attr("hidden", "hidden");
         });
     </script>
 }
