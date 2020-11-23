@@ -52,7 +52,7 @@ namespace ExpenseTracker.Business
         public List<Common.Entities.Transaction> GetTransactionsOfBudgetForPeriod(int budgetId, DateTime beginning, DateTime end)
         {
             var transactionDboList = _context.Transactions.Include(t => t.Account).Include(t => t.TargetAccount).Include(t => t.Category)
-                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end)).OrderByDescending(t => t.Date).ToList();
+                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end)).OrderByDescending(t => t.Date).ThenByDescending(t => t.InsertTime).ToList();
 
             List<Common.Entities.Transaction> TransactionList = new List<Common.Entities.Transaction>();
 
