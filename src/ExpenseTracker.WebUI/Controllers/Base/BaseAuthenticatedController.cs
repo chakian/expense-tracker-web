@@ -41,6 +41,8 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 BudgetId = userSettings.DefaultBudgetId;
             }
+
+            TempData["budgetId"] = BudgetId;
         }
         private UserSetting GetUserSetting()
         {

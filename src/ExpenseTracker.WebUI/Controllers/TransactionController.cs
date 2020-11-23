@@ -22,7 +22,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // GET: TransactionController
-        public ActionResult Index(int month, int year)
+        public ActionResult Index(int month, int year, int accountId)
         {
             _logger.LogInformation("Started controller action: Transaction/Index");
 
@@ -49,7 +49,13 @@ namespace ExpenseTracker.WebUI.Controllers
             listModel.CurrentYear = year;
 
             TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+            //TODO: Do the account filtering in business
             var list = TransactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, listModel.StartDate, listModel.EndDate);
+            if(accountId != 0)
+            {
+                listModel.CurrentAccountId = accountId;
+                list = list.Where(q => q.AccountId == accountId || q.TargetAccountId == accountId).ToList();
+            }
 
             list.ForEach(l =>
             {
@@ -72,7 +78,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // GET: TransactionController/Create
-        public ActionResult Create()
+        public ActionResult Create(int accountId)
         {
             CreateModel createModel = new CreateModel
             {
@@ -80,14 +86,22 @@ namespace ExpenseTracker.WebUI.Controllers
             };
 
             AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var accList = accountBusiness.GetAccountsOfBudget(BudgetId).Select(a => new SelectListItem(a.Name, a.Id.ToString(), false)).ToList();
+            var allAccList = accountBusiness.GetAccountsOfBudget(BudgetId).ToList();
+
+            var accList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == accountId)).ToList();
             accList.Insert(0, new SelectListItem("Seçiniz", ""));
             createModel.AccountList = accList.AsEnumerable();
+
+            var targetAccList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), false)).ToList();
+            targetAccList.Insert(0, new SelectListItem("Seçiniz", ""));
+            createModel.TargetAccountList = targetAccList.AsEnumerable();
 
             CategoryBusiness categoryBusiness = new CategoryBusiness(_dbContextOptions);
             var catList = categoryBusiness.GetCategoriesOfBudget(BudgetId).Select(c => new SelectListItem(c.Name, c.Id.ToString(), false)).ToList();
             catList.Insert(0, new SelectListItem("Seçiniz", ""));
             createModel.CategoryList = catList.AsEnumerable();
+
+            createModel.ActionAccountId = accountId;
 
             return View(createModel);
         }
@@ -123,7 +137,7 @@ namespace ExpenseTracker.WebUI.Controllers
 
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
                 TransactionBusiness.CreateNewTransaction(transaction, UserId);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { accountId = createModel.ActionAccountId });
             }
             catch
             {

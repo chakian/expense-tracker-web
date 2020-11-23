@@ -10,6 +10,7 @@ namespace ExpenseTracker.WebUI.Models.Transaction
         public int CurrentMonth { get; set; }
         public string CurrentMonthName { get; set; }
         public int CurrentYear { get; set; }
+        public int CurrentAccountId { get; set; }
 
         public List<Transaction> TransactionList { get; set; }
 
