@@ -119,7 +119,7 @@ namespace ExpenseTracker.Business
                         isIncome = true;
                         txAmount *= -1;
                     }
-
+                    var currentDay = DateTime.Now;
                     var transaction = new Common.Entities.Transaction()
                     {
                         BudgetId = account.BudgetId,
@@ -127,7 +127,7 @@ namespace ExpenseTracker.Business
                         Amount = txAmount,
                         IsIncome = isIncome,
                         Description = AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_DESCRIPTION,
-                        Date = DateTime.UtcNow,
+                        Date = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 0, 0, 0, 0),
                         CategoryId = categoryId
                     };
                     transactionBusiness.CreateNewTransaction(transaction, userId);
