@@ -77,6 +77,87 @@ namespace ExpenseTracker.WebUI.Controllers
             return View(listModel);
         }
 
+        public JsonResult GetTransactionList(ListModel request)
+        {
+            TransactionBusiness transactionBusiness = new TransactionBusiness(_dbContextOptions);
+            var list = transactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, request.StartDate, request.EndDate);
+            if (request.CurrentAccountId != 0)
+            {
+                list = list.Where(q => q.AccountId == request.CurrentAccountId).ToList();
+            }
+            request.TransactionList = new List<ListModel.Transaction>();
+            list.ForEach(l =>
+            {
+                request.TransactionList.Add(new ListModel.Transaction()
+                {
+                    Id = l.Id,
+                    AccountName = l.AccountName,
+                    TargetAccountName = l.TargetAccountName,
+                    CategoryName = l.CategoryName,
+                    Date = l.Date,
+                    Amount = l.Amount,
+                    IsIncome = l.IsIncome,
+                    Description = l.Description
+                });
+            });
+            return new JsonResult(request.TransactionList);
+        }
+
+        public ActionResult IndexOld(int month, int year, int accountId)
+        {
+            _logger.LogInformation("Started controller action: Transaction/IndexOld");
+
+            ListModel listModel = new ListModel
+            {
+                TransactionList = new List<ListModel.Transaction>()
+            };
+
+            if (year == 0)
+            {
+                year = DateTime.Now.Year;
+            }
+            if (month == 0)
+            {
+                month = DateTime.Now.Month;
+            }
+
+            listModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
+            listModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
+
+            listModel.CurrentMonth = month;
+            var culture = new CultureInfo("tr-TR");
+            listModel.CurrentMonthName = culture.DateTimeFormat.GetMonthName(month);
+            listModel.CurrentYear = year;
+
+            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+            //TODO: Do the account filtering in business
+            var list = TransactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, listModel.StartDate, listModel.EndDate);
+            if (accountId != 0)
+            {
+                listModel.CurrentAccountId = accountId;
+                list = list.Where(q => q.AccountId == accountId || q.TargetAccountId == accountId).ToList();
+            }
+
+            list.ForEach(l =>
+            {
+                listModel.TransactionList.Add(new ListModel.Transaction()
+                {
+                    Id = l.Id,
+                    AccountName = l.AccountName,
+                    TargetAccountName = l.TargetAccountName,
+                    CategoryName = l.CategoryName,
+                    Date = l.Date,
+                    Amount = l.Amount,
+                    IsIncome = l.IsIncome,
+                    Description = l.Description
+                });
+            });
+
+            _logger.LogInformation("Finished controller action: Transaction/IndexOld");
+
+            return View(listModel);
+        }
+
         // GET: TransactionController/Create
         public ActionResult Create(int accountId)
         {

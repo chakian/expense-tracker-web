@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] | Bütçem</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/tabulator-tables@4.9.1/dist/css/tabulator.min.css" rel="stylesheet">
+    <link href="~/lib/tabulator/tabulator_bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bs_darkly/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -29,6 +31,9 @@
                                 @await Component.InvokeAsync("AccountMenu")
                                 <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Index">Hesap Yönetimi</a>
                             </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Transaction" asp-action="IndexOld"><i>(Eski) Tüm İşlemler (Eski)</i></a>
                         </li>
                     </ul>
                 </div>
@@ -55,8 +60,13 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/lib/jquery-tabledit/jquery.tabledit.min.js"></script>
+    <script src="~/lib/momentjs/moment.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.9.1/dist/js/tabulator.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
