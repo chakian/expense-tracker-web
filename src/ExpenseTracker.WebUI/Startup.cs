@@ -52,6 +52,7 @@ namespace ExpenseTracker.WebUI
                 options.Password.RequireNonAlphanumeric = false;
                 options.User.RequireUniqueEmail = true;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
 
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("AuthMessageSender"));
@@ -116,9 +117,13 @@ namespace ExpenseTracker.WebUI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                //endpoints.MapRazorPages();
             });
         }
     }

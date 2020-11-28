@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] | Bütçem</title>
+    <title>@ViewData["Title"] | Bütçem Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://unpkg.com/tabulator-tables@4.9.1/dist/css/tabulator.min.css" rel="stylesheet">
     <link href="~/lib/tabulator/tabulator_bootstrap4.min.css" rel="stylesheet" />
@@ -14,30 +14,19 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Dashboard" asp-action="Index">BÜTÇEM</a>
+                <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Index">BÜTÇEM</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_UserPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Transaction" asp-action="Index">Tüm İşlemler</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Hesaplar</a>
-                            <div class="dropdown-menu" style="">
-                                @await Component.InvokeAsync("AccountMenu")
-                                <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Index">Hesap Yönetimi</a>
-                            </div>
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Role" asp-action="Index">Roller</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Transaction" asp-action="IndexOld"><i>(Eski) Tüm İşlemler (Eski)</i></a>
+                            <a class="nav-link text-light" asp-area="Admin" asp-controller="User" asp-action="Index">Kullanıcılar</a>
                         </li>
-                        @*<li class="nav-item">
-                            <a class="nav-link text-light" asp-area="Admin" asp-controller="Home" asp-action="Index">ADMINTOS</a>
-                        </li>*@
                     </ul>
                 </div>
             </div>
