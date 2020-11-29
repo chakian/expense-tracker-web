@@ -4,7 +4,7 @@ using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseTracker.CommandQuery.Commands
+namespace ExpenseTracker.CommandQuery.Command
 {
     public class UpdateBudgetCommand : BaseCommand<UpdateBudgetRequest, UpdateBudgetResponse>
     {

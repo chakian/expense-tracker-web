@@ -5,7 +5,7 @@ using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseTracker.CommandQuery.Commands
+namespace ExpenseTracker.CommandQuery.Command
 {
     public class CreateNewBudgetCommand : BaseCommand<CreateNewBudgetRequest, CreateNewBudgetResponse>
     {

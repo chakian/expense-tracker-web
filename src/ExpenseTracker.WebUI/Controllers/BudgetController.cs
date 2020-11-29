@@ -1,5 +1,5 @@
 ﻿using ExpenseTracker.Business;
-using ExpenseTracker.CommandQuery.Commands;
+using ExpenseTracker.CommandQuery.Command;
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Budget;
