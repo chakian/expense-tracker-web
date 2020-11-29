@@ -1,44 +1,32 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Business.Base;
+using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ExpenseTracker.Business
 {
-    public class BudgetBusiness
+    public class BudgetBusiness : BaseBusiness
     {
-        private readonly ExpenseTrackerDbContext _context;
-        public BudgetBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
+        public BudgetBusiness(ExpenseTrackerDbContext context) : base(context)
         {
-            _context = new ExpenseTrackerDbContext(options);
         }
 
-        public int CreateNewBudget(string name, string userId)
+        public Budget CreateNewBudget(CreateNewBudgetRequest request)
         {
-            Budget budget = new Budget()
-            {
-                Name = name
-            };
-            budget.InsertUserId = userId;
-            budget.InsertTime = DateTime.UtcNow;
-            budget.IsActive = true;
+            Budget budget = CreateNewAuditableObject<Budget>(request.UserId);
+            budget.Name = request.BudgetName;
 
-            _context.Budgets.Add(budget);
+            context.Budgets.Add(budget);
 
-            BudgetUserBusiness budgetUserBusiness = new BudgetUserBusiness(_context);
-            budgetUserBusiness.AddUserForBudget(budget, userId);
-
-            _context.SaveChanges();
-
-            return budget.Id;
+            return budget;
         }
 
         public List<Common.Entities.Budget> GetBudgetsOfUser(string userId)
         {
-            var budgetUserList = _context.BudgetUsers.Where(bu => bu.UserId == userId && bu.IsActive).Select(bu => bu.BudgetId).ToList();
-            var budgetDboList = _context.Budgets.Where(b => budgetUserList.Contains(b.Id) && b.IsActive).ToList();
+            var budgetUserList = context.BudgetUsers.Where(bu => bu.UserId == userId && bu.IsActive).Select(bu => bu.BudgetId).ToList();
+            var budgetDboList = context.Budgets.Where(b => budgetUserList.Contains(b.Id) && b.IsActive).ToList();
             List<Common.Entities.Budget> budgetList = new List<Common.Entities.Budget>();
             budgetDboList.ForEach(b =>
             {
@@ -54,7 +42,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Budget GetBudgetDetails(int id)
         {
-            var budgetDbo = _context.Budgets.SingleOrDefault(b => b.Id == id);
+            var budgetDbo = context.Budgets.SingleOrDefault(b => b.Id == id);
             if (budgetDbo != null)
             {
                 return new Common.Entities.Budget()
@@ -70,32 +58,25 @@ namespace ExpenseTracker.Business
             }
         }
 
-        public void UpdateBudget(int budgetId, string name, string userId)
+        public void UpdateBudget(UpdateBudgetRequest request)
         {
-            Budget budget = _context.Budgets.Find(budgetId);
+            Budget budget = context.Budgets.Find(request.BudgetId);
 
             if (budget != null)
             {
-                budget.Name = name;
-
-                budget.UpdateUserId = userId;
-                budget.UpdateTime = DateTime.UtcNow;
-
-                _context.SaveChanges();
+                budget.Name = request.Name;
+                UpdateAuditableObject(budget, request.UserId);
             }
         }
 
-        public void UpdateBudgetAsInactive(int budgetId, string userId)
+        public void UpdateBudgetAsInactive(DeactivateBudgetRequest request)
         {
-            Budget budget = _context.Budgets.Find(budgetId);
+            Budget budget = context.Budgets.Find(request.BudgetId);
 
             if (budget != null)
             {
                 budget.IsActive = false;
-                budget.UpdateUserId = userId;
-                budget.UpdateTime = DateTime.UtcNow;
-
-                _context.SaveChanges();
+                UpdateAuditableObject(budget, request.UserId);
             }
         }
     }

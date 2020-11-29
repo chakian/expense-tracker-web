@@ -24,5 +24,11 @@ namespace ExpenseTracker.Business.Tests
         {
             return new ExpenseTrackerDbContext(options);
         }
+
+        protected ExpenseTrackerDbContext CreateContext()
+        {
+            DbContextOptions<ExpenseTrackerDbContext> options = CreateNewContextOptions();
+            return new ExpenseTrackerDbContext(options);
+        }
     }
 }
