@@ -72,6 +72,13 @@ namespace ExpenseTracker.WebUI
             }
 #endif
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
             services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[]
@@ -123,7 +130,12 @@ namespace ExpenseTracker.WebUI
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapRazorPages();
+                endpoints.MapAreaControllerRoute(
+                    "identity",
+                    "Identity",
+                    "Identity/{controller}/{action}"
+                    );
+                endpoints.MapRazorPages();
             });
         }
     }
