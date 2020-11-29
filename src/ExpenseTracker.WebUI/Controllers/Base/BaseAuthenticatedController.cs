@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.CommandQuery.Commands;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -57,7 +58,8 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private int FindFirstBudgetId()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            //TODO: Temp solution
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             var firstBudget = budgetBusiness.GetBudgetsOfUser(UserId).FirstOrDefault();
             if (firstBudget != null)
             {
@@ -70,8 +72,13 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private int CreateBudgetForUser()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-            budgetBusiness.CreateNewBudget("Default Budget", UserId);
+            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+            createNewBudgetCommand.HandleCommand(new Common.Contracts.Command.CreateNewBudgetRequest()
+            {
+                BudgetName = "Default Budget",
+                UserId = UserId
+            });
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             return budgetBusiness.GetBudgetsOfUser(UserId).First().Id;
         }
         #endregion Initiate UserSettings
