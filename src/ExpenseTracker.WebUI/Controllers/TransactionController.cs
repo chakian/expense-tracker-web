@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Transaction;
 using Microsoft.AspNetCore.Http;
@@ -188,43 +189,44 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // POST: TransactionController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(CreateModel createModel)
-        //{
-        //    try
-        //    {
-        //        // TODO: Validations
-        //        if (createModel.AccountId <= 0)
-        //        {
-        //            return View(createModel);
-        //        }
-        //        if (createModel.CategoryId.HasValue==false && createModel.IsSplitTransaction == false)
-        //        {
-        //            return View(createModel);
-        //        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(CreateModel createModel)
+        {
+            try
+            {
+                // TODO: Validations
+                if (createModel.AccountId <= 0)
+                {
+                    return View(createModel);
+                }
+                if (createModel.CategoryId.HasValue == false && createModel.IsSplitTransaction == false)
+                {
+                    return View(createModel);
+                }
 
-        //        Common.Entities.Transaction transaction = new Common.Entities.Transaction()
-        //        {
-        //            BudgetId = BudgetId,
-        //            Date = createModel.Date,
-        //            AccountId = createModel.AccountId,
-        //            TargetAccountId = createModel.TargetAccountId,
-        //            CategoryId = createModel.CategoryId,
-        //            Amount = createModel.Amount,
-        //            IsIncome = createModel.IsIncome,
-        //            Description = createModel.Description
-        //        };
+                var request = new CreateTransactionRequest()
+                {
+                    BudgetId = BudgetId,
+                    Date = createModel.Date,
+                    AccountId = createModel.AccountId,
+                    TargetAccountId = createModel.TargetAccountId,
+                    CategoryId = createModel.CategoryId,
+                    Amount = createModel.Amount,
+                    IsIncome = createModel.IsIncome,
+                    Description = createModel.Description,
+                    UserId = UserId
+                };
 
-        //        TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-        //        TransactionBusiness.CreateNewTransaction(transaction, UserId);
-        //        return RedirectToAction(nameof(Index), new { accountId = createModel.ActionAccountId });
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+                TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
+                TransactionBusiness.CreateTransaction(request);
+                return RedirectToAction(nameof(Index), new { accountId = createModel.ActionAccountId });
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         // GET: TransactionController/Edit/5
         public ActionResult Edit(int id)
