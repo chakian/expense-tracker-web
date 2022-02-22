@@ -1,15 +1,21 @@
 ﻿using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ExpenseTracker.Business.Base
 {
     public class BaseBusiness
     {
-        protected readonly ExpenseTrackerDbContext context;
+        protected readonly ExpenseTrackerDbContext dbContext;
         public BaseBusiness(ExpenseTrackerDbContext _context)
         {
-            context = _context;
+            dbContext = _context;
+        }
+
+        public BaseBusiness(DbContextOptions<ExpenseTrackerDbContext> _dbContextOptions)
+        {
+            dbContext = new ExpenseTrackerDbContext(_dbContextOptions);
         }
 
         protected T CreateNewAuditableObject<T>(string userId, bool isActive = true)

@@ -38,11 +38,20 @@ namespace ExpenseTracker.Business
             return category.Id;
         }
 
+        private IQueryable<Category> GetAllActive(int budgetId)
+        {
+            return GetAll().Where(b => b.BudgetId == budgetId && b.IsActive);
+        }
+        private IQueryable<Category> GetAll()
+        {
+            return _context.Categories.AsQueryable();
+        }
+        //private Category GetById() { }
+
         public List<Common.Entities.Category> GetCategoriesOfBudget(int budgetId)
         {
-            var categoryDboList = _context.Categories.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
             List<Common.Entities.Category> CategoryList = new List<Common.Entities.Category>();
-            categoryDboList.ForEach(b =>
+            GetAllActive(budgetId).ToList().ForEach(b =>
             {
                 CategoryList.Add(new Common.Entities.Category()
                 {
@@ -56,7 +65,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Category GetCategoryDetails(int id)
         {
-            var categoryDbo = _context.Categories.SingleOrDefault(b => b.Id == id);
+            var categoryDbo = GetAll().SingleOrDefault(b => b.Id == id);
             if (categoryDbo != null)
             {
                 return new Common.Entities.Category()

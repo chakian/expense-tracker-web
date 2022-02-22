@@ -1,5 +1,4 @@
 ﻿using ExpenseTracker.Business;
-using ExpenseTracker.CommandQuery.Base;
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;

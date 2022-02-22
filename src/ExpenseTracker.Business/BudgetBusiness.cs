@@ -18,15 +18,15 @@ namespace ExpenseTracker.Business
             Budget budget = CreateNewAuditableObject<Budget>(request.UserId);
             budget.Name = request.BudgetName;
 
-            context.Budgets.Add(budget);
+            dbContext.Budgets.Add(budget);
 
             return budget;
         }
 
         public List<Common.Entities.Budget> GetBudgetsOfUser(string userId)
         {
-            var budgetUserList = context.BudgetUsers.Where(bu => bu.UserId == userId && bu.IsActive).Select(bu => bu.BudgetId).ToList();
-            var budgetDboList = context.Budgets.Where(b => budgetUserList.Contains(b.Id) && b.IsActive).ToList();
+            var budgetUserList = dbContext.BudgetUsers.Where(bu => bu.UserId == userId && bu.IsActive).Select(bu => bu.BudgetId).ToList();
+            var budgetDboList = dbContext.Budgets.Where(b => budgetUserList.Contains(b.Id) && b.IsActive).ToList();
             List<Common.Entities.Budget> budgetList = new List<Common.Entities.Budget>();
             budgetDboList.ForEach(b =>
             {
@@ -42,7 +42,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Budget GetBudgetDetails(int id)
         {
-            var budgetDbo = context.Budgets.SingleOrDefault(b => b.Id == id);
+            var budgetDbo = dbContext.Budgets.SingleOrDefault(b => b.Id == id);
             if (budgetDbo != null)
             {
                 return new Common.Entities.Budget()
@@ -60,7 +60,7 @@ namespace ExpenseTracker.Business
 
         public void UpdateBudget(UpdateBudgetRequest request)
         {
-            Budget budget = context.Budgets.Find(request.BudgetId);
+            Budget budget = dbContext.Budgets.Find(request.BudgetId);
 
             if (budget != null)
             {
@@ -71,7 +71,7 @@ namespace ExpenseTracker.Business
 
         public void UpdateBudgetAsInactive(DeactivateBudgetRequest request)
         {
-            Budget budget = context.Budgets.Find(request.BudgetId);
+            Budget budget = dbContext.Budgets.Find(request.BudgetId);
 
             if (budget != null)
             {

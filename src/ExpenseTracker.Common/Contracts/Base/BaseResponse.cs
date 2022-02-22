@@ -16,6 +16,17 @@ namespace ExpenseTracker.Common.Contracts
             }
         }
 
+        public void AddMessage(string message, bool isError)
+        {
+            if (Messages == null) Messages = new List<Message>();
+
+            Messages.Add(new Message()
+            {
+                IsErrorMessage = isError,
+                Text = message
+            });
+        }
+
         public void WriteExceptionMessage(Exception exception, bool clearAll = true)
         {
             if (Messages == null) Messages = new List<Message>();
@@ -39,5 +50,6 @@ namespace ExpenseTracker.Common.Contracts
     public interface IResponse
     {
         public void WriteExceptionMessage(Exception exception, bool clearAll = true);
+        public void AddMessage(string message, bool isError);
     }
 }

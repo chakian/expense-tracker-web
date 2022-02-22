@@ -1,4 +1,6 @@
-﻿using ExpenseTracker.Common.Constants;
+﻿using ExpenseTracker.Business.Base;
+using ExpenseTracker.Common.Constants;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
@@ -8,41 +10,32 @@ using System.Linq;
 
 namespace ExpenseTracker.Business
 {
-    public class AccountBusiness
+    public class AccountBusiness : BaseBusiness
     {
-        private readonly ExpenseTrackerDbContext _context;
-        public AccountBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
+        public AccountBusiness(ExpenseTrackerDbContext context) : base(context)
         {
-            _context = new ExpenseTrackerDbContext(options);
         }
-        public AccountBusiness(ExpenseTrackerDbContext context)
+
+        public AccountBusiness(DbContextOptions<ExpenseTrackerDbContext> _dbContextOptions) : base(_dbContextOptions)
         {
-            _context = context;
         }
 
         public int CreateNewAccount(int budgetId, string name, int accountType, decimal balance, string userId)
         {
-            Account account = new Account()
-            {
-                BudgetId = budgetId,
-                Name = name,
-                AccountType = accountType,
-                Balance = balance
-            };
-            account.InsertUserId = userId;
-            account.InsertTime = DateTime.UtcNow;
-            account.IsActive = true;
+            var account = CreateNewAuditableObject<Account>(userId);
+            account.BudgetId = budgetId;
+            account.Name = name;
+            account.AccountType = accountType;
+            account.Balance = balance;
 
-            _context.Accounts.Add(account);
-
-            _context.SaveChanges();
+            dbContext.Accounts.Add(account);
 
             return account.Id;
         }
 
         public List<Common.Entities.Account> GetAccountsOfBudget(int budgetId)
         {
-            var accountDboList = _context.Accounts.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
+            var accountDboList = dbContext.Accounts.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
             List<Common.Entities.Account> AccountList = new List<Common.Entities.Account>();
             accountDboList.ForEach(b =>
             {
@@ -61,7 +54,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Account GetAccountDetails(int id)
         {
-            var accountDbo = _context.Accounts.SingleOrDefault(b => b.Id == id);
+            var accountDbo = dbContext.Accounts.SingleOrDefault(b => b.Id == id);
             if (accountDbo != null)
             {
                 return new Common.Entities.Account()
@@ -80,82 +73,63 @@ namespace ExpenseTracker.Business
             }
         }
 
-        public void UpdateAccount(int accountId, string name, decimal balance, string userId)
+        public void UpdateAccountName(Account account, string newName, string userId)
         {
-            Account account = _context.Accounts.Find(accountId);
-
-            if (account != null)
-            {
-                if (account.Name != name)
-                {
-                    account.Name = name;
-
-                    account.UpdateUserId = userId;
-                    account.UpdateTime = DateTime.UtcNow;
-
-                    _context.SaveChanges();
-                }
-
-                if (account.Balance != balance)
-                {
-                    TransactionBusiness transactionBusiness = new TransactionBusiness(_context);
-                    //TODO: User should be able to pick a default category for balance change transactions
-                    int categoryId = 0;
-                    CategoryBusiness categoryBusiness = new CategoryBusiness(_context);
-                    var cat = categoryBusiness.GetCategoriesOfBudget(account.BudgetId).FirstOrDefault(c => c.Name == AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME);
-                    if (cat != null)
-                    {
-                        categoryId = cat.Id;
-                    }
-                    else
-                    {
-                        categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, null, userId);
-                    }
-
-                    decimal txAmount = account.Balance - balance;
-                    bool isIncome = false;
-                    if(txAmount < 0)
-                    {
-                        isIncome = true;
-                        txAmount *= -1;
-                    }
-                    var currentDay = DateTime.Now;
-                    var transaction = new Common.Entities.Transaction()
-                    {
-                        BudgetId = account.BudgetId,
-                        AccountId = accountId,
-                        Amount = txAmount,
-                        IsIncome = isIncome,
-                        Description = AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_DESCRIPTION,
-                        Date = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 0, 0, 0, 0),
-                        CategoryId = categoryId
-                    };
-                    transactionBusiness.CreateNewTransaction(transaction, userId);
-                }
-            }
+            account.Name = newName;
+            UpdateAuditableObject(account, userId);
         }
 
-        public void UpdateAccountAsInactive(int accountId, string userId)
+        public void UpdateAccountBalance(Account account, decimal balance, string userId)
         {
-            Account Account = _context.Accounts.Find(accountId);
-
-            if (Account != null)
+            TransactionBusiness transactionBusiness = new TransactionBusiness(dbContext);
+            //TODO: User should be able to pick a default category for balance change transactions
+            int categoryId = 0;
+            CategoryBusiness categoryBusiness = new CategoryBusiness(dbContext);
+            var cat = categoryBusiness.GetCategoriesOfBudget(account.BudgetId).FirstOrDefault(c => c.Name == AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME);
+            if (cat != null)
             {
-                Account.IsActive = false;
-                Account.UpdateUserId = userId;
-                Account.UpdateTime = DateTime.UtcNow;
-
-                _context.SaveChanges();
+                categoryId = cat.Id;
             }
+            else
+            {
+                categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, null, userId);
+            }
+
+            decimal txAmount = account.Balance - balance;
+            bool isIncome = false;
+            if (txAmount < 0)
+            {
+                isIncome = true;
+                txAmount *= -1;
+            }
+            var currentDay = DateTime.Now;
+            var request = new CreateTransactionRequest()
+            {
+                AccountId = account.Id,
+                Amount = txAmount,
+                BudgetId = account.BudgetId,
+                CategoryId = categoryId,
+                Date = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 0, 0, 0, 0),
+                Description = AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_DESCRIPTION,
+                IsIncome = isIncome,
+                UserId = userId
+            };
+            transactionBusiness.CreateTransaction(request);
         }
 
-        public void UpdateAccountBalanceForNewTransaction(int sourceAccountId, int? targetAccountId, decimal transactionAmount, bool isIncome, string userId)
+        public void UpdateAccountAsInactive(Account account, string userId)
+        {
+            account.IsActive = false;
+            UpdateAuditableObject(account, userId);
+        }
+
+        public void UpdateAccountBalancesForNewTransaction(int sourceAccountId, int? targetAccountId, decimal transactionAmount, bool isIncome, string userId)
         {
             Account sourceAcc, targetAcc = null;
-            sourceAcc = _context.Accounts.Find(sourceAccountId);
+            sourceAcc = dbContext.Accounts.Find(sourceAccountId);
             if (targetAccountId.HasValue)
             {
-                targetAcc = _context.Accounts.Find(targetAccountId);
+                targetAcc = dbContext.Accounts.Find(targetAccountId);
             }
             decimal changeAmount = transactionAmount * (isIncome ? (-1) : 1);
 
@@ -171,27 +145,27 @@ namespace ExpenseTracker.Business
             }
         }
 
-        public void UpdateAccountBalanceForEditedTransaction(int sourceAccountId, int? targetAccountId, decimal transactionAmount, bool isIncome, int oldSourceAccountId, int? oldTargetAccountId, decimal oldTransactionAmount, bool oldIsIncome, string userId)
+        public void UpdateAccountBalancesForEditedTransaction(int sourceAccountId, int? targetAccountId, decimal transactionAmount, bool isIncome, int oldSourceAccountId, int? oldTargetAccountId, decimal oldTransactionAmount, bool oldIsIncome, string userId)
         {
             List<Account> accounts = new List<Account>();
-            Account tempAccount = _context.Accounts.Find(sourceAccountId);
+            Account tempAccount = dbContext.Accounts.Find(sourceAccountId);
             accounts.Add(tempAccount);
 
             if (targetAccountId.HasValue)
             {
-                tempAccount = _context.Accounts.Find(targetAccountId);
+                tempAccount = dbContext.Accounts.Find(targetAccountId);
                 accounts.Add(tempAccount);
             }
 
             if (accounts.Any(q => q.Id == oldSourceAccountId) == false)
             {
-                tempAccount = _context.Accounts.Find(oldSourceAccountId);
+                tempAccount = dbContext.Accounts.Find(oldSourceAccountId);
                 accounts.Add(tempAccount);
             }
 
             if (oldTargetAccountId.HasValue && accounts.Any(q => q.Id == oldTargetAccountId.Value) == false)
             {
-                tempAccount = _context.Accounts.Find(oldTargetAccountId);
+                tempAccount = dbContext.Accounts.Find(oldTargetAccountId);
                 accounts.Add(tempAccount);
             }
 
