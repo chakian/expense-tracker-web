@@ -29,6 +29,7 @@ namespace ExpenseTracker.Business
             account.Balance = balance;
 
             dbContext.Accounts.Add(account);
+            dbContext.SaveChanges();//TODO: Move to handler
 
             return account.Id;
         }
