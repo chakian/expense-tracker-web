@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
@@ -17,8 +18,15 @@ namespace ExpenseTracker.WebUI.Controllers
     {
         protected readonly UserManager<IdentityUser> _userManager;
 
+        [Obsolete]
         public BaseAuthenticatedController(ILogger<T> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
             : base(logger, options)
+        {
+            _userManager = userManager;
+        }
+
+        public BaseAuthenticatedController(ILogger<T> logger, ExpenseTrackerDbContext context, UserManager<IdentityUser> userManager)
+            : base(logger, context)
         {
             _userManager = userManager;
         }
@@ -47,12 +55,12 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private UserSetting GetUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
             return userSettingBusiness.GetUserSettings(UserId);
         }
         private void CreateUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
             int budgetId = FindFirstBudgetId();
             userSettingBusiness.CreateUserSettings(UserId, budgetId);
         }
