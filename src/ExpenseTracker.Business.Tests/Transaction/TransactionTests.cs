@@ -75,10 +75,29 @@ namespace ExpenseTracker.Business.Tests
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
             string description = Guid.NewGuid().ToString();
 
+            dbctx.Accounts.Add(new Persistence.DbModels.Account()
+            {
+                BudgetId = budgetId,
+                Name = "test"
+            });
+            dbctx.SaveChanges();
+
+            dbctx.Categories.Add(new Persistence.DbModels.Category()
+            {
+                BudgetId = budgetId,
+                Name = "testCat"
+            });
+            dbctx.SaveChanges();
+
+            var accountId = dbctx.Accounts.First().Id;
+            var categoryId = dbctx.Categories.First().Id;
+
             var currentDate = DateTime.Now;
             dbctx.Transactions.Add(new Persistence.DbModels.Transaction()
             {
                 BudgetId = budgetId,
+                AccountId = accountId,
+                CategoryId = categoryId,
                 Amount = amount,
                 Description = description,
                 Date = currentDate,

@@ -32,14 +32,19 @@ namespace ExpenseTracker.Business
             transaction.Description = request.Description;
 
             dbContext.Transactions.Add(transaction);
+            dbContext.SaveChanges();//TODO: Move to handler
 
             return transaction;
         }
 
         public List<Common.Entities.Transaction> GetTransactionsOfBudgetForPeriod(int budgetId, DateTime beginning, DateTime end)
         {
-            var transactionDboList = dbContext.Transactions.Include(t => t.Account).Include(t => t.TargetAccount).Include(t => t.Category)
-                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end)).OrderByDescending(t => t.Date).ThenByDescending(t => t.InsertTime).ToList();
+            var transactionDboList = dbContext.Transactions
+                .Include(t => t.Account)
+                .Include(t => t.TargetAccount)
+                .Include(t => t.Category)
+                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end))
+                .OrderByDescending(t => t.Date).ThenByDescending(t => t.InsertTime).ToList();
 
             List<Common.Entities.Transaction> TransactionList = new List<Common.Entities.Transaction>();
 
