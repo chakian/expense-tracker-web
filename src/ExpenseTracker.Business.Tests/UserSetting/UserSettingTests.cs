@@ -12,7 +12,8 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(contextOptions);
+            var dbcntx = CreateContext(contextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
@@ -31,7 +32,8 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(contextOptions);
+            var dbcntx = CreateContext(contextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
