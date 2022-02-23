@@ -2,8 +2,10 @@
 
 namespace ExpenseTracker.CommandQuery.Interfaces
 {
-    public interface IQuery
+    public interface IQuery<TRequest, TResponse>
+        where TRequest : IRequest
+        where TResponse : IResponse
     {
-        public IResponse HandleQuery(IRequest request);
+        public TResponse HandleQuery(TRequest request);
     }
 }
