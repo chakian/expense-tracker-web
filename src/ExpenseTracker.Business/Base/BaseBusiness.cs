@@ -1,19 +1,21 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Common.Interfaces.Business.Base;
+using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ExpenseTracker.Business.Base
 {
-    public class BaseBusiness
+    public class BaseBusiness : IBaseBusiness
     {
         protected readonly ExpenseTrackerDbContext dbContext;
-        public BaseBusiness(ExpenseTrackerDbContext _context)
+        protected BaseBusiness(ExpenseTrackerDbContext _context)
         {
             dbContext = _context;
         }
 
-        public BaseBusiness(DbContextOptions<ExpenseTrackerDbContext> _dbContextOptions)
+        [Obsolete("This constructor will be removed when all business calls are done via command/query module")]
+        protected BaseBusiness(DbContextOptions<ExpenseTrackerDbContext> _dbContextOptions)
         {
             dbContext = new ExpenseTrackerDbContext(_dbContextOptions);
         }
