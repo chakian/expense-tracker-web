@@ -30,7 +30,7 @@ namespace ExpenseTracker.Business
 
         public void UpdateUserSettings(string userId, int budgetId)
         {
-            var settingsDbo = GetUserSettings(userId);
+            var settingsDbo = dbContext.UserSettings.Single(us => us.UserId == userId);
 
             settingsDbo.DefaultBudgetId = budgetId;
 
