@@ -2,6 +2,6 @@
 {
     public class GetUserSettingsResponse : BaseResponse
     {
-        public int DefaultBudgetId { get; set; }
+        public Entities.UserSetting UserSetting { get; set; }
     }
 }

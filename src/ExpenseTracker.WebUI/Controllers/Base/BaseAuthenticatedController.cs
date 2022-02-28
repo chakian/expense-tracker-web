@@ -1,5 +1,6 @@
 ﻿using ExpenseTracker.Business;
 using ExpenseTracker.CommandQuery.Command;
+using ExpenseTracker.CommandQuery.Queries;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -56,7 +57,11 @@ namespace ExpenseTracker.WebUI.Controllers
         private UserSetting GetUserSetting()
         {
             UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            return userSettingBusiness.GetUserSettings(UserId);
+            var query = new QueryUserSettings(_dbContext, userSettingBusiness);
+            return query.HandleQuery(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
+            {
+                UserId = UserId
+            }).UserSetting;
         }
         private void CreateUserSetting()
         {

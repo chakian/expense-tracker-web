@@ -18,7 +18,7 @@ namespace ExpenseTracker.CommandQuery.Queries
 
             var response = new GetUserSettingsResponse()
             {
-                DefaultBudgetId = settings.DefaultBudgetId
+                UserSetting = settings,
             };
 
             return response;

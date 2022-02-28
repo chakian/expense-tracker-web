@@ -38,7 +38,7 @@ namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
 
             //ASSERT
             Assert.NotNull(actual);
-            Assert.Equal(expectedBudgetId, actual.DefaultBudgetId);
+            Assert.Equal(expectedBudgetId, actual.UserSetting.DefaultBudgetId);
         }
 
         [Fact]
@@ -46,7 +46,6 @@ namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
         {
             //ARRANGE
             string userId = Guid.NewGuid().ToString();
-            int expectedBudgetId = 0;
 
             var userSettingBusinessMock = new Mock<IUserSettingBusiness>();
             Common.Entities.UserSetting userSetting = null;
@@ -63,7 +62,7 @@ namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
 
             //ASSERT
             Assert.NotNull(actual);
-            Assert.Equal(expectedBudgetId, actual.DefaultBudgetId);
+            Assert.Null(actual.UserSetting);
         }
     }
 }

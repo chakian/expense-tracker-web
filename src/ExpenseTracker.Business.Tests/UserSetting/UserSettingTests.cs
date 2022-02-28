@@ -20,6 +20,7 @@ namespace ExpenseTracker.Business.Tests
 
             //ACT
             userSettingBusiness.CreateUserSettings(userId, budgetId);
+            dbcntx.SaveChanges();
             var actual = new ExpenseTrackerDbContext(contextOptions).UserSettings.FirstOrDefault(us => us.UserId == userId);
 
             //ASSERT
