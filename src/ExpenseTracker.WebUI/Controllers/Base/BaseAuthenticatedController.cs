@@ -18,6 +18,7 @@ namespace ExpenseTracker.WebUI.Controllers
     public abstract class BaseAuthenticatedController<T> : BaseController<T>
     {
         protected readonly UserManager<IdentityUser> _userManager;
+        private QueryUserSettings _queryUserSettings;
 
         [Obsolete]
         public BaseAuthenticatedController(ILogger<T> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
@@ -26,10 +27,14 @@ namespace ExpenseTracker.WebUI.Controllers
             _userManager = userManager;
         }
 
-        public BaseAuthenticatedController(ILogger<T> logger, ExpenseTrackerDbContext context, UserManager<IdentityUser> userManager)
+        public BaseAuthenticatedController(ILogger<T> logger, 
+            ExpenseTrackerDbContext context, 
+            UserManager<IdentityUser> userManager,
+            QueryUserSettings queryUserSettings)
             : base(logger, context)
         {
             _userManager = userManager;
+            _queryUserSettings = queryUserSettings;
         }
 
         #region Initiate UserSettings
@@ -57,8 +62,8 @@ namespace ExpenseTracker.WebUI.Controllers
         private UserSetting GetUserSetting()
         {
             UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            var query = new QueryUserSettings(_dbContext, userSettingBusiness);
-            return query.HandleQuery(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
+            _queryUserSettings = new QueryUserSettings(_dbContext, userSettingBusiness);
+            return _queryUserSettings.HandleQuery(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
             {
                 UserId = UserId
             }).UserSetting;
