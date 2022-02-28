@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Persistence;
 using System;
 using System.Linq;
 using Xunit;
@@ -12,8 +13,9 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
-            AccountBusiness accountBusiness = new AccountBusiness(contextOptions);
+            var context = CreateContext(contextOptions);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
+            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
@@ -21,12 +23,11 @@ namespace ExpenseTracker.Business.Tests
             int categoryId = new Random(DateTime.Now.Millisecond).Next(0, 100);
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
             string description = Guid.NewGuid().ToString();
-            var tx = new Common.Entities.Transaction()
+            var request = new CreateTransactionRequest()
             {
                 BudgetId = budgetId,
                 Date = DateTime.Now,
                 AccountId = accountId,
-                TargetAccountId = null,
                 CategoryId = categoryId,
                 Amount = amount,
                 IsIncome = false,
@@ -34,8 +35,8 @@ namespace ExpenseTracker.Business.Tests
             };
 
             //ACT
-            var txId = transactionBusiness.CreateNewTransaction(tx, userId);
-            var actual = new ExpenseTrackerDbContext(contextOptions).Transactions.FirstOrDefault(t => t.Id == txId);
+            var actualTx = transactionBusiness.CreateTransaction(request);
+            var actual = new ExpenseTrackerDbContext(contextOptions).Transactions.FirstOrDefault(t => t.Id == actualTx.Id);
 
             //ASSERT
             Assert.NotNull(actual);
@@ -47,7 +48,8 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
+            var context = CreateContext(contextOptions);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
 
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
             DateTime startDate = new DateTime(2020, 11, 1);
@@ -61,40 +63,65 @@ namespace ExpenseTracker.Business.Tests
         }
 
         //TODO: Create real account and category for this to work
-        //[Fact]
-        //public void Get_TransactionsOfBudget_NotEmpty()
-        //{
-        //    //ARRANGE
-        //    var contextOptions = CreateNewContextOptions();
-        //    TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
+        [Fact]
+        public void Get_TransactionsOfBudget_NotEmpty()
+        {
+            //ARRANGE
+            var contextOptions = CreateNewContextOptions();
+            var dbctx = new ExpenseTrackerDbContext(contextOptions);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(dbctx);
 
-        //    int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
-        //    decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
-        //    string description = Guid.NewGuid().ToString();
+            int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
+            decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
+            string description = Guid.NewGuid().ToString();
 
-        //    var dbctx = new ExpenseTrackerDbContext(contextOptions);
-        //    dbctx.Transactions.Add(new Persistence.DbModels.Transaction()
-        //    {
-        //        BudgetId = budgetId,
-        //        Amount = amount,
-        //        Description = description,
-        //        IsActive = true
-        //    });
-        //    dbctx.SaveChanges();
+            dbctx.Accounts.Add(new Persistence.DbModels.Account()
+            {
+                BudgetId = budgetId,
+                Name = "test"
+            });
+            dbctx.SaveChanges();
 
-        //    //ACT
-        //    var actual = transactionBusiness.GetTransactionsOfBudget(budgetId);
+            dbctx.Categories.Add(new Persistence.DbModels.Category()
+            {
+                BudgetId = budgetId,
+                Name = "testCat"
+            });
+            dbctx.SaveChanges();
 
-        //    //ASSERT
-        //    Assert.NotEmpty(actual);
-        //}
+            var accountId = dbctx.Accounts.First().Id;
+            var categoryId = dbctx.Categories.First().Id;
+
+            var currentDate = DateTime.Now;
+            dbctx.Transactions.Add(new Persistence.DbModels.Transaction()
+            {
+                BudgetId = budgetId,
+                AccountId = accountId,
+                CategoryId = categoryId,
+                Amount = amount,
+                Description = description,
+                Date = currentDate,
+                IsActive = true
+            });
+            dbctx.SaveChanges();
+
+            var beginningDate = currentDate.AddMinutes(-1);
+            var endDate = currentDate.AddMinutes(1);
+
+            //ACT
+            var actual = transactionBusiness.GetTransactionsOfBudgetForPeriod(budgetId, beginningDate, endDate);
+
+            //ASSERT
+            Assert.NotEmpty(actual);
+        }
 
         [Fact]
         public void Get_TransactionDetails_Valid()
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
+            var context = CreateContext(contextOptions);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
 
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
@@ -141,8 +168,9 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            TransactionBusiness transactionBusiness = new TransactionBusiness(contextOptions);
-            AccountBusiness accountBusiness = new AccountBusiness(contextOptions);
+            var context = CreateContext(contextOptions);
+            TransactionBusiness transactionBusiness = new TransactionBusiness(context);
+            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);

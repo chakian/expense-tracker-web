@@ -12,13 +12,15 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(contextOptions);
+            var dbcntx = CreateContext(contextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
 
             //ACT
             userSettingBusiness.CreateUserSettings(userId, budgetId);
+            dbcntx.SaveChanges();
             var actual = new ExpenseTrackerDbContext(contextOptions).UserSettings.FirstOrDefault(us => us.UserId == userId);
 
             //ASSERT
@@ -31,7 +33,8 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var contextOptions = CreateNewContextOptions();
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(contextOptions);
+            var dbcntx = CreateContext(contextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);

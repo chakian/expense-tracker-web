@@ -12,6 +12,11 @@ namespace ExpenseTracker.Persistence
         {
         }
 
+        /// <summary>
+        /// This constructor is only used by unit tests where the dbcontext is mocked.
+        /// </summary>
+        public ExpenseTrackerDbContext() { }
+
         public virtual DbSet<Budget> Budgets { get; set; }
         public virtual DbSet<UserSetting> UserSettings { get; set; }
         public virtual DbSet<BudgetUser> BudgetUsers { get; set; }

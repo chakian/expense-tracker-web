@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Transaction;
 using Microsoft.AspNetCore.Http;
@@ -103,61 +104,6 @@ namespace ExpenseTracker.WebUI.Controllers
             return new JsonResult(request.TransactionList);
         }
 
-        public ActionResult IndexOld(int month, int year, int accountId)
-        {
-            _logger.LogInformation("Started controller action: Transaction/IndexOld");
-
-            ListModel listModel = new ListModel
-            {
-                TransactionList = new List<ListModel.Transaction>()
-            };
-
-            if (year == 0)
-            {
-                year = DateTime.Now.Year;
-            }
-            if (month == 0)
-            {
-                month = DateTime.Now.Month;
-            }
-
-            listModel.StartDate = new DateTime(year, month, 1, 0, 0, 0, 0);
-            listModel.EndDate = new DateTime(year, month, DateTime.DaysInMonth(year, month), 23, 59, 59, 999);
-
-            listModel.CurrentMonth = month;
-            var culture = new CultureInfo("tr-TR");
-            listModel.CurrentMonthName = culture.DateTimeFormat.GetMonthName(month);
-            listModel.CurrentYear = year;
-
-            TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-            //TODO: Do the account filtering in business
-            var list = TransactionBusiness.GetTransactionsOfBudgetForPeriod(BudgetId, listModel.StartDate, listModel.EndDate);
-            if (accountId != 0)
-            {
-                listModel.CurrentAccountId = accountId;
-                list = list.Where(q => q.AccountId == accountId || q.TargetAccountId == accountId).ToList();
-            }
-
-            list.ForEach(l =>
-            {
-                listModel.TransactionList.Add(new ListModel.Transaction()
-                {
-                    Id = l.Id,
-                    AccountName = l.AccountName,
-                    TargetAccountName = l.TargetAccountName,
-                    CategoryName = l.CategoryName,
-                    Date = l.Date,
-                    Amount = l.Amount,
-                    IsIncome = l.IsIncome,
-                    Description = l.Description
-                });
-            });
-
-            _logger.LogInformation("Finished controller action: Transaction/IndexOld");
-
-            return View(listModel);
-        }
-
         // GET: TransactionController/Create
         public ActionResult Create(int accountId)
         {
@@ -199,12 +145,12 @@ namespace ExpenseTracker.WebUI.Controllers
                 {
                     return View(createModel);
                 }
-                if (createModel.CategoryId.HasValue==false && createModel.IsSplitTransaction == false)
+                if (createModel.CategoryId.HasValue == false && createModel.IsSplitTransaction == false)
                 {
                     return View(createModel);
                 }
 
-                Common.Entities.Transaction transaction = new Common.Entities.Transaction()
+                var request = new CreateTransactionRequest()
                 {
                     BudgetId = BudgetId,
                     Date = createModel.Date,
@@ -213,11 +159,12 @@ namespace ExpenseTracker.WebUI.Controllers
                     CategoryId = createModel.CategoryId,
                     Amount = createModel.Amount,
                     IsIncome = createModel.IsIncome,
-                    Description = createModel.Description
+                    Description = createModel.Description,
+                    UserId = UserId
                 };
 
                 TransactionBusiness TransactionBusiness = new TransactionBusiness(_dbContextOptions);
-                TransactionBusiness.CreateNewTransaction(transaction, UserId);
+                TransactionBusiness.CreateTransaction(request);
                 return RedirectToAction(nameof(Index), new { accountId = createModel.ActionAccountId });
             }
             catch

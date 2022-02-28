@@ -1,4 +1,6 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Business.Base;
+using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,52 +9,42 @@ using System.Linq;
 
 namespace ExpenseTracker.Business
 {
-    public class TransactionBusiness
+    public class TransactionBusiness : BaseBusiness
     {
-        private readonly ExpenseTrackerDbContext _context;
-        public TransactionBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
+        public TransactionBusiness(ExpenseTrackerDbContext context) : base(context)
         {
-            _context = new ExpenseTrackerDbContext(options);
+        }
+        public TransactionBusiness(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        {
         }
 
-        public TransactionBusiness(ExpenseTrackerDbContext context)
+        public Transaction CreateTransaction(CreateTransactionRequest request)
         {
-            _context = context;
-        }
+            Transaction transaction = CreateNewAuditableObject<Transaction>(request.UserId);
+            transaction.BudgetId = request.BudgetId;
+            transaction.Date = request.Date;
+            transaction.AccountId = request.AccountId;
+            transaction.CategoryId = request.CategoryId;
+            transaction.TargetAccountId = request.TargetAccountId;
+            transaction.IsSplitTransaction = false;
+            transaction.Amount = request.Amount;
+            transaction.IsIncome = request.IsIncome;
+            transaction.Description = request.Description;
 
-        public int CreateNewTransaction(Common.Entities.Transaction trx, string userId)
-        {
-            Transaction transaction = new Transaction()
-            {
-                BudgetId = trx.BudgetId,
-                Date = trx.Date,
-                AccountId = trx.AccountId,
-                CategoryId = trx.CategoryId,
-                TargetAccountId = trx.TargetAccountId,
-                IsSplitTransaction = false,
-                Amount = trx.Amount,
-                IsIncome = trx.IsIncome,
-                Description = trx.Description
-            };
+            dbContext.Transactions.Add(transaction);
+            dbContext.SaveChanges();//TODO: Move to handler
 
-            transaction.InsertUserId = userId;
-            transaction.InsertTime = DateTime.UtcNow;
-            transaction.IsActive = true;
-
-            _context.Transactions.Add(transaction);
-
-            var accountBusiness = new AccountBusiness(_context);
-            accountBusiness.UpdateAccountBalanceForNewTransaction(trx.AccountId, trx.TargetAccountId, trx.Amount, trx.IsIncome, userId);
-
-            _context.SaveChanges();
-
-            return transaction.Id;
+            return transaction;
         }
 
         public List<Common.Entities.Transaction> GetTransactionsOfBudgetForPeriod(int budgetId, DateTime beginning, DateTime end)
         {
-            var transactionDboList = _context.Transactions.Include(t => t.Account).Include(t => t.TargetAccount).Include(t => t.Category)
-                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end)).OrderByDescending(t => t.Date).ThenByDescending(t => t.InsertTime).ToList();
+            var transactionDboList = dbContext.Transactions
+                .Include(t => t.Account)
+                .Include(t => t.TargetAccount)
+                .Include(t => t.Category)
+                .Where(t => t.BudgetId == budgetId && t.IsActive && (t.Date >= beginning && t.Date <= end))
+                .OrderByDescending(t => t.Date).ThenByDescending(t => t.InsertTime).ToList();
 
             List<Common.Entities.Transaction> TransactionList = new List<Common.Entities.Transaction>();
 
@@ -87,7 +79,7 @@ namespace ExpenseTracker.Business
 
         public Common.Entities.Transaction GetTransactionDetails(int id)
         {
-            var transactionDbo = _context.Transactions.Include(t => t.Account).Include(t => t.Category).SingleOrDefault(b => b.Id == id);
+            var transactionDbo = dbContext.Transactions.Include(t => t.Account).Include(t => t.Category).SingleOrDefault(b => b.Id == id);
             if (transactionDbo != null)
             {
                 return new Common.Entities.Transaction()
@@ -115,7 +107,7 @@ namespace ExpenseTracker.Business
 
         public void UpdateTransaction(Common.Entities.Transaction tx, string userId)
         {
-            Transaction transaction = _context.Transactions.Find(tx.Id);
+            Transaction transaction = dbContext.Transactions.Find(tx.Id);
             if (transaction != null)
             {
                 int oldSourceAccountId = transaction.AccountId;
@@ -134,24 +126,24 @@ namespace ExpenseTracker.Business
                 transaction.UpdateTime = DateTime.UtcNow;
                 transaction.UpdateUserId = userId;
 
-                var accountBusiness = new AccountBusiness(_context);
-                accountBusiness.UpdateAccountBalanceForEditedTransaction(tx.AccountId, tx.TargetAccountId, tx.Amount, tx.IsIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
+                var accountBusiness = new AccountBusiness(dbContext);
+                accountBusiness.UpdateAccountBalancesForEditedTransaction(tx.AccountId, tx.TargetAccountId, tx.Amount, tx.IsIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
 
-                _context.SaveChanges();
+                dbContext.SaveChanges();
             }
         }
 
         public void DeleteTransaction(int transactionId, string userId)
         {
-            Transaction Transaction = _context.Transactions.Find(transactionId);
+            Transaction Transaction = dbContext.Transactions.Find(transactionId);
 
             if (Transaction != null)
             {
-                var accountBusiness = new AccountBusiness(_context);
-                accountBusiness.UpdateAccountBalanceForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
+                var accountBusiness = new AccountBusiness(dbContext);
+                accountBusiness.UpdateAccountBalancesForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
 
-                _context.Transactions.Remove(Transaction);
-                _context.SaveChanges();
+                dbContext.Transactions.Remove(Transaction);
+                dbContext.SaveChanges();
             }
         }
     }

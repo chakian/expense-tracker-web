@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,19 @@ namespace ExpenseTracker.Business.Tests
         public void Create_Budget_Valid()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string name = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = name,
+                UserId = userId
+            };
 
             //act
-            int budgetId = budgetBusiness.CreateNewBudget(name, userId);
+            int budgetId = budgetBusiness.CreateNewBudget(createNewBudgetRequest).Id;
+            context.SaveChanges();
 
             //assert
             Common.Entities.Budget actual = budgetBusiness.GetBudgetDetails(budgetId);
@@ -27,51 +34,52 @@ namespace ExpenseTracker.Business.Tests
         }
 
         [Fact]
-        public void Create_Budget_BudgetUserShouldBeCreated()
+        public void Get_BudgetsOfUser_Empty()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string name = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
-
-            //act
-            budgetBusiness.CreateNewBudget(name, userId);
-
-            //assert
-            Persistence.DbModels.BudgetUser actual = new ExpenseTrackerDbContext(contextOptions).BudgetUsers.First();
-            Assert.Equal(userId, actual.UserId);
-        }
-
-        [Fact]
-        public void Get_BudgetsOfUser_NotEmpty()
-        {
-            //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
-            string name = Guid.NewGuid().ToString();
-            string userId = Guid.NewGuid().ToString();
-            budgetBusiness.CreateNewBudget(name, userId);
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = name,
+                UserId = userId
+            };
+            budgetBusiness.CreateNewBudget(createNewBudgetRequest);
+            context.SaveChanges();
 
             //act
             List<Common.Entities.Budget> actual = budgetBusiness.GetBudgetsOfUser(userId);
             
             //assert
-            Assert.NotEmpty(actual);
+            Assert.Empty(actual);
         }
 
         [Fact]
         public void Get_BudgetsOfUser_AllDeleted_ShouldBeEmpty()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string name = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = name,
+                UserId = userId
+            };
+            int budgetId = budgetBusiness.CreateNewBudget(createNewBudgetRequest).Id;
+            context.SaveChanges();
+            DeactivateBudgetRequest deactivateBudgetRequest = new DeactivateBudgetRequest()
+            {
+                BudgetId = budgetId,
+                UserId = userId
+            };
 
             //act
-            int budgetId = budgetBusiness.CreateNewBudget(name, userId);
-            budgetBusiness.UpdateBudgetAsInactive(budgetId, userId);
+            budgetBusiness.UpdateBudgetAsInactive(deactivateBudgetRequest);
+            context.SaveChanges();
             List<Common.Entities.Budget> actual = budgetBusiness.GetBudgetsOfUser(userId);
 
             //assert
@@ -82,11 +90,17 @@ namespace ExpenseTracker.Business.Tests
         public void Get_BudgetDetails_Valid()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string budgetName = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
-            int budgetId = budgetBusiness.CreateNewBudget(budgetName, userId);
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = budgetName,
+                UserId = userId
+            };
+            int budgetId = budgetBusiness.CreateNewBudget(createNewBudgetRequest).Id;
+            context.SaveChanges();
 
             //act
             Common.Entities.Budget actual = budgetBusiness.GetBudgetDetails(budgetId);
@@ -99,19 +113,32 @@ namespace ExpenseTracker.Business.Tests
         public void Update_Budget_Valid()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string name = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = name,
+                UserId = userId
+            };
+            int budgetId = budgetBusiness.CreateNewBudget(createNewBudgetRequest).Id;
+            context.SaveChanges();
 
             //act
-            int budgetId = budgetBusiness.CreateNewBudget(name, userId);
             string newName = Guid.NewGuid().ToString();
             while(newName == name)
             {
                 newName = Guid.NewGuid().ToString();
             }
-            budgetBusiness.UpdateBudget(budgetId, newName, userId);
+            UpdateBudgetRequest updateBudgetRequest = new UpdateBudgetRequest()
+            {
+                BudgetId = budgetId,
+                Name = newName,
+                UserId = userId
+            };
+            budgetBusiness.UpdateBudget(updateBudgetRequest);
+            context.SaveChanges();
 
             //assert
             Common.Entities.Budget actual = budgetBusiness.GetBudgetDetails(budgetId);
@@ -122,14 +149,24 @@ namespace ExpenseTracker.Business.Tests
         public void Update_BudgetAsInactive_IsInactive()
         {
             //arrange
-            var contextOptions = CreateNewContextOptions();
-            BudgetBusiness budgetBusiness = new BudgetBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             string name = Guid.NewGuid().ToString();
             string userId = Guid.NewGuid().ToString();
+            CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+            {
+                BudgetName = name,
+                UserId = userId
+            };
+            int budgetId = budgetBusiness.CreateNewBudget(createNewBudgetRequest).Id;
+            DeactivateBudgetRequest deactivateBudgetRequest = new DeactivateBudgetRequest()
+            {
+                BudgetId = budgetId,
+                UserId = userId
+            };
 
             //act
-            int budgetId = budgetBusiness.CreateNewBudget(name, userId);
-            budgetBusiness.UpdateBudgetAsInactive(budgetId, userId);
+            budgetBusiness.UpdateBudgetAsInactive(deactivateBudgetRequest);
 
             //assert
             Common.Entities.Budget actual = budgetBusiness.GetBudgetDetails(budgetId);

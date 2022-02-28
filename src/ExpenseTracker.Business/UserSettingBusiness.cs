@@ -1,17 +1,16 @@
-﻿using ExpenseTracker.Persistence;
+﻿using ExpenseTracker.Business.Base;
+using ExpenseTracker.Common.Interfaces.Business;
+using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace ExpenseTracker.Business
 {
-    public class UserSettingBusiness
+    public class UserSettingBusiness : BaseBusiness, IUserSettingBusiness
     {
-        private readonly ExpenseTrackerDbContext _context;
-        public UserSettingBusiness(DbContextOptions<ExpenseTrackerDbContext> options)
+        public UserSettingBusiness(ExpenseTrackerDbContext context) : base(context)
         {
-            _context = new ExpenseTrackerDbContext(options);
         }
 
         public void CreateUserSettings(string userId, int budgetId)
@@ -26,25 +25,21 @@ namespace ExpenseTracker.Business
             userSetting.InsertUserId = userId;
             userSetting.InsertTime = DateTime.UtcNow;
 
-            _context.UserSettings.Add(userSetting);
-            _context.SaveChanges();
+            dbContext.Entry(userSetting).State = Microsoft.EntityFrameworkCore.EntityState.Added;
         }
 
-        //public void UpdateUserSettings(string userId, int budgetId)
-        //{
-        //    var settingsDbo = _context.UserSettings.SingleOrDefault(us => us.UserId == userId);
+        public void UpdateUserSettings(string userId, int budgetId)
+        {
+            var settingsDbo = GetUserSettings(userId);
 
-        //    settingsDbo.DefaultBudgetId = budgetId;
+            settingsDbo.DefaultBudgetId = budgetId;
 
-        //    settingsDbo.UpdateUserId = userId;
-        //    settingsDbo.UpdateTime = DateTime.UtcNow;
-
-        //    _context.SaveChanges();
-        //}
+            dbContext.Entry(settingsDbo).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        }
 
         public Common.Entities.UserSetting GetUserSettings(string userId)
         {
-            var settingsDbo = _context.UserSettings.SingleOrDefault(us => us.UserId == userId);
+            var settingsDbo = dbContext.UserSettings.SingleOrDefault(us => us.UserId == userId);
 
             Common.Entities.UserSetting userSetting = null;
 

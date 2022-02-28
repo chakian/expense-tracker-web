@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.CommandQuery.Command;
+using ExpenseTracker.CommandQuery.Queries;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 
 namespace ExpenseTracker.WebUI.Controllers
@@ -16,8 +19,15 @@ namespace ExpenseTracker.WebUI.Controllers
     {
         protected readonly UserManager<IdentityUser> _userManager;
 
+        [Obsolete]
         public BaseAuthenticatedController(ILogger<T> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
             : base(logger, options)
+        {
+            _userManager = userManager;
+        }
+
+        public BaseAuthenticatedController(ILogger<T> logger, ExpenseTrackerDbContext context, UserManager<IdentityUser> userManager)
+            : base(logger, context)
         {
             _userManager = userManager;
         }
@@ -46,18 +56,23 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private UserSetting GetUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
-            return userSettingBusiness.GetUserSettings(UserId);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
+            var query = new QueryUserSettings(_dbContext, userSettingBusiness);
+            return query.HandleQuery(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
+            {
+                UserId = UserId
+            }).UserSetting;
         }
         private void CreateUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContextOptions);
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
             int budgetId = FindFirstBudgetId();
             userSettingBusiness.CreateUserSettings(UserId, budgetId);
         }
         private int FindFirstBudgetId()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            //TODO: Temp solution
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             var firstBudget = budgetBusiness.GetBudgetsOfUser(UserId).FirstOrDefault();
             if (firstBudget != null)
             {
@@ -70,8 +85,13 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private int CreateBudgetForUser()
         {
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-            budgetBusiness.CreateNewBudget("Default Budget", UserId);
+            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+            createNewBudgetCommand.HandleCommand(new Common.Contracts.Command.CreateNewBudgetRequest()
+            {
+                BudgetName = "Default Budget",
+                UserId = UserId
+            });
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             return budgetBusiness.GetBudgetsOfUser(UserId).First().Id;
         }
         #endregion Initiate UserSettings

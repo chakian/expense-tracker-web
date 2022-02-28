@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.CommandQuery.Command;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Budget;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +23,7 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Budget/Index");
 
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             var list = budgetBusiness.GetBudgetsOfUser(UserId);
 
             ListModel listModel = new ListModel();
@@ -45,7 +47,7 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Budget/Details");
 
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             var budget = budgetBusiness.GetBudgetDetails(id);
 
             DetailModel detailModel = new DetailModel()
@@ -76,9 +78,15 @@ namespace ExpenseTracker.WebUI.Controllers
             try
             {
                 // TODO: Validation
-                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.CreateNewBudget(createModel.Name, UserId);
+                CreateNewBudgetRequest createNewBudgetRequest = new CreateNewBudgetRequest()
+                {
+                    BudgetName = createModel.Name,
+                    UserId = UserId
+                };
+                CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+                var response = createNewBudgetCommand.HandleCommand(createNewBudgetRequest);
 
+                //_logger.LogInformation(response.Messages)
                 _logger.LogInformation("Finished controller action: Budget/Create POST");
 
                 return RedirectToAction(nameof(Index));
@@ -94,7 +102,7 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Budget/Edit");
 
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
 
             var budget = budgetBusiness.GetBudgetDetails(id);
 
@@ -117,8 +125,14 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Budget/Edit POST");
             try
             {
-                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.UpdateBudget(id, updateModel.Name, UserId);
+                UpdateBudgetRequest updateBudgetRequest = new UpdateBudgetRequest()
+                {
+                    BudgetId = id,
+                    Name = updateModel.Name,
+                    UserId = UserId
+                };
+                UpdateBudgetCommand updateBudgetCommand = new UpdateBudgetCommand(_dbContextOptions);
+                var response = updateBudgetCommand.HandleCommand(updateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Edit POST");
 
@@ -135,7 +149,7 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Budget/Delete");
 
-            BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
+            BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
 
             var budget = budgetBusiness.GetBudgetDetails(id);
 
@@ -159,8 +173,13 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Budget/Delete POST");
             try
             {
-                BudgetBusiness budgetBusiness = new BudgetBusiness(_dbContextOptions);
-                budgetBusiness.UpdateBudgetAsInactive(id, UserId);
+                var deactivateBudgetRequest = new DeactivateBudgetRequest()
+                {
+                    BudgetId = id,
+                    UserId = UserId
+                };
+                var deactivateBudgetCommand = new DeactivateBudgetCommand(_dbContextOptions);
+                var response = deactivateBudgetCommand.HandleCommand(deactivateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Delete POST");
 

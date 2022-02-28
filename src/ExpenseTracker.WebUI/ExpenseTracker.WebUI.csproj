@@ -22,7 +22,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseTracker.Business\ExpenseTracker.Business.csproj" />
+    <ProjectReference Include="..\ExpenseTracker.CommandQuery\ExpenseTracker.CommandQuery.csproj" />
     <ProjectReference Include="..\ExpenseTracker.Persistence\ExpenseTracker.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 
 </Project>

@@ -115,21 +115,21 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // POST: AccountController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, UpdateModel updateModel)
-        {
-            try
-            {
-                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.UpdateAccount(id, updateModel.Name, updateModel.Balance, UserId);
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(int id, UpdateModel updateModel)
+        //{
+        //    try
+        //    {
+        //        AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+        //        accountBusiness.UpdateAccount(id, updateModel.Name, updateModel.Balance, UserId);
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         // GET: AccountController/Delete/5
         public ActionResult Delete(int id)
@@ -147,20 +147,20 @@ namespace ExpenseTracker.WebUI.Controllers
         }
 
         // POST: AccountController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.UpdateAccountAsInactive(id, UserId);
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
+        //        accountBusiness.UpdateAccountAsInactive(id, UserId);
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
     }
 }
