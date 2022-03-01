@@ -13,11 +13,13 @@ namespace ExpenseTracker.Business.Commands
         protected override DeactivateAccountResponse HandleInternal(DeactivateAccountRequest request, DeactivateAccountResponse response)
         {
             Account account = context.Accounts.Find(request.AccountId);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-
+            
             if (account != null)
             {
-                accountBusiness.UpdateAccountAsInactive(account, request.UserId);
+                account.IsActive = false;
+                AddAuditDataForUpdate(account, request.UserId);
+
+                context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             }
             else
             {

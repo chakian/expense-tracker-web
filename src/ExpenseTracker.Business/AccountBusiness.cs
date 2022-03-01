@@ -20,50 +20,6 @@ namespace ExpenseTracker.Business
         {
         }
 
-        public void UpdateAccountBalance(Account account, decimal balance, string userId)
-        {
-            TransactionBusiness transactionBusiness = new TransactionBusiness(dbContext);
-            //TODO: User should be able to pick a default category for balance change transactions
-            int categoryId = 0;
-            CategoryBusiness categoryBusiness = new CategoryBusiness(dbContext);
-            var cat = categoryBusiness.GetCategoriesOfBudget(account.BudgetId).FirstOrDefault(c => c.Name == AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME);
-            if (cat != null)
-            {
-                categoryId = cat.Id;
-            }
-            else
-            {
-                categoryId = categoryBusiness.CreateNewCategory(account.BudgetId, AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_CATEGORY_NAME, null, userId);
-            }
-
-            decimal txAmount = account.Balance - balance;
-            bool isIncome = false;
-            if (txAmount < 0)
-            {
-                isIncome = true;
-                txAmount *= -1;
-            }
-            var currentDay = DateTime.Now;
-            var request = new CreateTransactionRequest()
-            {
-                AccountId = account.Id,
-                Amount = txAmount,
-                BudgetId = account.BudgetId,
-                CategoryId = categoryId,
-                Date = new DateTime(currentDay.Year, currentDay.Month, currentDay.Day, 0, 0, 0, 0),
-                Description = AccountConstants.DEFAULT_ACCOUNT_BALANCE_CHANGE_DESCRIPTION,
-                IsIncome = isIncome,
-                UserId = userId
-            };
-            transactionBusiness.CreateTransaction(request);
-        }
-
-        public void UpdateAccountAsInactive(Account account, string userId)
-        {
-            account.IsActive = false;
-            UpdateAuditableObject(account, userId);
-        }
-
         public void UpdateAccountBalancesForNewTransaction(int sourceAccountId, int? targetAccountId, decimal transactionAmount, bool isIncome, string userId)
         {
             Account sourceAcc, targetAcc = null;
