@@ -1,5 +1,4 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +11,8 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override CreateNewBudgetResponse HandleInternal(CreateNewBudgetRequest request)
+        protected override CreateNewBudgetResponse HandleInternal(CreateNewBudgetRequest request, CreateNewBudgetResponse response)
         {
-            CreateNewBudgetResponse response = new CreateNewBudgetResponse();
-
             // Create the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             Budget budget = budgetBusiness.CreateNewBudget(request);
@@ -25,6 +22,11 @@ namespace ExpenseTracker.Business.Commands
             budgetUserBusiness.AddUserForBudget(budget, request.UserId);
 
             return response;
+        }
+
+        protected override CreateNewBudgetResponse Validate(CreateNewBudgetRequest request)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

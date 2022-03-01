@@ -10,15 +10,18 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override UpdateBudgetResponse HandleInternal(UpdateBudgetRequest request)
+        protected override UpdateBudgetResponse HandleInternal(UpdateBudgetRequest request, UpdateBudgetResponse response)
         {
-            UpdateBudgetResponse response = new UpdateBudgetResponse();
-
             // Update the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             budgetBusiness.UpdateBudget(request);
 
             return response;
+        }
+
+        protected override UpdateBudgetResponse Validate(UpdateBudgetRequest request)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -13,10 +13,8 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override UpdateAccountResponse HandleInternal(UpdateAccountRequest request)
+        protected override UpdateAccountResponse HandleInternal(UpdateAccountRequest request, UpdateAccountResponse response)
         {
-            var response = new UpdateAccountResponse();
-
             var accountBusiness = new AccountBusiness(context);
             Account account = context.Accounts.Find(request.AccountId);
 
@@ -63,6 +61,11 @@ namespace ExpenseTracker.Business.Commands
             }
 
             return response;
+        }
+
+        protected override UpdateAccountResponse Validate(UpdateAccountRequest request)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

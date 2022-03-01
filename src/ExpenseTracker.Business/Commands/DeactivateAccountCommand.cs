@@ -1,5 +1,4 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +11,8 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override DeactivateAccountResponse HandleInternal(DeactivateAccountRequest request)
+        protected override DeactivateAccountResponse HandleInternal(DeactivateAccountRequest request, DeactivateAccountResponse response)
         {
-            var response = new DeactivateAccountResponse();
-
             Account account = context.Accounts.Find(request.AccountId);
             AccountBusiness accountBusiness = new AccountBusiness(context);
 
@@ -29,6 +26,11 @@ namespace ExpenseTracker.Business.Commands
             }
 
             return response;
+        }
+
+        protected override DeactivateAccountResponse Validate(DeactivateAccountRequest request)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

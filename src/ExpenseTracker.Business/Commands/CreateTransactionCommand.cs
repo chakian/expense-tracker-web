@@ -15,9 +15,9 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override CreateTransactionResponse HandleInternal(CreateTransactionRequest request)
+        protected override CreateTransactionResponse HandleInternal(CreateTransactionRequest request, CreateTransactionResponse response)
         {
-            CreateTransactionResponse response = new CreateTransactionResponse();
+            if (response == null) response = new CreateTransactionResponse();
 
             // First create a new transaction
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
@@ -30,10 +30,15 @@ namespace ExpenseTracker.Business.Commands
             return response;
         }
 
+        protected override CreateTransactionResponse Validate(CreateTransactionRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
         [Obsolete]
         internal CreateTransactionResponse HandleCommandInternal(CreateTransactionRequest request)
         {
-            return HandleInternal(request);
+            return HandleInternal(request, null);
         }
     }
 }
