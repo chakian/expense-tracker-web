@@ -1,5 +1,6 @@
 ﻿using ExpenseTracker.Interfaces.Business;
 using ExpenseTracker.Persistence;
+using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -28,8 +29,12 @@ namespace ExpenseTracker.Business
         {
             try
             {
-                TResponse response = HandleInternal(request);
-                context.SaveChanges();
+                TResponse response = Validate(request);
+                if (!response.HasErrors())
+                {
+                    response = HandleInternal(request, response);
+                    context.SaveChanges();
+                }
                 return response;
             }
             catch (Exception exception)
@@ -42,6 +47,28 @@ namespace ExpenseTracker.Business
             }
         }
 
-        protected abstract TResponse HandleInternal(TRequest request);
+        protected abstract TResponse Validate(TRequest request);
+        protected abstract TResponse HandleInternal(TRequest request, TResponse response);
+
+        protected void AddAuditDataForCreate<T>(T entity, string userId)
+            where T : BaseAuditableDbo
+        {
+            if(entity != null)
+            {
+                entity.InsertTime = DateTime.UtcNow;
+                entity.InsertUserId = userId;
+                entity.IsActive = true;
+            }
+        }
+
+        protected void AddAuditDataForUpdate<T>(T entity, string userId)
+            where T : BaseAuditableDbo
+        {
+            if (entity != null)
+            {
+                entity.UpdateTime = DateTime.UtcNow;
+                entity.UpdateUserId = userId;
+            }
+        }
     }
 }
