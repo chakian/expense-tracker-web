@@ -11,13 +11,12 @@ namespace ExpenseTracker.Business.Tests
         public void Create_Account_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var context = CreateContext(contextOptions);
+            var context = CreateContext();
             AccountBusiness accountBusiness = new AccountBusiness(context);
             
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
 
             //ACT
             int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
@@ -32,13 +31,12 @@ namespace ExpenseTracker.Business.Tests
         public void Get_AccountDetails_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var context = CreateContext(contextOptions);
+            var context = CreateContext();
             AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT
@@ -52,13 +50,12 @@ namespace ExpenseTracker.Business.Tests
         public void Get_AccountsOfBudget_NotEmpty()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var context = CreateContext(contextOptions);
+            var context = CreateContext();
             AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
 
             //ACT

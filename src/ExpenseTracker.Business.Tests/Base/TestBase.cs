@@ -1,13 +1,14 @@
 ﻿using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System;
 
 namespace ExpenseTracker.Business.Tests
 {
     public class TestBase
     {
-        protected DbContextOptions<ExpenseTrackerDbContext> CreateNewContextOptions()
+        private DbContextOptions<ExpenseTrackerDbContext> CreateNewContextOptions()
         {
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkInMemoryDatabase()
@@ -20,15 +21,15 @@ namespace ExpenseTracker.Business.Tests
             return builder.Options;
         }
 
-        protected ExpenseTrackerDbContext CreateContext(DbContextOptions<ExpenseTrackerDbContext> options)
-        {
-            return new ExpenseTrackerDbContext(options);
-        }
-
         protected ExpenseTrackerDbContext CreateContext()
         {
             DbContextOptions<ExpenseTrackerDbContext> options = CreateNewContextOptions();
             return new ExpenseTrackerDbContext(options);
+        }
+
+        protected ExpenseTrackerDbContext GetMockContext()
+        {
+            return new Mock<ExpenseTrackerDbContext>().Object;
         }
     }
 }

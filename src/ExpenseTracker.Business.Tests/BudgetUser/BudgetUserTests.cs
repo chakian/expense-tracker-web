@@ -11,17 +11,17 @@ namespace ExpenseTracker.Business.Tests
         public void Add_UserForBudget_ExpectNotAdded()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            BudgetUserBusiness budgetUserBusiness = new BudgetUserBusiness(contextOptions);
+            var context = CreateContext();
+            BudgetUserBusiness budgetUserBusiness = new BudgetUserBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
-            var budget = new ExpenseTrackerDbContext(contextOptions).Budgets.First(b => b.Id == budgetId);
+            int budgetId = CreateBudget(context, userId);
+            var budget = context.Budgets.First(b => b.Id == budgetId);
             string secondUserId = Guid.NewGuid().ToString();
 
             //ACT
             budgetUserBusiness.AddUserForBudget(budget, secondUserId);
-            var actual = new ExpenseTrackerDbContext(contextOptions).BudgetUsers.FirstOrDefault(us => us.BudgetId==budgetId && us.UserId == secondUserId);
+            var actual = context.BudgetUsers.FirstOrDefault(us => us.BudgetId==budgetId && us.UserId == secondUserId);
 
             //ASSERT
             Assert.Null(actual);

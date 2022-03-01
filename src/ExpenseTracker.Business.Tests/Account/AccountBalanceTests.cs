@@ -13,13 +13,12 @@ namespace ExpenseTracker.Business.Tests
         public void UpdateBalance_ForNewTransaction_Ok(decimal startBalance, decimal transactionAmount, bool isIncome, decimal expectedEndBalance)
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var context = CreateContext(contextOptions);
+            var context = CreateContext();
             AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, startBalance, userId);
 
             //ACT
@@ -59,12 +58,12 @@ namespace ExpenseTracker.Business.Tests
             string[] expectedBalancesString)
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            AccountBusiness accountBusiness = new AccountBusiness(CreateContext(contextOptions));
+            var context = CreateContext();
+            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             List<int> accountIds = new List<int>();
             accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
             accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));

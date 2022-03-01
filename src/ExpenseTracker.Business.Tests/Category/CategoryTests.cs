@@ -10,12 +10,12 @@ namespace ExpenseTracker.Business.Tests
         public void Create_Category_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            CategoryBusiness categoryBusiness = new CategoryBusiness(contextOptions);
+            var context = CreateContext();
+            CategoryBusiness categoryBusiness = new CategoryBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
 
             //ACT
             int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
@@ -30,12 +30,12 @@ namespace ExpenseTracker.Business.Tests
         public void Get_CategoryDetails_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            CategoryBusiness categoryBusiness = new CategoryBusiness(contextOptions);
+            var context = CreateContext();
+            CategoryBusiness categoryBusiness = new CategoryBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
@@ -49,12 +49,12 @@ namespace ExpenseTracker.Business.Tests
         public void Get_CategoriesOfBudget_NotEmpty()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            CategoryBusiness categoryBusiness = new CategoryBusiness(contextOptions);
+            var context = CreateContext();
+            CategoryBusiness categoryBusiness = new CategoryBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
@@ -68,12 +68,12 @@ namespace ExpenseTracker.Business.Tests
         public void Update_Category_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            CategoryBusiness categoryBusiness = new CategoryBusiness(contextOptions);
+            var context = CreateContext();
+            CategoryBusiness categoryBusiness = new CategoryBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT
@@ -91,12 +91,12 @@ namespace ExpenseTracker.Business.Tests
         public void Update_CategoryAsInactive_IsInactive()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            CategoryBusiness categoryBusiness = new CategoryBusiness(contextOptions);
+            var context = CreateContext();
+            CategoryBusiness categoryBusiness = new CategoryBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string categoryName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(contextOptions, userId);
+            int budgetId = CreateBudget(context, userId);
             int categoryId = categoryBusiness.CreateNewCategory(budgetId, categoryName, null, userId);
 
             //ACT

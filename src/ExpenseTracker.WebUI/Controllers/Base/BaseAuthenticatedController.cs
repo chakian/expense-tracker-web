@@ -1,6 +1,6 @@
 ﻿using ExpenseTracker.Business;
-using ExpenseTracker.CommandQuery.Command;
-using ExpenseTracker.CommandQuery.Queries;
+using ExpenseTracker.Business.Commands;
+using ExpenseTracker.Business.Queries;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -18,7 +18,7 @@ namespace ExpenseTracker.WebUI.Controllers
     public abstract class BaseAuthenticatedController<T> : BaseController<T>
     {
         protected readonly UserManager<IdentityUser> _userManager;
-        private QueryUserSettings _queryUserSettings;
+        private GetUserSettingsQuery _queryUserSettings;
 
         [Obsolete]
         public BaseAuthenticatedController(ILogger<T> logger, DbContextOptions<ExpenseTrackerDbContext> options, UserManager<IdentityUser> userManager)
@@ -30,7 +30,7 @@ namespace ExpenseTracker.WebUI.Controllers
         public BaseAuthenticatedController(ILogger<T> logger, 
             ExpenseTrackerDbContext context, 
             UserManager<IdentityUser> userManager,
-            QueryUserSettings queryUserSettings)
+            GetUserSettingsQuery queryUserSettings)
             : base(logger, context)
         {
             _userManager = userManager;
@@ -62,8 +62,8 @@ namespace ExpenseTracker.WebUI.Controllers
         private UserSetting GetUserSetting()
         {
             UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            _queryUserSettings = new QueryUserSettings(_dbContext, userSettingBusiness);
-            return _queryUserSettings.HandleQuery(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
+            _queryUserSettings = new GetUserSettingsQuery(_dbContext, userSettingBusiness);
+            return _queryUserSettings.Retrieve(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
             {
                 UserId = UserId
             }).UserSetting;
@@ -91,7 +91,7 @@ namespace ExpenseTracker.WebUI.Controllers
         private int CreateBudgetForUser()
         {
             CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
-            createNewBudgetCommand.HandleCommand(new Common.Contracts.Command.CreateNewBudgetRequest()
+            createNewBudgetCommand.Execute(new Common.Contracts.Command.CreateNewBudgetRequest()
             {
                 BudgetName = "Default Budget",
                 UserId = UserId
