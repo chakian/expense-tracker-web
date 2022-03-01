@@ -33,7 +33,8 @@ namespace ExpenseTracker.WebUI.Controllers
                 listModel.BudgetList.Add(new ListModel.Budget()
                 {
                     Id = l.Id,
-                    Name = l.Name
+                    Name = l.Name,
+                    IsDefault = (l.Id == BudgetId)
                 });
             });
 
@@ -189,6 +190,21 @@ namespace ExpenseTracker.WebUI.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult MakeDefault(int id)
+        {
+            _logger.LogInformation("Started controller action: Budget/MakeDefault");
+
+            var context = new ExpenseTrackerDbContext(_dbContextOptions);
+            var userSettingBusiness = new UserSettingBusiness(context);
+
+            userSettingBusiness.UpdateUserSettings(UserId, id);
+            context.SaveChanges();
+
+            _logger.LogInformation("Finished controller action: Budget/MakeDefault");
+
+            return RedirectToAction("Index");
         }
     }
 }
