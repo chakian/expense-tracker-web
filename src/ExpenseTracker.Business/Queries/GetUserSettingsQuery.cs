@@ -12,16 +12,13 @@ namespace ExpenseTracker.Business.Queries
             _userSettingBusiness = userSettingBusiness;
         }
 
-        protected override GetUserSettingsResponse HandleInternal(GetUserSettingsRequest request)
+        protected override void HandleInternal(GetUserSettingsRequest request, GetUserSettingsResponse response)
         {
             var settings = _userSettingBusiness.GetUserSettings(request.UserId);
 
-            var response = new GetUserSettingsResponse()
-            {
-                UserSetting = settings,
-            };
-
-            return response;
+            response.UserSetting = settings;
         }
+
+        //TODO: Think about validation
     }
 }

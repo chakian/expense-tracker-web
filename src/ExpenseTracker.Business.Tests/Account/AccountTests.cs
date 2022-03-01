@@ -31,28 +31,6 @@ namespace ExpenseTracker.Business.Tests
             Assert.Equal(accountName, actual.Name);
         }
 
-        [Fact]
-        public void Get_AccountsOfBudget_NotEmpty()
-        {
-            //ARRANGE
-            var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-
-            string userId = Guid.NewGuid().ToString();
-            string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(context, userId);
-
-            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = 0, IsActive = true };
-            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-            context.SaveChanges();
-
-            //ACT
-            List<Common.Entities.Account> actual = accountBusiness.GetAccountsOfBudget(budgetId);
-
-            //ASSERT
-            Assert.NotEmpty(actual);
-        }
-
         //[Fact]
         //public void Update_Account_ChangeName_Valid()
         //{

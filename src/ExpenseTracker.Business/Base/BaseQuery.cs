@@ -18,7 +18,11 @@ namespace ExpenseTracker.Business
         {
             try
             {
-                TResponse response = HandleInternal(request);
+                TResponse response = Validate(request);
+                if (!response.HasErrors())
+                {
+                    HandleInternal(request, response);
+                }
                 return response;
             }
             catch (Exception exception)
@@ -31,6 +35,12 @@ namespace ExpenseTracker.Business
             }
         }
 
-        protected abstract TResponse HandleInternal(TRequest request);
+        protected virtual TResponse Validate(TRequest request)
+        {
+            var response = new TResponse();
+            return response;
+        }
+
+        protected abstract void HandleInternal(TRequest request, TResponse response);
     }
 }

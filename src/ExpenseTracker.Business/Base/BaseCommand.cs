@@ -43,7 +43,7 @@ namespace ExpenseTracker.Business
         }
 
         protected abstract TResponse Validate(TRequest request);
-        protected abstract TResponse HandleInternal(TRequest request, TResponse response);
+        protected abstract TResponse HandleInternal(TRequest request, TResponse response); //TODO: Make this void
 
         protected void AddAuditDataForCreate<T>(T entity, string userId)
             where T : BaseAuditableDbo

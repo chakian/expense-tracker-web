@@ -20,25 +20,6 @@ namespace ExpenseTracker.Business
         {
         }
 
-        public List<Common.Entities.Account> GetAccountsOfBudget(int budgetId)
-        {
-            var accountDboList = dbContext.Accounts.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();
-            List<Common.Entities.Account> AccountList = new List<Common.Entities.Account>();
-            accountDboList.ForEach(b =>
-            {
-                AccountList.Add(new Common.Entities.Account()
-                {
-                    Id = b.Id,
-                    BudgetId = b.BudgetId,
-                    Name = b.Name,
-                    Balance = b.Balance,
-                    AccountType = b.AccountType,
-                    IsActive = b.IsActive
-                });
-            });
-            return AccountList;
-        }
-
         public Common.Entities.Account GetAccountDetails(int id)
         {
             var accountDbo = dbContext.Accounts.SingleOrDefault(b => b.Id == id);

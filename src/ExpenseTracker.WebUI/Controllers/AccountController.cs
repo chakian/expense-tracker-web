@@ -1,11 +1,12 @@
 ﻿using ExpenseTracker.Business;
 using ExpenseTracker.Business.Commands;
+using ExpenseTracker.Business.Queries;
 using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Common.Contracts.Query;
 using ExpenseTracker.Common.Enums;
 using ExpenseTracker.Common.Extensions;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Account;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,11 +30,16 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Account/Index");
 
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var list = accountBusiness.GetAccountsOfBudget(BudgetId);
+            var request = new GetAccountsOfBudgetRequest()
+            {
+                BudgetId = BudgetId,
+            };
+            var query = new GetAccountsOfBudgetQuery(_dbContext);
+
+            var list = query.Retrieve(request).AccountList;
 
             ListModel listModel = new ListModel();
-            listModel.AccountList = new System.Collections.Generic.List<ListModel.Account>();
+            listModel.AccountList = new List<ListModel.Account>();
             list.ForEach(l =>
             {
                 listModel.AccountList.Add(new ListModel.Account()
