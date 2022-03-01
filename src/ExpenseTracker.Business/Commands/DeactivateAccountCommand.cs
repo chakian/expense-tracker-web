@@ -1,13 +1,12 @@
 ﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class DeactivateAccountCommand : BaseCommand<DeactivateAccountRequest, DeactivateAccountResponse>
     {
-        public DeactivateAccountCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public DeactivateAccountCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 

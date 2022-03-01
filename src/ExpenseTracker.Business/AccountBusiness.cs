@@ -20,20 +20,6 @@ namespace ExpenseTracker.Business
         {
         }
 
-        public int CreateNewAccount(int budgetId, string name, int accountType, decimal balance, string userId)
-        {
-            var account = CreateNewAuditableObject<Account>(userId);
-            account.BudgetId = budgetId;
-            account.Name = name;
-            account.AccountType = accountType;
-            account.Balance = balance;
-
-            dbContext.Accounts.Add(account);
-            dbContext.SaveChanges();//TODO: Move to handler
-
-            return account.Id;
-        }
-
         public List<Common.Entities.Account> GetAccountsOfBudget(int budgetId)
         {
             var accountDboList = dbContext.Accounts.Where(b => b.BudgetId == budgetId && b.IsActive).ToList();

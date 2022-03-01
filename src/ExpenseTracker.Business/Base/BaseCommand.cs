@@ -1,7 +1,6 @@
 ﻿using ExpenseTracker.Interfaces.Business;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ExpenseTracker.Business
@@ -14,10 +13,6 @@ namespace ExpenseTracker.Business
         public BaseCommand(ExpenseTrackerDbContext context)
         {
             this.context = context;
-        }
-        public BaseCommand(DbContextOptions<ExpenseTrackerDbContext> options)
-        {
-            context = new ExpenseTrackerDbContext(options);
         }
 
         /// <summary>

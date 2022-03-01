@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Business.Commands;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Common.Enums;
 using ExpenseTracker.Common.Extensions;
 using ExpenseTracker.Persistence;
@@ -89,9 +91,18 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
-                // TODO: Validations
-                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, createModel.Type, createModel.Balance, UserId);
+                var commandRequest = new CreateNewAccountRequest()
+                {
+                    BudgetId = BudgetId,
+                    AccountName = createModel.Name,
+                    AccountType = createModel.Type,
+                    AccountBalance = createModel.Balance,
+                    UserId = UserId,
+                };
+
+                var command = new CreateNewAccountCommand(_dbContext);
+                int accountId = command.Execute(commandRequest).CreatedAccountId;
+
                 return RedirectToAction(nameof(Index));
             }
             catch

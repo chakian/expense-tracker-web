@@ -90,7 +90,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private int CreateBudgetForUser()
         {
-            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
             createNewBudgetCommand.Execute(new Common.Contracts.Command.CreateNewBudgetRequest()
             {
                 BudgetName = "Default Budget",

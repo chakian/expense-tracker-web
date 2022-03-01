@@ -7,7 +7,7 @@ namespace ExpenseTracker.Business.Commands
 {
     public class CreateNewAccountCommand : BaseCommand<CreateNewAccountRequest, CreateNewAccountResponse>
     {
-        public CreateNewAccountCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public CreateNewAccountCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 

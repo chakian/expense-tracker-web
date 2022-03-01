@@ -84,7 +84,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     BudgetName = createModel.Name,
                     UserId = UserId
                 };
-                CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+                CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
                 var response = createNewBudgetCommand.Execute(createNewBudgetRequest);
 
                 //_logger.LogInformation(response.Messages)
@@ -132,7 +132,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     Name = updateModel.Name,
                     UserId = UserId
                 };
-                UpdateBudgetCommand updateBudgetCommand = new UpdateBudgetCommand(_dbContextOptions);
+                UpdateBudgetCommand updateBudgetCommand = new UpdateBudgetCommand(_dbContext);
                 var response = updateBudgetCommand.Execute(updateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Edit POST");
@@ -179,7 +179,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     BudgetId = id,
                     UserId = UserId
                 };
-                var deactivateBudgetCommand = new DeactivateBudgetCommand(_dbContextOptions);
+                var deactivateBudgetCommand = new DeactivateBudgetCommand(_dbContext);
                 var response = deactivateBudgetCommand.Execute(deactivateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Delete POST");

@@ -1,12 +1,11 @@
 ﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class UpdateBudgetCommand : BaseCommand<UpdateBudgetRequest, UpdateBudgetResponse>
     {
-        public UpdateBudgetCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public UpdateBudgetCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 

@@ -2,14 +2,13 @@
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class UpdateAccountCommand : BaseCommand<UpdateAccountRequest, UpdateAccountResponse>
     {
-        public UpdateAccountCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public UpdateAccountCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 

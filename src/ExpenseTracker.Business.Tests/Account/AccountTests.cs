@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Common.Enums;
+using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -7,26 +8,6 @@ namespace ExpenseTracker.Business.Tests
 {
     public class AccountTests : BudgetRelatedTestBase
     {
-        [Fact]
-        public void Create_Account_Valid()
-        {
-            //ARRANGE
-            var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-            
-            string userId = Guid.NewGuid().ToString();
-            string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(context, userId);
-
-            //ACT
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
-            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
-
-            //ASSERT
-            Assert.NotEqual(0, actual.Id);
-            Assert.True(actual.IsActive);
-        }
-
         [Fact]
         public void Get_AccountDetails_Valid()
         {
@@ -37,7 +18,11 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = 0 };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
+            int accountId = account.Id;
 
             //ACT
             Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
@@ -56,7 +41,10 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
-            accountBusiness.CreateNewAccount(budgetId, accountName, 10, 0, userId);
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = 0, IsActive = true };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
 
             //ACT
             List<Common.Entities.Account> actual = accountBusiness.GetAccountsOfBudget(budgetId);

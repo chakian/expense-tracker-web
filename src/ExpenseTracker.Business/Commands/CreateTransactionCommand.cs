@@ -1,16 +1,11 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class CreateTransactionCommand : BaseCommand<CreateTransactionRequest, CreateTransactionResponse>
     {
-        public CreateTransactionCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
-        {
-        }
         public CreateTransactionCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }

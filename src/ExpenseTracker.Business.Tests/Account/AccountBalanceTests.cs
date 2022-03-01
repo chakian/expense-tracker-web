@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Common.Enums;
+using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Collections.Generic;
 using Xunit;
@@ -19,7 +20,11 @@ namespace ExpenseTracker.Business.Tests
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, startBalance, userId);
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = startBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
+            int accountId = account.Id;
 
             //ACT
             accountBusiness.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
@@ -65,10 +70,20 @@ namespace ExpenseTracker.Business.Tests
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
             List<int> accountIds = new List<int>();
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            context.SaveChanges();
 
             decimal[] expectedBalances = new decimal[expectedBalancesString.Length];
             for(int i = 0; i < expectedBalancesString.Length; i++)
