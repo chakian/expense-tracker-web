@@ -20,12 +20,6 @@ namespace ExpenseTracker.Business
         {
         }
 
-        public void UpdateAccountName(Account account, string newName, string userId)
-        {
-            account.Name = newName;
-            UpdateAuditableObject(account, userId);
-        }
-
         public void UpdateAccountBalance(Account account, decimal balance, string userId)
         {
             TransactionBusiness transactionBusiness = new TransactionBusiness(dbContext);

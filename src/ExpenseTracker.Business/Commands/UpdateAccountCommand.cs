@@ -21,6 +21,8 @@ namespace ExpenseTracker.Business.Commands
             {
                 if (account.Name != request.AccountName)
                 {
+                    account.Name = request.AccountName;
+                    AddAuditDataForUpdate(account, request.UserId);
                     accountBusiness.UpdateAccountName(account, request.AccountName, request.UserId);
                 }
 

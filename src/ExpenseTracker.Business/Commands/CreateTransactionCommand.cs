@@ -30,7 +30,7 @@ namespace ExpenseTracker.Business.Commands
             throw new NotImplementedException();
         }
 
-        [Obsolete]
+        [Obsolete("Use MediatR or any other solution to avoid chaining comands")]
         internal CreateTransactionResponse HandleCommandInternal(CreateTransactionRequest request)
         {
             return HandleInternal(request, null);
