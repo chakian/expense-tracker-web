@@ -14,7 +14,6 @@ namespace ExpenseTracker.Business.Tests
             //ARRANGE
             var context = CreateContext();
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
@@ -168,7 +167,6 @@ namespace ExpenseTracker.Business.Tests
             //ARRANGE
             var context = CreateContext();
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);

@@ -14,7 +14,6 @@ namespace ExpenseTracker.Business.Commands
 
         protected override UpdateAccountResponse HandleInternal(UpdateAccountRequest request, UpdateAccountResponse response)
         {
-            var accountBusiness = new AccountBusiness(context);
             Account account = context.Accounts.Find(request.AccountId);
 
             if (account != null)

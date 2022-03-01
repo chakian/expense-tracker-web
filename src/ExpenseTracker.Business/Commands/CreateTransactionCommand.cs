@@ -1,4 +1,5 @@
-﻿using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Business.Helpers;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using System;
 
@@ -19,8 +20,8 @@ namespace ExpenseTracker.Business.Commands
             transactionBusiness.CreateTransaction(request);
 
             // Then update the account balance(s) accordingly
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-            accountBusiness.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
+            var balanceHelper = new AccountBalanceHelper(context);
+            balanceHelper.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
 
             return response;
         }

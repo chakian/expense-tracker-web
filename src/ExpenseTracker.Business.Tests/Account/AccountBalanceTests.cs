@@ -1,4 +1,4 @@
-﻿using ExpenseTracker.Common.Enums;
+﻿using ExpenseTracker.Business.Helpers;
 using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,6 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
@@ -27,8 +26,10 @@ namespace ExpenseTracker.Business.Tests
             context.SaveChanges();
             int accountId = account.Id;
 
+            var balanceHelper = new AccountBalanceHelper(context);
+
             //ACT
-            accountBusiness.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
+            balanceHelper.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
             var actual = context.Accounts.Single(account => account.Id == accountId);
 
             //ASSERT
@@ -65,7 +66,6 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
@@ -92,10 +92,12 @@ namespace ExpenseTracker.Business.Tests
                 expectedBalances[i] = decimal.Parse(expectedBalancesString[i]);
             }
 
-            accountBusiness.UpdateAccountBalancesForNewTransaction(accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
+            var balanceHelper = new AccountBalanceHelper(context);
+
+            balanceHelper.UpdateAccountBalancesForNewTransaction(accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
 
             // ACT
-            accountBusiness.UpdateAccountBalancesForEditedTransaction(accountIds[source], accountIds[target], updatedAmount, updatedIsIncome, accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
+            balanceHelper.UpdateAccountBalancesForEditedTransaction(accountIds[source], accountIds[target], updatedAmount, updatedIsIncome, accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
             var actualSource = context.Accounts.Single(account => account.Id == accountIds[source]);
             var actualTarget = context.Accounts.Single(account => account.Id == accountIds[target]);
 
