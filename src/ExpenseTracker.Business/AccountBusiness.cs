@@ -20,27 +20,6 @@ namespace ExpenseTracker.Business
         {
         }
 
-        public Common.Entities.Account GetAccountDetails(int id)
-        {
-            var accountDbo = dbContext.Accounts.SingleOrDefault(b => b.Id == id);
-            if (accountDbo != null)
-            {
-                return new Common.Entities.Account()
-                {
-                    Id = accountDbo.Id,
-                    BudgetId = accountDbo.BudgetId,
-                    Name = accountDbo.Name,
-                    Balance = accountDbo.Balance,
-                    AccountType = accountDbo.AccountType,
-                    IsActive = accountDbo.IsActive
-                };
-            }
-            else
-            {
-                return new Common.Entities.Account();
-            }
-        }
-
         public void UpdateAccountName(Account account, string newName, string userId)
         {
             account.Name = newName;

@@ -2,6 +2,7 @@
 using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ExpenseTracker.Business.Tests
@@ -28,7 +29,7 @@ namespace ExpenseTracker.Business.Tests
 
             //ACT
             accountBusiness.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
-            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
+            var actual = context.Accounts.Single(account => account.Id == accountId);
 
             //ASSERT
             Assert.Equal(expectedEndBalance, actual.Balance);
@@ -95,8 +96,8 @@ namespace ExpenseTracker.Business.Tests
 
             // ACT
             accountBusiness.UpdateAccountBalancesForEditedTransaction(accountIds[source], accountIds[target], updatedAmount, updatedIsIncome, accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
-            var actualSource = accountBusiness.GetAccountDetails(accountIds[source]);
-            var actualTarget = accountBusiness.GetAccountDetails(accountIds[target]);
+            var actualSource = context.Accounts.Single(account => account.Id == accountIds[source]);
+            var actualTarget = context.Accounts.Single(account => account.Id == accountIds[target]);
 
             // ASSERT
             Assert.Equal(expectedBalances[source], actualSource.Balance);

@@ -60,8 +60,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Details/5
         public ActionResult Details(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             DetailModel detailModel = new DetailModel()
             {
                 Id = acc.Id,
@@ -120,8 +122,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Edit/5
         public ActionResult Edit(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             UpdateModel updateModel = new UpdateModel()
             {
                 Id = acc.Id,
@@ -151,8 +155,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Delete/5
         public ActionResult Delete(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             DeleteModel deleteModel = new DeleteModel()
             {
                 Id = acc.Id,

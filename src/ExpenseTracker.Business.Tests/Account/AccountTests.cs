@@ -1,36 +1,7 @@
-﻿using ExpenseTracker.Common.Enums;
-using ExpenseTracker.Persistence.DbModels;
-using System;
-using System.Collections.Generic;
-using Xunit;
-
-namespace ExpenseTracker.Business.Tests
+﻿namespace ExpenseTracker.Business.Tests
 {
     public class AccountTests : BudgetRelatedTestBase
     {
-        [Fact]
-        public void Get_AccountDetails_Valid()
-        {
-            //ARRANGE
-            var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-
-            string userId = Guid.NewGuid().ToString();
-            string accountName = Guid.NewGuid().ToString();
-            int budgetId = CreateBudget(context, userId);
-
-            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = 0 };
-            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
-            context.SaveChanges();
-            int accountId = account.Id;
-
-            //ACT
-            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
-
-            //ASSERT
-            Assert.Equal(accountName, actual.Name);
-        }
-
         //[Fact]
         //public void Update_Account_ChangeName_Valid()
         //{
