@@ -4,7 +4,7 @@ using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace ExpenseTracker.Business.Base
+namespace ExpenseTracker.Business
 {
     public class BaseBusiness : IBaseBusiness
     {

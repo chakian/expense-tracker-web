@@ -1,4 +1,4 @@
-﻿using ExpenseTracker.Business.Base;
+﻿using ExpenseTracker.Business;
 using ExpenseTracker.Common.Interfaces.Business;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;

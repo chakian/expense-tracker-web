@@ -1,14 +1,11 @@
-﻿using ExpenseTracker.CommandQuery.Queries;
-using ExpenseTracker.CommandQuery.Tests.Base;
+﻿using ExpenseTracker.Business.Queries;
 using ExpenseTracker.Common.Contracts.Query.UserSetting;
 using ExpenseTracker.Common.Interfaces.Business;
-using ExpenseTracker.Persistence;
 using Moq;
 using System;
-using System.Linq;
 using Xunit;
 
-namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
+namespace ExpenseTracker.Business.Tests
 {
     public class QueryUserSettingsTests : TestBase
     {
@@ -27,14 +24,14 @@ namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
                 UserId = userId
             });
 
-            var query = new QueryUserSettings(GetMockContext(), userSettingBusinessMock.Object);
+            var query = new GetUserSettingsQuery(GetMockContext(), userSettingBusinessMock.Object);
             var request = new GetUserSettingsRequest()
             {
                 UserId = userId,
             };
 
             //ACT
-            var actual = query.HandleQuery(request);
+            var actual = query.Retrieve(request);
 
             //ASSERT
             Assert.NotNull(actual);
@@ -51,14 +48,14 @@ namespace ExpenseTracker.CommandQuery.Tests.Query.UserSetting
             Common.Entities.UserSetting userSetting = null;
             userSettingBusinessMock.Setup(bus => bus.GetUserSettings(It.IsAny<string>())).Returns(userSetting);
 
-            var query = new QueryUserSettings(GetMockContext(), userSettingBusinessMock.Object);
+            var query = new GetUserSettingsQuery(GetMockContext(), userSettingBusinessMock.Object);
             var request = new GetUserSettingsRequest()
             {
                 UserId = userId,
             };
 
             //ACT
-            var actual = query.HandleQuery(request);
+            var actual = query.Retrieve(request);
 
             //ASSERT
             Assert.NotNull(actual);

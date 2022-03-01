@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
 
+//TODO: Complete migration to net6.0 -> https://docs.microsoft.com/en-us/aspnet/core/migration/50-to-60?view=aspnetcore-6.0&tabs=visual-studio
+
 namespace ExpenseTracker.WebUI
 {
     public class Startup

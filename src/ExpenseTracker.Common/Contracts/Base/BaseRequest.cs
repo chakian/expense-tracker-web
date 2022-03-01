@@ -1,11 +1,9 @@
-﻿namespace ExpenseTracker.Common.Contracts
+﻿using ExpenseTracker.Interfaces.Business;
+
+namespace ExpenseTracker.Common.Contracts
 {
     public class BaseRequest : IRequest
     {
         public string UserId { get; set; }
-    }
-
-    public interface IRequest
-    {
     }
 }

@@ -4,7 +4,7 @@ using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace ExpenseTracker.CommandQuery.Command
+namespace ExpenseTracker.Business.Commands
 {
     public class CreateTransactionCommand : BaseCommand<CreateTransactionRequest, CreateTransactionResponse>
     {
@@ -28,6 +28,12 @@ namespace ExpenseTracker.CommandQuery.Command
             accountBusiness.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
 
             return response;
+        }
+
+        [Obsolete]
+        internal CreateTransactionResponse HandleCommandInternal(CreateTransactionRequest request)
+        {
+            return HandleInternal(request);
         }
     }
 }

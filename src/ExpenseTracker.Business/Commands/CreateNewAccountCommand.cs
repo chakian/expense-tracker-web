@@ -3,7 +3,7 @@ using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseTracker.CommandQuery.Command
+namespace ExpenseTracker.Business.Commands
 {
     public class CreateNewAccountCommand : BaseCommand<CreateNewAccountRequest, CreateNewAccountResponse>
     {
@@ -14,7 +14,7 @@ namespace ExpenseTracker.CommandQuery.Command
         protected override CreateNewAccountResponse HandleInternal(CreateNewAccountRequest request)
         {
             var response = new CreateNewAccountResponse();
-            
+
             AccountBusiness accountBusiness = new AccountBusiness(context);
             accountBusiness.CreateNewAccount(request.BudgetId, request.AccountName, request.AccountType, request.AccountBalance, request.UserId);
 

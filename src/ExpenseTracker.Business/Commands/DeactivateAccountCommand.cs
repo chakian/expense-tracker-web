@@ -4,7 +4,7 @@ using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseTracker.CommandQuery.Command
+namespace ExpenseTracker.Business.Commands
 {
     public class DeactivateAccountCommand : BaseCommand<DeactivateAccountRequest, DeactivateAccountResponse>
     {

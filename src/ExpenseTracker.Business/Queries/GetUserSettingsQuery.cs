@@ -2,12 +2,12 @@
 using ExpenseTracker.Common.Interfaces.Business;
 using ExpenseTracker.Persistence;
 
-namespace ExpenseTracker.CommandQuery.Queries
+namespace ExpenseTracker.Business.Queries
 {
-    public class QueryUserSettings : BaseQuery<GetUserSettingsRequest, GetUserSettingsResponse>
+    public class GetUserSettingsQuery : BaseQuery<GetUserSettingsRequest, GetUserSettingsResponse>
     {
         private readonly IUserSettingBusiness _userSettingBusiness;
-        public QueryUserSettings(ExpenseTrackerDbContext context, IUserSettingBusiness userSettingBusiness) : base(context)
+        public GetUserSettingsQuery(ExpenseTrackerDbContext context, IUserSettingBusiness userSettingBusiness) : base(context)
         {
             _userSettingBusiness = userSettingBusiness;
         }

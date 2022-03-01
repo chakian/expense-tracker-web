@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExpenseTracker.Interfaces.Business;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,11 +46,5 @@ namespace ExpenseTracker.Common.Contracts
             public bool IsErrorMessage { get; set; }
             public string Text { get; set; }
         }
-    }
-
-    public interface IResponse
-    {
-        public void WriteExceptionMessage(Exception exception, bool clearAll = true);
-        public void AddMessage(string message, bool isError);
     }
 }

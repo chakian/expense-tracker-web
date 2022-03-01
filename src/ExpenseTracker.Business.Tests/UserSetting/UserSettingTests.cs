@@ -11,17 +11,16 @@ namespace ExpenseTracker.Business.Tests
         public void Create_UserSetting_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var dbcntx = CreateContext(contextOptions);
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
+            var context = CreateContext();
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
 
             //ACT
             userSettingBusiness.CreateUserSettings(userId, budgetId);
-            dbcntx.SaveChanges();
-            var actual = new ExpenseTrackerDbContext(contextOptions).UserSettings.FirstOrDefault(us => us.UserId == userId);
+            context.SaveChanges();
+            var actual = context.UserSettings.FirstOrDefault(us => us.UserId == userId);
 
             //ASSERT
             Assert.NotNull(actual);
@@ -32,20 +31,18 @@ namespace ExpenseTracker.Business.Tests
         public void Get_UserSetting_Valid()
         {
             //ARRANGE
-            var contextOptions = CreateNewContextOptions();
-            var dbcntx = CreateContext(contextOptions);
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(dbcntx);
+            var context = CreateContext();
+            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
 
-            var dbctx = new ExpenseTrackerDbContext(contextOptions);
-            dbctx.UserSettings.Add(new Persistence.DbModels.UserSetting()
+            context.UserSettings.Add(new Persistence.DbModels.UserSetting()
             {
                 UserId = userId,
                 DefaultBudgetId = budgetId
             });
-            dbctx.SaveChanges();
+            context.SaveChanges();
 
             //ACT
             var actual = userSettingBusiness.GetUserSettings(userId);
