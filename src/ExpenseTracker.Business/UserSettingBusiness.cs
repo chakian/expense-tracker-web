@@ -36,23 +36,5 @@ namespace ExpenseTracker.Business
 
             dbContext.Entry(settingsDbo).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
         }
-
-        public Common.Entities.UserSetting GetUserSettings(string userId)
-        {
-            var settingsDbo = dbContext.UserSettings.SingleOrDefault(us => us.UserId == userId);
-
-            Common.Entities.UserSetting userSetting = null;
-
-            if (settingsDbo != null)
-            {
-                userSetting = new Common.Entities.UserSetting()
-                {
-                    UserId = settingsDbo.UserId,
-                    DefaultBudgetId = settingsDbo.DefaultBudgetId
-                };
-            }
-
-            return userSetting;
-        }
     }
 }

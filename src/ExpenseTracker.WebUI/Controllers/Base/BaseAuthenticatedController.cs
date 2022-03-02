@@ -61,8 +61,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private UserSetting GetUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            _queryUserSettings = new GetUserSettingsQuery(_dbContext, userSettingBusiness);
+            _queryUserSettings = new GetUserSettingsQuery(_dbContext);
             return _queryUserSettings.Retrieve(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
             {
                 UserId = UserId
