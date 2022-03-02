@@ -29,7 +29,9 @@ namespace ExpenseTracker.Business.Commands
 
         protected override DeactivateAccountResponse Validate(DeactivateAccountRequest request)
         {
-            throw new System.NotImplementedException();
+            var response = new DeactivateAccountResponse();
+            //TODO: Validation
+            return response;
         }
     }
 }

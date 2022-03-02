@@ -21,7 +21,8 @@ namespace ExpenseTracker.Business.Commands
             };
             AddAuditDataForCreate(budgetUser, request.UserId);
 
-            context.BudgetUsers.Add(budgetUser);
+            context.Entry(budgetUser).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
         }
 
         protected override AddUserToBudgetResponse Validate(AddUserToBudgetRequest request)

@@ -26,7 +26,9 @@ namespace ExpenseTracker.Business.Commands
 
         protected override CreateTransactionResponse Validate(CreateTransactionRequest request)
         {
-            throw new NotImplementedException();
+            var response = new CreateTransactionResponse();
+            //TODO: Validation
+            return response;
         }
 
         [Obsolete("Use MediatR or any other solution to avoid chaining comands")]

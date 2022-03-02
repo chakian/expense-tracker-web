@@ -18,7 +18,9 @@ namespace ExpenseTracker.Business.Commands
 
         protected override UpdateBudgetResponse Validate(UpdateBudgetRequest request)
         {
-            throw new System.NotImplementedException();
+            var response = new UpdateBudgetResponse();
+            //TODO: Validation
+            return response;
         }
     }
 }

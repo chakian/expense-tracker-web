@@ -18,7 +18,9 @@ namespace ExpenseTracker.Business.Commands
 
         protected override DeactivateBudgetResponse Validate(DeactivateBudgetRequest request)
         {
-            throw new System.NotImplementedException();
+            var response = new DeactivateBudgetResponse();
+            //TODO: Validation
+            return response;
         }
     }
 }

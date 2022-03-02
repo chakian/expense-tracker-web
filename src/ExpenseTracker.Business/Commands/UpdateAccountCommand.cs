@@ -62,7 +62,9 @@ namespace ExpenseTracker.Business.Commands
 
         protected override UpdateAccountResponse Validate(UpdateAccountRequest request)
         {
-            throw new System.NotImplementedException();
+            var response = new UpdateAccountResponse();
+            //TODO: Validation
+            return response;
         }
     }
 }
