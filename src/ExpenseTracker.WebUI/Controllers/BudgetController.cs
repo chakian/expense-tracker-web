@@ -197,10 +197,10 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Budget/MakeDefault");
 
             var context = new ExpenseTrackerDbContext(_dbContextOptions);
-            var userSettingBusiness = new UserSettingBusiness(context);
-
-            userSettingBusiness.UpdateUserSettings(UserId, id);
-            context.SaveChanges();
+            var command = new UpdateUserSettingsDefaultBudgetCommand(context);
+            var request = new UpdateUserSettingsDefaultBudgetRequest() { DefaultBudgetId = id, UserId = UserId };
+            
+            command.Execute(request);
 
             _logger.LogInformation("Finished controller action: Budget/MakeDefault");
 
