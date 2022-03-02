@@ -11,7 +11,7 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override CreateTransactionResponse HandleInternal(CreateTransactionRequest request, CreateTransactionResponse response)
+        protected override void HandleInternal(CreateTransactionRequest request, CreateTransactionResponse response)
         {
             if (response == null) response = new CreateTransactionResponse();
 
@@ -22,8 +22,6 @@ namespace ExpenseTracker.Business.Commands
             // Then update the account balance(s) accordingly
             var balanceHelper = new AccountBalanceHelper(context);
             balanceHelper.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
-
-            return response;
         }
 
         protected override CreateTransactionResponse Validate(CreateTransactionRequest request)
@@ -32,9 +30,9 @@ namespace ExpenseTracker.Business.Commands
         }
 
         [Obsolete("Use MediatR or any other solution to avoid chaining comands")]
-        internal CreateTransactionResponse HandleCommandInternal(CreateTransactionRequest request)
+        internal void HandleCommandInternal(CreateTransactionRequest request)
         {
-            return HandleInternal(request, null);
+            HandleInternal(request, null);
         }
     }
 }

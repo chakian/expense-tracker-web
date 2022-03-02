@@ -1,6 +1,7 @@
 ﻿using ExpenseTracker.Business;
 using ExpenseTracker.Business.Commands;
 using ExpenseTracker.Business.Queries;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -69,9 +70,11 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private void CreateUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            int budgetId = FindFirstBudgetId();
-            userSettingBusiness.CreateUserSettings(UserId, budgetId);
+            var command = new CreateUserSettingsCommand(_dbContext);
+            var budgetId = FindFirstBudgetId();
+            var request = new CreateUserSettingsRequest() { DefaultBudgetId = budgetId, UserId = UserId };
+            
+            command.Execute(request);
         }
         private int FindFirstBudgetId()
         {

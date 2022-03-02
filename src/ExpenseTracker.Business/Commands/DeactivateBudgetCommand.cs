@@ -9,13 +9,11 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override DeactivateBudgetResponse HandleInternal(DeactivateBudgetRequest request, DeactivateBudgetResponse response)
+        protected override void HandleInternal(DeactivateBudgetRequest request, DeactivateBudgetResponse response)
         {
             // Deactivate the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             budgetBusiness.UpdateBudgetAsInactive(request);
-
-            return response;
         }
 
         protected override DeactivateBudgetResponse Validate(DeactivateBudgetRequest request)

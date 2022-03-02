@@ -11,7 +11,7 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override CreateNewAccountResponse HandleInternal(CreateNewAccountRequest request, CreateNewAccountResponse response)
+        protected override void HandleInternal(CreateNewAccountRequest request, CreateNewAccountResponse response)
         {
             var account = new Account()
             {
@@ -27,8 +27,6 @@ namespace ExpenseTracker.Business.Commands
             context.SaveChanges();
 
             response.CreatedAccountId = account.Id;
-            
-            return response;
         }
 
         protected override CreateNewAccountResponse Validate(CreateNewAccountRequest request)

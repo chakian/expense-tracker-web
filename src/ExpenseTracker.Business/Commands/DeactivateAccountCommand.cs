@@ -10,7 +10,7 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override DeactivateAccountResponse HandleInternal(DeactivateAccountRequest request, DeactivateAccountResponse response)
+        protected override void HandleInternal(DeactivateAccountRequest request, DeactivateAccountResponse response)
         {
             Account account = context.Accounts.Find(request.AccountId);
             
@@ -25,8 +25,6 @@ namespace ExpenseTracker.Business.Commands
             {
                 response.AddMessage("Hesap bulunamadı.", true);
             }
-
-            return response;
         }
 
         protected override DeactivateAccountResponse Validate(DeactivateAccountRequest request)

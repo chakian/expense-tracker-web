@@ -10,7 +10,7 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override CreateNewBudgetResponse HandleInternal(CreateNewBudgetRequest request, CreateNewBudgetResponse response)
+        protected override void HandleInternal(CreateNewBudgetRequest request, CreateNewBudgetResponse response)
         {
             // Create the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
@@ -19,8 +19,6 @@ namespace ExpenseTracker.Business.Commands
             // Assign the user to the newly created budget
             BudgetUserBusiness budgetUserBusiness = new BudgetUserBusiness(context);
             budgetUserBusiness.AddUserForBudget(budget, request.UserId);
-
-            return response;
         }
 
         protected override CreateNewBudgetResponse Validate(CreateNewBudgetRequest request)

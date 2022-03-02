@@ -27,7 +27,7 @@ namespace ExpenseTracker.Business
                 TResponse response = Validate(request);
                 if (!response.HasErrors())
                 {
-                    response = HandleInternal(request, response);
+                    HandleInternal(request, response);
                     context.SaveChanges();
                 }
                 return response;
@@ -43,7 +43,7 @@ namespace ExpenseTracker.Business
         }
 
         protected abstract TResponse Validate(TRequest request);
-        protected abstract TResponse HandleInternal(TRequest request, TResponse response); //TODO: Make this void
+        protected abstract void HandleInternal(TRequest request, TResponse response);
 
         protected void AddAuditDataForCreate<T>(T entity, string userId)
             where T : BaseAuditableDbo

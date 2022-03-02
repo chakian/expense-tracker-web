@@ -12,7 +12,7 @@ namespace ExpenseTracker.Business.Commands
         {
         }
 
-        protected override UpdateAccountResponse HandleInternal(UpdateAccountRequest request, UpdateAccountResponse response)
+        protected override void HandleInternal(UpdateAccountRequest request, UpdateAccountResponse response)
         {
             Account account = context.Accounts.Find(request.AccountId);
 
@@ -58,8 +58,6 @@ namespace ExpenseTracker.Business.Commands
                     Text = "Güncellenmeye çalışılan hesap bulunamadı."
                 });
             }
-
-            return response;
         }
 
         protected override UpdateAccountResponse Validate(UpdateAccountRequest request)
