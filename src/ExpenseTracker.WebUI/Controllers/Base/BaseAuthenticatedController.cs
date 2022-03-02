@@ -93,11 +93,11 @@ namespace ExpenseTracker.WebUI.Controllers
         private int CreateBudgetForUser()
         {
             CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
-            createNewBudgetCommand.Execute(new Common.Contracts.Command.CreateNewBudgetRequest()
-            {
-                BudgetName = "Default Budget",
-                UserId = UserId
-            });
+            var createResponse = createNewBudgetCommand.Execute(new CreateNewBudgetRequest() { BudgetName = "Default Budget", UserId = UserId });
+
+            AddUserToBudgetCommand addUserToBudgetCommand = new AddUserToBudgetCommand(_dbContext);
+            addUserToBudgetCommand.Execute(new AddUserToBudgetRequest() { UserId = UserId, BudgetId = createResponse.CreatedBudgetId });
+
             BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             return budgetBusiness.GetBudgetsOfUser(UserId).First().Id;
         }

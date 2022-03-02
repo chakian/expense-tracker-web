@@ -16,14 +16,14 @@ namespace ExpenseTracker.Business.Commands
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             Budget budget = budgetBusiness.CreateNewBudget(request);
 
-            // Assign the user to the newly created budget
-            BudgetUserBusiness budgetUserBusiness = new BudgetUserBusiness(context);
-            budgetUserBusiness.AddUserForBudget(budget, request.UserId);
+            response.CreatedBudgetId = budget.Id;
         }
 
         protected override CreateNewBudgetResponse Validate(CreateNewBudgetRequest request)
         {
-            throw new System.NotImplementedException();
+            var response = new CreateNewBudgetResponse();
+            //TODO: Validation
+            return response;
         }
     }
 }

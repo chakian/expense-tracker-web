@@ -87,6 +87,9 @@ namespace ExpenseTracker.WebUI.Controllers
                 CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
                 var response = createNewBudgetCommand.Execute(createNewBudgetRequest);
 
+                AddUserToBudgetCommand addUserToBudgetCommand = new AddUserToBudgetCommand(_dbContext);
+                addUserToBudgetCommand.Execute(new AddUserToBudgetRequest() { UserId = UserId, BudgetId = response.CreatedBudgetId });
+
                 //_logger.LogInformation(response.Messages)
                 _logger.LogInformation("Finished controller action: Budget/Create POST");
 
