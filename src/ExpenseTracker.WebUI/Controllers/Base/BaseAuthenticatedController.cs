@@ -73,6 +73,8 @@ namespace ExpenseTracker.WebUI.Controllers
             UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
             int budgetId = FindFirstBudgetId();
             userSettingBusiness.CreateUserSettings(UserId, budgetId);
+            //TODO: Temp Solution (Turn this into a command)
+            _dbContext.SaveChanges();
         }
         private int FindFirstBudgetId()
         {

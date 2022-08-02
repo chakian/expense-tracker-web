@@ -48,7 +48,8 @@ namespace ExpenseTracker.Business
                 userSetting = new Common.Entities.UserSetting()
                 {
                     UserId = settingsDbo.UserId,
-                    DefaultBudgetId = settingsDbo.DefaultBudgetId
+                    DefaultBudgetId = settingsDbo.DefaultBudgetId,
+                    IsActive = settingsDbo.IsActive
                 };
             }
 
