@@ -2,29 +2,26 @@
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class UpdateAccountCommand : BaseCommand<UpdateAccountRequest, UpdateAccountResponse>
     {
-        public UpdateAccountCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public UpdateAccountCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 
-        protected override UpdateAccountResponse HandleInternal(UpdateAccountRequest request)
+        protected override void HandleInternal(UpdateAccountRequest request, UpdateAccountResponse response)
         {
-            var response = new UpdateAccountResponse();
-
-            var accountBusiness = new AccountBusiness(context);
             Account account = context.Accounts.Find(request.AccountId);
 
             if (account != null)
             {
                 if (account.Name != request.AccountName)
                 {
-                    accountBusiness.UpdateAccountName(account, request.AccountName, request.UserId);
+                    account.Name = request.AccountName;
+                    AddAuditDataForUpdate(account, request.UserId);
                 }
 
                 if (account.Balance != request.AccountBalance)
@@ -61,7 +58,12 @@ namespace ExpenseTracker.Business.Commands
                     Text = "Güncellenmeye çalışılan hesap bulunamadı."
                 });
             }
+        }
 
+        protected override UpdateAccountResponse Validate(UpdateAccountRequest request)
+        {
+            var response = new UpdateAccountResponse();
+            //TODO: Validation
             return response;
         }
     }

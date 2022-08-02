@@ -1,6 +1,7 @@
 ﻿using ExpenseTracker.Business;
 using ExpenseTracker.Business.Commands;
 using ExpenseTracker.Business.Queries;
+using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Controllers.Base;
@@ -61,8 +62,7 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private UserSetting GetUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            _queryUserSettings = new GetUserSettingsQuery(_dbContext, userSettingBusiness);
+            _queryUserSettings = new GetUserSettingsQuery(_dbContext);
             return _queryUserSettings.Retrieve(new Common.Contracts.Query.UserSetting.GetUserSettingsRequest()
             {
                 UserId = UserId
@@ -70,11 +70,11 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private void CreateUserSetting()
         {
-            UserSettingBusiness userSettingBusiness = new UserSettingBusiness(_dbContext);
-            int budgetId = FindFirstBudgetId();
-            userSettingBusiness.CreateUserSettings(UserId, budgetId);
-            //TODO: Temp Solution (Turn this into a command)
-            _dbContext.SaveChanges();
+            var command = new CreateUserSettingsCommand(_dbContext);
+            var budgetId = FindFirstBudgetId();
+            var request = new CreateUserSettingsRequest() { DefaultBudgetId = budgetId, UserId = UserId };
+            
+            command.Execute(request);
         }
         private int FindFirstBudgetId()
         {
@@ -92,12 +92,12 @@ namespace ExpenseTracker.WebUI.Controllers
         }
         private int CreateBudgetForUser()
         {
-            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
-            createNewBudgetCommand.Execute(new Common.Contracts.Command.CreateNewBudgetRequest()
-            {
-                BudgetName = "Default Budget",
-                UserId = UserId
-            });
+            CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
+            var createResponse = createNewBudgetCommand.Execute(new CreateNewBudgetRequest() { BudgetName = "Default Budget", UserId = UserId });
+
+            AddUserToBudgetCommand addUserToBudgetCommand = new AddUserToBudgetCommand(_dbContext);
+            addUserToBudgetCommand.Execute(new AddUserToBudgetRequest() { UserId = UserId, BudgetId = createResponse.CreatedBudgetId });
+
             BudgetBusiness budgetBusiness = new BudgetBusiness(new ExpenseTrackerDbContext(_dbContextOptions));
             return budgetBusiness.GetBudgetsOfUser(UserId).First().Id;
         }

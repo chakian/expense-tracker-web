@@ -84,8 +84,11 @@ namespace ExpenseTracker.WebUI.Controllers
                     BudgetName = createModel.Name,
                     UserId = UserId
                 };
-                CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContextOptions);
+                CreateNewBudgetCommand createNewBudgetCommand = new CreateNewBudgetCommand(_dbContext);
                 var response = createNewBudgetCommand.Execute(createNewBudgetRequest);
+
+                AddUserToBudgetCommand addUserToBudgetCommand = new AddUserToBudgetCommand(_dbContext);
+                addUserToBudgetCommand.Execute(new AddUserToBudgetRequest() { UserId = UserId, BudgetId = response.CreatedBudgetId });
 
                 //_logger.LogInformation(response.Messages)
                 _logger.LogInformation("Finished controller action: Budget/Create POST");
@@ -132,7 +135,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     Name = updateModel.Name,
                     UserId = UserId
                 };
-                UpdateBudgetCommand updateBudgetCommand = new UpdateBudgetCommand(_dbContextOptions);
+                UpdateBudgetCommand updateBudgetCommand = new UpdateBudgetCommand(_dbContext);
                 var response = updateBudgetCommand.Execute(updateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Edit POST");
@@ -179,7 +182,7 @@ namespace ExpenseTracker.WebUI.Controllers
                     BudgetId = id,
                     UserId = UserId
                 };
-                var deactivateBudgetCommand = new DeactivateBudgetCommand(_dbContextOptions);
+                var deactivateBudgetCommand = new DeactivateBudgetCommand(_dbContext);
                 var response = deactivateBudgetCommand.Execute(deactivateBudgetRequest);
 
                 _logger.LogInformation("Finished controller action: Budget/Delete POST");
@@ -197,10 +200,10 @@ namespace ExpenseTracker.WebUI.Controllers
             _logger.LogInformation("Started controller action: Budget/MakeDefault");
 
             var context = new ExpenseTrackerDbContext(_dbContextOptions);
-            var userSettingBusiness = new UserSettingBusiness(context);
-
-            userSettingBusiness.UpdateUserSettings(UserId, id);
-            context.SaveChanges();
+            var command = new UpdateUserSettingsDefaultBudgetCommand(context);
+            var request = new UpdateUserSettingsDefaultBudgetRequest() { DefaultBudgetId = id, UserId = UserId };
+            
+            command.Execute(request);
 
             _logger.LogInformation("Finished controller action: Budget/MakeDefault");
 

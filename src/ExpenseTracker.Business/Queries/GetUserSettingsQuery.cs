@@ -1,27 +1,33 @@
 ﻿using ExpenseTracker.Common.Contracts.Query.UserSetting;
-using ExpenseTracker.Common.Interfaces.Business;
 using ExpenseTracker.Persistence;
+using System.Linq;
 
 namespace ExpenseTracker.Business.Queries
 {
     public class GetUserSettingsQuery : BaseQuery<GetUserSettingsRequest, GetUserSettingsResponse>
     {
-        private readonly IUserSettingBusiness _userSettingBusiness;
-        public GetUserSettingsQuery(ExpenseTrackerDbContext context, IUserSettingBusiness userSettingBusiness) : base(context)
+        public GetUserSettingsQuery(ExpenseTrackerDbContext context) : base(context)
         {
-            _userSettingBusiness = userSettingBusiness;
         }
 
-        protected override GetUserSettingsResponse HandleInternal(GetUserSettingsRequest request)
+        protected override void HandleInternal(GetUserSettingsRequest request, GetUserSettingsResponse response)
         {
-            var settings = _userSettingBusiness.GetUserSettings(request.UserId);
+            var settingsDbo = context.UserSettings.SingleOrDefault(us => us.UserId == request.UserId);
 
-            var response = new GetUserSettingsResponse()
+            Common.Entities.UserSetting userSetting = null;
+
+            if (settingsDbo != null)
             {
-                UserSetting = settings,
-            };
+                userSetting = new Common.Entities.UserSetting()
+                {
+                    UserId = settingsDbo.UserId,
+                    DefaultBudgetId = settingsDbo.DefaultBudgetId
+                };
+            }
 
-            return response;
+            response.UserSetting = userSetting;
         }
+
+        //TODO: Think about validation
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Business.Helpers;
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
@@ -126,8 +127,8 @@ namespace ExpenseTracker.Business
                 transaction.UpdateTime = DateTime.UtcNow;
                 transaction.UpdateUserId = userId;
 
-                var accountBusiness = new AccountBusiness(dbContext);
-                accountBusiness.UpdateAccountBalancesForEditedTransaction(tx.AccountId, tx.TargetAccountId, tx.Amount, tx.IsIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
+                var balanceHelper = new AccountBalanceHelper(dbContext);
+                balanceHelper.UpdateAccountBalancesForEditedTransaction(tx.AccountId, tx.TargetAccountId, tx.Amount, tx.IsIncome, oldSourceAccountId, oldTargetAccountId, oldTransactionAmount, oldIsIncome, userId);
 
                 dbContext.SaveChanges();
             }
@@ -139,8 +140,8 @@ namespace ExpenseTracker.Business
 
             if (Transaction != null)
             {
-                var accountBusiness = new AccountBusiness(dbContext);
-                accountBusiness.UpdateAccountBalancesForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
+                var balanceHelper = new AccountBalanceHelper(dbContext);
+                balanceHelper.UpdateAccountBalancesForNewTransaction(Transaction.AccountId, Transaction.TargetAccountId, Transaction.Amount * (-1), Transaction.IsIncome, userId);
 
                 dbContext.Transactions.Remove(Transaction);
                 dbContext.SaveChanges();

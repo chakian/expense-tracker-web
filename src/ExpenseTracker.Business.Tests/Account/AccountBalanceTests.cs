@@ -1,6 +1,8 @@
-﻿using ExpenseTracker.Common.Enums;
+﻿using ExpenseTracker.Business.Helpers;
+using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ExpenseTracker.Business.Tests
@@ -14,16 +16,21 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, accountName, 10, startBalance, userId);
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = startBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
+            int accountId = account.Id;
+
+            var balanceHelper = new AccountBalanceHelper(context);
 
             //ACT
-            accountBusiness.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
-            Common.Entities.Account actual = accountBusiness.GetAccountDetails(accountId);
+            balanceHelper.UpdateAccountBalancesForNewTransaction(accountId, null, transactionAmount, isIncome, userId);
+            var actual = context.Accounts.Single(account => account.Id == accountId);
 
             //ASSERT
             Assert.Equal(expectedEndBalance, actual.Balance);
@@ -59,16 +66,25 @@ namespace ExpenseTracker.Business.Tests
         {
             //ARRANGE
             var context = CreateContext();
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             string accountName = Guid.NewGuid().ToString();
             int budgetId = CreateBudget(context, userId);
             List<int> accountIds = new List<int>();
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
-            accountIds.Add(accountBusiness.CreateNewAccount(budgetId, accountName, 10, initialBalance, userId));
+
+            var account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            account = new Account { BudgetId = budgetId, Name = accountName, AccountType = 10, Balance = initialBalance };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            accountIds.Add(account.Id);
+            context.SaveChanges();
 
             decimal[] expectedBalances = new decimal[expectedBalancesString.Length];
             for(int i = 0; i < expectedBalancesString.Length; i++)
@@ -76,12 +92,14 @@ namespace ExpenseTracker.Business.Tests
                 expectedBalances[i] = decimal.Parse(expectedBalancesString[i]);
             }
 
-            accountBusiness.UpdateAccountBalancesForNewTransaction(accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
+            var balanceHelper = new AccountBalanceHelper(context);
+
+            balanceHelper.UpdateAccountBalancesForNewTransaction(accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
 
             // ACT
-            accountBusiness.UpdateAccountBalancesForEditedTransaction(accountIds[source], accountIds[target], updatedAmount, updatedIsIncome, accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
-            var actualSource = accountBusiness.GetAccountDetails(accountIds[source]);
-            var actualTarget = accountBusiness.GetAccountDetails(accountIds[target]);
+            balanceHelper.UpdateAccountBalancesForEditedTransaction(accountIds[source], accountIds[target], updatedAmount, updatedIsIncome, accountIds[oldSource], accountIds[oldTarget], initialAmount, initialIsIncome, userId);
+            var actualSource = context.Accounts.Single(account => account.Id == accountIds[source]);
+            var actualTarget = context.Accounts.Single(account => account.Id == accountIds[target]);
 
             // ASSERT
             Assert.Equal(expectedBalances[source], actualSource.Balance);

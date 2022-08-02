@@ -1,6 +1,6 @@
 ﻿using ExpenseTracker.Interfaces.Business;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
+using ExpenseTracker.Persistence.DbModels;
 using System;
 
 namespace ExpenseTracker.Business
@@ -14,10 +14,6 @@ namespace ExpenseTracker.Business
         {
             this.context = context;
         }
-        public BaseCommand(DbContextOptions<ExpenseTrackerDbContext> options)
-        {
-            context = new ExpenseTrackerDbContext(options);
-        }
 
         /// <summary>
         /// This is the main entry point for all of the commands.
@@ -28,8 +24,12 @@ namespace ExpenseTracker.Business
         {
             try
             {
-                TResponse response = HandleInternal(request);
-                context.SaveChanges();
+                TResponse response = Validate(request);
+                if (!response.HasErrors())
+                {
+                    HandleInternal(request, response);
+                    context.SaveChanges();
+                }
                 return response;
             }
             catch (Exception exception)
@@ -42,6 +42,28 @@ namespace ExpenseTracker.Business
             }
         }
 
-        protected abstract TResponse HandleInternal(TRequest request);
+        protected abstract TResponse Validate(TRequest request);
+        protected abstract void HandleInternal(TRequest request, TResponse response);
+
+        protected void AddAuditDataForCreate<T>(T entity, string userId)
+            where T : BaseAuditableDbo
+        {
+            if(entity != null)
+            {
+                entity.InsertTime = DateTime.UtcNow;
+                entity.InsertUserId = userId;
+                entity.IsActive = true;
+            }
+        }
+
+        protected void AddAuditDataForUpdate<T>(T entity, string userId)
+            where T : BaseAuditableDbo
+        {
+            if (entity != null)
+            {
+                entity.UpdateTime = DateTime.UtcNow;
+                entity.UpdateUserId = userId;
+            }
+        }
     }
 }

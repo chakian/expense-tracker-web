@@ -1,9 +1,12 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Business.Commands;
+using ExpenseTracker.Business.Queries;
+using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Common.Contracts.Query;
 using ExpenseTracker.Common.Enums;
 using ExpenseTracker.Common.Extensions;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Account;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -27,11 +30,16 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             _logger.LogInformation("Started controller action: Account/Index");
 
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var list = accountBusiness.GetAccountsOfBudget(BudgetId);
+            var request = new GetAccountsOfBudgetRequest()
+            {
+                BudgetId = BudgetId,
+            };
+            var query = new GetAccountsOfBudgetQuery(_dbContext);
+
+            var list = query.Retrieve(request).AccountList;
 
             ListModel listModel = new ListModel();
-            listModel.AccountList = new System.Collections.Generic.List<ListModel.Account>();
+            listModel.AccountList = new List<ListModel.Account>();
             list.ForEach(l =>
             {
                 listModel.AccountList.Add(new ListModel.Account()
@@ -52,8 +60,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Details/5
         public ActionResult Details(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             DetailModel detailModel = new DetailModel()
             {
                 Id = acc.Id,
@@ -89,9 +99,18 @@ namespace ExpenseTracker.WebUI.Controllers
         {
             try
             {
-                // TODO: Validations
-                AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-                accountBusiness.CreateNewAccount(BudgetId, createModel.Name, createModel.Type, createModel.Balance, UserId);
+                var commandRequest = new CreateNewAccountRequest()
+                {
+                    BudgetId = BudgetId,
+                    AccountName = createModel.Name,
+                    AccountType = createModel.Type,
+                    AccountBalance = createModel.Balance,
+                    UserId = UserId,
+                };
+
+                var command = new CreateNewAccountCommand(_dbContext);
+                int accountId = command.Execute(commandRequest).CreatedAccountId;
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -103,8 +122,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Edit/5
         public ActionResult Edit(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             UpdateModel updateModel = new UpdateModel()
             {
                 Id = acc.Id,
@@ -134,8 +155,10 @@ namespace ExpenseTracker.WebUI.Controllers
         // GET: AccountController/Delete/5
         public ActionResult Delete(int id)
         {
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var acc = accountBusiness.GetAccountDetails(id);
+            var request = new GetAccountDetailsRequest() { AccountId = id, UserId = UserId };
+            var query = new GetAccountDetailsQuery(_dbContext);
+            var acc = query.Retrieve(request).Account;
+
             DeleteModel deleteModel = new DeleteModel()
             {
                 Id = acc.Id,

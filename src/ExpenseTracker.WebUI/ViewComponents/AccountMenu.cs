@@ -1,4 +1,6 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Business.Queries;
+using ExpenseTracker.Common.Contracts.Query;
 using ExpenseTracker.Common.Entities;
 using ExpenseTracker.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +12,10 @@ namespace ExpenseTracker.WebUI.ViewComponents
     [ViewComponent]
     public class AccountMenu : ViewComponent
     {
-        AccountBusiness accountBusiness;
-        public AccountMenu(DbContextOptions<ExpenseTrackerDbContext> contextOptions)
+        private readonly ExpenseTrackerDbContext context;
+        public AccountMenu(ExpenseTrackerDbContext context)
         {
-            accountBusiness = new AccountBusiness(contextOptions);
+            this.context = context;
         }
 
         public IViewComponentResult Invoke()
@@ -31,7 +33,10 @@ namespace ExpenseTracker.WebUI.ViewComponents
 
         private List<Account> GetAccounts(int budgetId)
         {
-            List<Account> list = accountBusiness.GetAccountsOfBudget(budgetId);
+            var request = new GetAccountsOfBudgetRequest() { BudgetId = budgetId };
+            var query = new GetAccountsOfBudgetQuery(context);
+            var list = query.Retrieve(request).AccountList;
+
             return list;
         }
     }

@@ -1,33 +1,36 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.Persistence.DbModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class DeactivateAccountCommand : BaseCommand<DeactivateAccountRequest, DeactivateAccountResponse>
     {
-        public DeactivateAccountCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public DeactivateAccountCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 
-        protected override DeactivateAccountResponse HandleInternal(DeactivateAccountRequest request)
+        protected override void HandleInternal(DeactivateAccountRequest request, DeactivateAccountResponse response)
         {
-            var response = new DeactivateAccountResponse();
-
             Account account = context.Accounts.Find(request.AccountId);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-
+            
             if (account != null)
             {
-                accountBusiness.UpdateAccountAsInactive(account, request.UserId);
+                account.IsActive = false;
+                AddAuditDataForUpdate(account, request.UserId);
+
+                context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
             }
             else
             {
                 response.AddMessage("Hesap bulunamadı.", true);
             }
+        }
 
+        protected override DeactivateAccountResponse Validate(DeactivateAccountRequest request)
+        {
+            var response = new DeactivateAccountResponse();
+            //TODO: Validation
             return response;
         }
     }

@@ -1,23 +1,25 @@
 ﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class UpdateBudgetCommand : BaseCommand<UpdateBudgetRequest, UpdateBudgetResponse>
     {
-        public UpdateBudgetCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public UpdateBudgetCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 
-        protected override UpdateBudgetResponse HandleInternal(UpdateBudgetRequest request)
+        protected override void HandleInternal(UpdateBudgetRequest request, UpdateBudgetResponse response)
         {
-            UpdateBudgetResponse response = new UpdateBudgetResponse();
-
             // Update the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             budgetBusiness.UpdateBudget(request);
+        }
 
+        protected override UpdateBudgetResponse Validate(UpdateBudgetRequest request)
+        {
+            var response = new UpdateBudgetResponse();
+            //TODO: Validation
             return response;
         }
     }

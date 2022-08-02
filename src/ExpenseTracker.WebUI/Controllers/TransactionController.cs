@@ -1,5 +1,7 @@
 ﻿using ExpenseTracker.Business;
+using ExpenseTracker.Business.Queries;
 using ExpenseTracker.Common.Contracts.Command;
+using ExpenseTracker.Common.Contracts.Query;
 using ExpenseTracker.Persistence;
 using ExpenseTracker.WebUI.Models.Transaction;
 using Microsoft.AspNetCore.Http;
@@ -112,8 +114,9 @@ namespace ExpenseTracker.WebUI.Controllers
                 Date = DateTime.Now
             };
 
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var allAccList = accountBusiness.GetAccountsOfBudget(BudgetId).ToList();
+            var request = new GetAccountsOfBudgetRequest() { BudgetId = BudgetId };
+            var query = new GetAccountsOfBudgetQuery(_dbContext);
+            var allAccList = query.Retrieve(request).AccountList;
 
             var accList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == accountId)).ToList();
             accList.Insert(0, new SelectListItem("Seçiniz", ""));
@@ -192,8 +195,10 @@ namespace ExpenseTracker.WebUI.Controllers
                 Date = trx.Date
             };
 
-            AccountBusiness accountBusiness = new AccountBusiness(_dbContextOptions);
-            var allAccList = accountBusiness.GetAccountsOfBudget(BudgetId);
+            var request = new GetAccountsOfBudgetRequest() { BudgetId = BudgetId };
+            var query = new GetAccountsOfBudgetQuery(_dbContext);
+            var allAccList = query.Retrieve(request).AccountList;
+
             var accList = allAccList.Select(a => new SelectListItem(a.Name, a.Id.ToString(), a.Id == trx.AccountId)).ToList();
             accList.Insert(0, new SelectListItem("Seçiniz", ""));
             updateModel.AccountList = accList.AsEnumerable();

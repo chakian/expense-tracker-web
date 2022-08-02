@@ -2,7 +2,8 @@
 {
     public interface IResponse
     {
-        public void WriteExceptionMessage(Exception exception, bool clearAll = true);
+        void WriteExceptionMessage(Exception exception, bool clearAll = true);
+        bool HasErrors();
         //public void AddMessage(string message, bool isError);
     }
 }

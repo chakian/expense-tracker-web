@@ -8,18 +8,17 @@ namespace ExpenseTracker.Common.Contracts
     public class BaseResponse : IResponse
     {
         public List<Message> Messages { get; set; }
-        public bool HasErrors
+        public bool HasErrors()
         {
-            get
-            {
-                if (Messages == null) return true;
-                return Messages.Any(q => q.IsErrorMessage);
-            }
+            if (Messages == null) return false;
+            return Messages.Any(q => q.IsErrorMessage);
         }
 
-        public void AddMessage(string message, bool isError)
+        public void AddMessage(string message, bool isError, bool clearAll = false)
         {
             if (Messages == null) Messages = new List<Message>();
+
+            if (clearAll) Messages.Clear();
 
             Messages.Add(new Message()
             {
@@ -30,15 +29,7 @@ namespace ExpenseTracker.Common.Contracts
 
         public void WriteExceptionMessage(Exception exception, bool clearAll = true)
         {
-            if (Messages == null) Messages = new List<Message>();
-
-            if (clearAll) Messages.Clear();
-
-            Messages.Add(new Message()
-            {
-                IsErrorMessage = true,
-                Text = exception.Message
-            });
+            AddMessage(exception.Message, true, clearAll);
         }
 
         public class Message

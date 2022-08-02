@@ -1,5 +1,5 @@
 ﻿using ExpenseTracker.Common.Contracts.Command;
-using ExpenseTracker.Persistence;
+using ExpenseTracker.Persistence.DbModels;
 using System;
 using System.Linq;
 using Xunit;
@@ -14,11 +14,15 @@ namespace ExpenseTracker.Business.Tests
             //ARRANGE
             var context = CreateContext();
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, Guid.NewGuid().ToString(), 10, 0, userId);
+            
+            var account = new Account { BudgetId = budgetId, Name = Guid.NewGuid().ToString(), AccountType = 10, Balance = 0 };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
+            int accountId = account.Id;
+            
             int categoryId = new Random(DateTime.Now.Millisecond).Next(0, 100);
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
             string description = Guid.NewGuid().ToString();
@@ -163,11 +167,15 @@ namespace ExpenseTracker.Business.Tests
             //ARRANGE
             var context = CreateContext();
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
-            AccountBusiness accountBusiness = new AccountBusiness(context);
 
             string userId = Guid.NewGuid().ToString();
             int budgetId = new Random(DateTime.Now.Millisecond).Next(0, 100);
-            int accountId = accountBusiness.CreateNewAccount(budgetId, Guid.NewGuid().ToString(), 10, 0, userId);
+            
+            var account = new Account { BudgetId = budgetId, Name = Guid.NewGuid().ToString(), AccountType = 10, Balance = 0 };
+            context.Entry(account).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
+            int accountId = account.Id;
+
             decimal amount = new Random(DateTime.Now.Millisecond).Next(0, 1000);
             string description = Guid.NewGuid().ToString();
 

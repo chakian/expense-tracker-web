@@ -2,5 +2,6 @@
 {
     public class CreateNewBudgetResponse : BaseResponse
     {
+        public int CreatedBudgetId { get; set; }
     }
 }

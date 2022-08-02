@@ -2,5 +2,6 @@
 {
     public class CreateNewAccountResponse : BaseResponse
     {
+        public int CreatedAccountId { get; set; }
     }
 }

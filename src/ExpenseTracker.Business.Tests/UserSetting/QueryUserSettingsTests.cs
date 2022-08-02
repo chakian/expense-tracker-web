@@ -1,6 +1,6 @@
 ﻿using ExpenseTracker.Business.Queries;
 using ExpenseTracker.Common.Contracts.Query.UserSetting;
-using ExpenseTracker.Common.Interfaces.Business;
+using ExpenseTracker.Persistence.DbModels;
 using Moq;
 using System;
 using Xunit;
@@ -13,18 +13,21 @@ namespace ExpenseTracker.Business.Tests
         public void Get_UserSetting_Valid()
         {
             //ARRANGE
+            var context = CreateContext();
+
             string userId = Guid.NewGuid().ToString();
             int expectedBudgetId = 1;
 
-            var userSettingBusinessMock = new Mock<IUserSettingBusiness>();
-            userSettingBusinessMock.Setup(bus => bus.GetUserSettings(It.IsAny<string>())).Returns(new Common.Entities.UserSetting()
+            var userSettings = new UserSetting()
             {
                 DefaultBudgetId = expectedBudgetId,
                 IsActive = true,
                 UserId = userId
-            });
+            };
+            context.Entry(userSettings).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+            context.SaveChanges();
 
-            var query = new GetUserSettingsQuery(GetMockContext(), userSettingBusinessMock.Object);
+            var query = new GetUserSettingsQuery(context);
             var request = new GetUserSettingsRequest()
             {
                 UserId = userId,
@@ -42,13 +45,11 @@ namespace ExpenseTracker.Business.Tests
         public void Get_UserSetting_Null()
         {
             //ARRANGE
+            var context = CreateContext();
+
             string userId = Guid.NewGuid().ToString();
 
-            var userSettingBusinessMock = new Mock<IUserSettingBusiness>();
-            Common.Entities.UserSetting userSetting = null;
-            userSettingBusinessMock.Setup(bus => bus.GetUserSettings(It.IsAny<string>())).Returns(userSetting);
-
-            var query = new GetUserSettingsQuery(GetMockContext(), userSettingBusinessMock.Object);
+            var query = new GetUserSettingsQuery(context);
             var request = new GetUserSettingsRequest()
             {
                 UserId = userId,

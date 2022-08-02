@@ -1,39 +1,40 @@
-﻿using ExpenseTracker.Business;
+﻿using ExpenseTracker.Business.Helpers;
 using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class CreateTransactionCommand : BaseCommand<CreateTransactionRequest, CreateTransactionResponse>
     {
-        public CreateTransactionCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
-        {
-        }
         public CreateTransactionCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 
-        protected override CreateTransactionResponse HandleInternal(CreateTransactionRequest request)
+        protected override void HandleInternal(CreateTransactionRequest request, CreateTransactionResponse response)
         {
-            CreateTransactionResponse response = new CreateTransactionResponse();
+            if (response == null) response = new CreateTransactionResponse();
 
             // First create a new transaction
             TransactionBusiness transactionBusiness = new TransactionBusiness(context);
             transactionBusiness.CreateTransaction(request);
 
             // Then update the account balance(s) accordingly
-            AccountBusiness accountBusiness = new AccountBusiness(context);
-            accountBusiness.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
+            var balanceHelper = new AccountBalanceHelper(context);
+            balanceHelper.UpdateAccountBalancesForNewTransaction(request.AccountId, request.TargetAccountId, request.Amount, request.IsIncome, request.UserId);
+        }
 
+        protected override CreateTransactionResponse Validate(CreateTransactionRequest request)
+        {
+            var response = new CreateTransactionResponse();
+            //TODO: Validation
             return response;
         }
 
-        [Obsolete]
-        internal CreateTransactionResponse HandleCommandInternal(CreateTransactionRequest request)
+        [Obsolete("Use MediatR or any other solution to avoid chaining comands")]
+        internal void HandleCommandInternal(CreateTransactionRequest request)
         {
-            return HandleInternal(request);
+            HandleInternal(request, null);
         }
     }
 }

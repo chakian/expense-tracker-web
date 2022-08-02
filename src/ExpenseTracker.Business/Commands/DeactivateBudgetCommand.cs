@@ -1,24 +1,25 @@
-﻿using ExpenseTracker.Business;
-using ExpenseTracker.Common.Contracts.Command;
+﻿using ExpenseTracker.Common.Contracts.Command;
 using ExpenseTracker.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker.Business.Commands
 {
     public class DeactivateBudgetCommand : BaseCommand<DeactivateBudgetRequest, DeactivateBudgetResponse>
     {
-        public DeactivateBudgetCommand(DbContextOptions<ExpenseTrackerDbContext> options) : base(options)
+        public DeactivateBudgetCommand(ExpenseTrackerDbContext context) : base(context)
         {
         }
 
-        protected override DeactivateBudgetResponse HandleInternal(DeactivateBudgetRequest request)
+        protected override void HandleInternal(DeactivateBudgetRequest request, DeactivateBudgetResponse response)
         {
-            DeactivateBudgetResponse response = new DeactivateBudgetResponse();
-
             // Deactivate the budget
             BudgetBusiness budgetBusiness = new BudgetBusiness(context);
             budgetBusiness.UpdateBudgetAsInactive(request);
+        }
 
+        protected override DeactivateBudgetResponse Validate(DeactivateBudgetRequest request)
+        {
+            var response = new DeactivateBudgetResponse();
+            //TODO: Validation
             return response;
         }
     }
